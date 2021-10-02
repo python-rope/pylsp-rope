@@ -60,6 +60,7 @@ def pylsp_code_actions(config, workspace, document, range, context):
 
     code_actions = []
 
+    # FIXME: requires rope.refactor.extract._ExceptionalConditionChecker for proper checking
     code_actions.append(
         {
             "title": "Extract method",
