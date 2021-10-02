@@ -1,8 +1,8 @@
 # pylsp-rope
 
-Extended refactoring capabilities for Python LSP Server using Rope.
+Extended refactoring capabilities for Python LSP Server using [Rope](https://github.com/python-rope/rope).
 
-This is a plugin for the [Python LSP Server](https://github.com/python-lsp/python-lsp-server).
+This is a plugin for [Python LSP Server](https://github.com/python-lsp/python-lsp-server).
 
 ## Installation
 
@@ -34,17 +34,28 @@ If this is your first time publishing to PyPI, follow the instruction at [Twine
 docs](https://packaging.python.org/guides/distributing-packages-using-setuptools/#create-an-account)
 to create an PyPI account and setup Twine.
 
-Build a package and upload using Twine:
+Build a package using setuptools:
 
 ``` bash
 python setup.py sdist
 twine check dist/*
+```
+
+Then upload using Twine:
+
+```
 twine upload dist/*
+```
+
+Alternatively, you may want to upload to test PyPI first before going live:
+
+```
+twine upload --repository testpypi dist/*
 ```
 
 ## Credits
 
 This package was created with
-[Cookiecutter](https://github.com/audreyr/cookiecutter) and the
+[Cookiecutter](https://github.com/audreyr/cookiecutter) from
 [lieryan/cookiecutter-pylsp-plugin](https://github.com/lieryan/cookiecutter-pylsp-plugin)
 project template.
