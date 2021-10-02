@@ -70,6 +70,7 @@ def pylsp_execute_command(config, workspace, command, arguments):
     if command == commands.COMMAND_REFACTOR_EXTRACT_METHOD:
         document_uri, range = arguments
         refactor_extract_method(workspace, document_uri, range)
+
     elif command == commands.COMMAND_REFACTOR_EXTRACT_VARIABLE:
         document_uri, range = arguments
         refactor_extract_variable(workspace, document_uri, range)
