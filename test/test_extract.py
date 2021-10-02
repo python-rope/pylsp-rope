@@ -1,7 +1,11 @@
 from pylsp_rope import commands, plugin
 from pylsp_rope.text import Range
 from test.conftest import fixtures_dir
-from test.helpers import assert_single_document_edit, assert_wholefile_changeset
+from test.helpers import (
+    assert_single_document_edit,
+    assert_wholefile_changeset,
+    assert_code_actions_do_not_offer,
+)
 
 
 def test_extract_variable(config, workspace, document, code_action_context):
@@ -44,6 +48,28 @@ def test_extract_variable(config, workspace, document, code_action_context):
         document_changeset, target=fixtures_dir / "simple_extract_variable.py"
     )
     assert "extracted_variable = " in new_text
+
+
+def test_extract_variable_not_offered_when_selecting_non_expression(
+    config, workspace, document, code_action_context
+):
+    line = 4
+    start_col = document.lines[line].index("print")
+    end_col = document.lines[line].index(".read())\n")
+    selection = Range((line, start_col), (line, end_col))
+
+    response = plugin.pylsp_code_actions(
+        config=config,
+        workspace=workspace,
+        document=document,
+        range=selection,
+        context=code_action_context,
+    )
+
+    assert_code_actions_do_not_offer(
+        response,
+        command=commands.COMMAND_REFACTOR_EXTRACT_VARIABLE,
+    )
 
 
 def test_extract_method(config, workspace, document, code_action_context):

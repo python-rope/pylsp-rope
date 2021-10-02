@@ -1,3 +1,4 @@
+import ast
 import logging
 
 import rope.base.exceptions
@@ -53,6 +54,9 @@ def pylsp_code_actions(config, workspace, document, range, context):
     current_document, resource = get_resource(workspace, document.uri)
     range_selection = range["start"] != range["end"]
     position = range["start"]
+    start_offset = current_document.offset_at_position(range["start"])
+    end_offset = current_document.offset_at_position(range["end"])
+    selected_text = document.source[start_offset:end_offset]
 
     code_actions = []
 
@@ -65,14 +69,20 @@ def pylsp_code_actions(config, workspace, document, range, context):
         }
     )
 
-    code_actions.append(
-        {
-            "title": "Extract variable",
-            "kind": "refactor.extract",
-            "command": commands.COMMAND_REFACTOR_EXTRACT_VARIABLE,
-            "arguments": [document.uri, range],
-        },
-    )
+    # FIXME: requires rope.refactor.extract._ExceptionalConditionChecker for proper checking
+    try:
+        ast.parse(selected_text, mode="eval")
+    except SyntaxError:
+        pass
+    else:
+        code_actions.append(
+            {
+                "title": "Extract variable",
+                "kind": "refactor.extract",
+                "command": commands.COMMAND_REFACTOR_EXTRACT_VARIABLE,
+                "arguments": [document.uri, range],
+            },
+        )
 
     try:
         can_inline = inline.create_inline(
