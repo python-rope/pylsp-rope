@@ -1,20 +1,11 @@
 from unittest.mock import ANY
 
 from pylsp_rope import plugin
-from test.conftest import *
+from pylsp_rope.text import Position, Range
 
 
 def test_code_action(config, workspace, document, code_action_context):
-    selection = {
-        "start": {
-            "line": 3,
-            "character": 0,
-        },
-        "end": {
-            "line": 4,
-            "character": 0,
-        },
-    }
+    selection = Range(3)
 
     response = plugin.pylsp_code_actions(
         config=config,
