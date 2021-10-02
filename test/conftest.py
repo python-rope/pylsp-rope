@@ -1,3 +1,4 @@
+from pathlib import Path
 from unittest.mock import Mock
 
 import pytest
@@ -6,12 +7,9 @@ from pylsp.config.config import Config
 from pylsp.workspace import Workspace, Document
 
 
-DOC_URI = uris.from_fs_path(__file__)
-DOC = """\
-import sys
-def main():
-    print(sys.stdin.read())
-"""
+here = Path(__file__).parent
+fixtures_dir = here / "fixtures"
+
 
 @pytest.fixture
 def config(workspace):
@@ -39,7 +37,8 @@ def workspace(tmpdir):
 
 @pytest.fixture
 def document(workspace):
-    return Document(DOC_URI, workspace, DOC)
+    document_uri = uris.from_fs_path(str(fixtures_dir / "simple.py"))
+    return Document(document_uri, workspace)
 
 
 @pytest.fixture
