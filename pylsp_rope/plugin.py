@@ -1,7 +1,7 @@
 import logging
 
 from pylsp import hookimpl
-from rope.refactor import extract
+from rope.refactor import extract, inline
 
 from pylsp_rope import commands
 from pylsp_rope.project import (
@@ -61,6 +61,12 @@ def pylsp_code_actions(config, workspace, document, range, context):
             "command": commands.COMMAND_REFACTOR_EXTRACT_VARIABLE,
             "arguments": [document.uri, range],
         },
+        {
+            "title": "Inline method/variable",
+            "kind": "refactor.inline",
+            "command": commands.COMMAND_REFACTOR_INLINE,
+            "arguments": [document.uri, range],
+        },
     ]
 
 
@@ -74,6 +80,11 @@ def pylsp_execute_command(config, workspace, command, arguments):
     elif command == commands.COMMAND_REFACTOR_EXTRACT_VARIABLE:
         document_uri, range = arguments
         refactor_extract_variable(workspace, document_uri, range)
+
+    elif command == commands.COMMAND_REFACTOR_INLINE:
+        document_uri, range = arguments
+        position = range["start"]
+        refactor_inline(workspace, document_uri, position)
 
 
 def refactor_extract_method(workspace, document_uri, range):
@@ -103,4 +114,16 @@ def refactor_extract_variable(workspace, document_uri, range):
     rope_changeset = refactoring.get_changes(
         extracted_name="extracted_variable",
     )
+    apply_rope_changeset(workspace, rope_changeset)
+
+
+def refactor_inline(workspace, document_uri, position):
+    current_document, resource = get_resource(workspace, document_uri)
+
+    refactoring = inline.create_inline(
+        project=get_project(workspace),
+        resource=resource,
+        offset=current_document.offset_at_position(position),
+    )
+    rope_changeset = refactoring.get_changes()
     apply_rope_changeset(workspace, rope_changeset)
