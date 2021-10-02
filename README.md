@@ -27,6 +27,7 @@ pip install -e '.[dev]'
 ```
 
 Run `pytest` to run plugin tests.
+
 ## Publishing
 
 If this is your first time publishing to PyPI, follow the instruction at [Twine
