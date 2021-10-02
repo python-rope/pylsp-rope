@@ -9,7 +9,7 @@ from pylsp_rope.text import Range
 
 
 def test_extract_method(config, workspace, document, code_action_context):
-    selection = Range(3)
+    selection = Range(5)
 
     response = plugin.pylsp_code_actions(
         config=config,
@@ -47,7 +47,7 @@ def test_extract_method(config, workspace, document, code_action_context):
 
 
 def test_extract_variable(config, workspace, document, code_action_context):
-    selection = Range(3)
+    selection = Range(5)
 
     response = plugin.pylsp_code_actions(
         config=config,
