@@ -10,7 +10,7 @@ from pylsp_rope.commands import (
 from pylsp_rope.project import (
     get_project,
     get_resource,
-    rope_changeset_to_workspace_changeset,
+    apply_rope_changeset,
 )
 
 
@@ -90,17 +90,7 @@ def refactor_extract_method(workspace, document_uri, range):
     rope_changeset = refactoring.get_changes(
         extracted_name="new_method",
     )
-    workspace_changeset = rope_changeset_to_workspace_changeset(
-        workspace,
-        rope_changeset,
-    )
-
-    workspace_edit = {
-        "changes": workspace_changeset,
-    }
-
-    logger.info("applying workspace edit: %s", workspace_edit)
-    workspace.apply_edit(workspace_edit)
+    apply_rope_changeset(workspace, rope_changeset)
 
 
 def refactor_extract_variable(workspace, document_uri, range):
@@ -115,14 +105,6 @@ def refactor_extract_variable(workspace, document_uri, range):
     rope_changeset = refactoring.get_changes(
         extracted_name="new_variable",
     )
-    workspace_changeset = rope_changeset_to_workspace_changeset(
-        workspace,
-        rope_changeset,
-    )
+    apply_rope_changeset(workspace, rope_changeset)
 
-    workspace_edit = {
-        "changes": workspace_changeset,
-    }
 
-    logger.info("applying workspace edit: %s", workspace_edit)
-    workspace.apply_edit(workspace_edit)

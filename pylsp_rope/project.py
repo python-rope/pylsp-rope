@@ -1,8 +1,12 @@
+import logging
 from functools import cache
 
 from pylsp import uris
 from rope.base import libutils
 from rope.base.project import Project
+
+
+logger = logging.getLogger(__name__)
 
 
 @cache
@@ -33,3 +37,17 @@ def rope_changeset_to_workspace_changeset(workspace, rope_changeset):
             }
         )
     return workspace_changeset
+
+
+def apply_rope_changeset(workspace, rope_changeset):
+    workspace_changeset = rope_changeset_to_workspace_changeset(
+        workspace,
+        rope_changeset,
+    )
+
+    workspace_edit = {
+        "changes": workspace_changeset,
+    }
+
+    logger.info("applying workspace edit: %s", workspace_edit)
+    workspace.apply_edit(workspace_edit)

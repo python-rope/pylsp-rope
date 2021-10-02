@@ -26,7 +26,6 @@ def test_extract_method(config, workspace, document, code_action_context):
         "arguments": [document.uri, selection],
     }
 
-
     assert expected in response
 
     command = expected["command"]
@@ -81,7 +80,6 @@ def test_extract_variable(config, workspace, document, code_action_context):
         "command": COMMAND_REFACTOR_EXTRACT_VARIABLE,
         "arguments": [document.uri, selection],
     }
-
 
     assert expected in response
 
