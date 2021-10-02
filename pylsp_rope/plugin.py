@@ -71,28 +71,3 @@ def pylsp_execute_command(config, workspace, command, arguments):
         workspace.apply_edit(workspace_edit)
 
 
-@hookimpl
-def pylsp_definitions(config, workspace, document, position):
-    logger.info("Retrieving definitions: %s %s %s %s", config, workspace, document, position)
-    filename = __file__
-    uri = uris.uri_with(document.uri, path=filename)
-    with open(filename) as f:
-        lines = f.readlines()
-        for lineno, line in enumerate(lines):
-            if "def pylsp_definitions" in line:
-                break
-    return [
-        {
-            "uri": uri,
-            "range": {
-                "start": {
-                    "line": lineno,
-                    "character": 4,
-                },
-                "end": {
-                    "line": lineno,
-                    "character": line.find(")") + 1,
-                },
-            }
-        }
-    ]

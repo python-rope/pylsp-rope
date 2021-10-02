@@ -4,35 +4,6 @@ from pylsp_rope import plugin
 from test.conftest import *
 
 
-def test_definitions(config, workspace, document):
-    position = {"line": 3, "character": 6}
-
-    response = plugin.pylsp_definitions(
-        config=config,
-        workspace=workspace,
-        document=document,
-        position=position,
-    )
-
-    expected = [
-        {
-            "uri": ANY,
-            "range": {
-                "start": {
-                    "line": ANY,
-                    "character": ANY,
-                },
-                "end": {
-                    "line": ANY,
-                    "character": ANY,
-                },
-            },
-        },
-    ]
-
-    assert response == expected
-
-
 def test_code_action(config, workspace, document, code_action_context):
     selection = {
         "start": {
