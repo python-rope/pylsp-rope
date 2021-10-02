@@ -2,7 +2,7 @@ import sys
 
 
 def main():
-    new_method()
+    extracted_method()
 
-def new_method():
+def extracted_method():
     print(sys.stdin.read())

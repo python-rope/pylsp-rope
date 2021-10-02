@@ -2,5 +2,5 @@ import sys
 
 
 def main():
-    new_variable = sys.stdin.read()
-    print(new_variable)
+    extracted_variable = sys.stdin.read()
+    print(extracted_variable)

@@ -88,7 +88,7 @@ def refactor_extract_method(workspace, document_uri, range):
         end_offset=current_document.offset_at_position(range["end"]),
     )
     rope_changeset = refactoring.get_changes(
-        extracted_name="new_method",
+        extracted_name="extracted_method",
     )
     apply_rope_changeset(workspace, rope_changeset)
 
@@ -103,6 +103,6 @@ def refactor_extract_variable(workspace, document_uri, range):
         end_offset=current_document.offset_at_position(range["end"]),
     )
     rope_changeset = refactoring.get_changes(
-        extracted_name="new_variable",
+        extracted_name="extracted_variable",
     )
     apply_rope_changeset(workspace, rope_changeset)

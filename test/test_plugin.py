@@ -43,7 +43,7 @@ def test_extract_method(config, workspace, document, code_action_context):
 
     document_changeset = assert_single_document_edit(edit_request, document)
     new_text = assert_wholefile_changeset(document_changeset, target=fixtures_dir / "simple_extract_method.py")
-    assert "def new_method(" in new_text
+    assert "def extracted_method(" in new_text
 
 
 def test_extract_variable(config, workspace, document, code_action_context):
@@ -83,7 +83,7 @@ def test_extract_variable(config, workspace, document, code_action_context):
 
     document_changeset = assert_single_document_edit(edit_request, document)
     new_text = assert_wholefile_changeset(document_changeset, target=fixtures_dir / "simple_extract_variable.py")
-    assert "new_variable = " in new_text
+    assert "extracted_variable = " in new_text
 
 
 def assert_single_document_edit(edit_request, document):
