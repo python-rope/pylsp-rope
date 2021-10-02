@@ -57,7 +57,7 @@ def test_code_action(config, workspace, document, code_action_context):
         {
             "title": "Extract method",
             "kind": "refactor.extract",
-            "command": "example.refactor.extract",
+            "command": "lsp_rope.refactor.extract",
             "arguments": [document.uri, selection],
         }
     ]

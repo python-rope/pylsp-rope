@@ -44,7 +44,7 @@ def pylsp_code_actions(config, workspace, document, range, context):
         {
             "title": "Extract method",
             "kind": "refactor.extract",
-            "command": "example.refactor.extract",
+            "command": "lsp_rope.refactor.extract",
             "arguments": [document.uri, range],
         }
     ]
@@ -53,7 +53,7 @@ def pylsp_code_actions(config, workspace, document, range, context):
 @hookimpl
 def pylsp_execute_command(config, workspace, command, arguments):
     logger.info("workspace/executeCommand: %s %s %s %s", config, workspace, command, arguments)
-    if command == "example.refactor.extract":
+    if command == "lsp_rope.refactor.extract":
         current_document, range = arguments
 
         workspace_edit = {
