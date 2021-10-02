@@ -25,7 +25,9 @@ def Position(line, character=None, _default_character=0):
 
     """
     if isinstance(line, tuple):
-        assert character is None, "If `line` is a tuple, then `character` must not be supplied"
+        assert (
+            character is None
+        ), "If `line` is a tuple, then `character` must not be supplied"
         line, character = line
 
     if character is None:
@@ -69,6 +71,6 @@ def Range(start, end=None):
         end = start
 
     return {
-        'start': Position(start, _default_character=0),
-        'end': Position(end, _default_character='$'),
+        "start": Position(start, _default_character=0),
+        "end": Position(end, _default_character="$"),
     }

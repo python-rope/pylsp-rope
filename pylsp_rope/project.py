@@ -23,11 +23,13 @@ def rope_changeset_to_workspace_changeset(workspace, rope_changeset):
     for change in rope_changeset.changes:
         doc = workspace.get_document(uris.from_fs_path(change.resource.real_path))
         document_changes = workspace_changeset.setdefault(doc.uri, [])
-        document_changes.append({
-            "range": {
-                "start": {"line": 0, "character": 0},
-                "end": {"line": len(doc.lines), "character": 0},
-            },
-            "newText": change.new_contents,
-        })
+        document_changes.append(
+            {
+                "range": {
+                    "start": {"line": 0, "character": 0},
+                    "end": {"line": len(doc.lines), "character": 0},
+                },
+                "newText": change.new_contents,
+            }
+        )
     return workspace_changeset
