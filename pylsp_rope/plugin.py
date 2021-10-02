@@ -39,7 +39,7 @@ def pylsp_settings():
 
 @hookimpl
 def pylsp_code_actions(config, workspace, document, range, context):
-    logger.info("Retrieving code actions: %s %s %s %s %s", config, workspace, document, range, context)
+    logger.info("textDocument/codeAction: %s %s %s", document, range, context)
     return [
         {
             "title": "Extract method",
@@ -52,7 +52,7 @@ def pylsp_code_actions(config, workspace, document, range, context):
 
 @hookimpl
 def pylsp_execute_command(config, workspace, command, arguments):
-    logger.info("workspace/executeCommand: %s %s %s %s", config, workspace, command, arguments)
+    logger.info("workspace/executeCommand: %s %s", command, arguments)
     if command == "lsp_rope.refactor.extract":
         current_document, range = arguments
 
