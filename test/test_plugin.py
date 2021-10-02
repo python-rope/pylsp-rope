@@ -1,10 +1,10 @@
-from unittest.mock import ANY
+from unittest.mock import ANY, call
 
 from pylsp_rope import plugin
 from pylsp_rope.text import Position, Range
 
 
-def test_code_action(config, workspace, document, code_action_context):
+def test_extract_method(config, workspace, document, code_action_context):
     selection = Range(3)
 
     response = plugin.pylsp_code_actions(
@@ -36,7 +36,9 @@ def test_code_action(config, workspace, document, code_action_context):
         arguments=arguments,
     )
 
-    workspace._endpoint.request.assert_called_once_with(
+    edit_request = workspace._endpoint.request.call_args
+
+    assert edit_request == call(
         "workspace/applyEdit",
         {
             "edit": {
@@ -44,13 +46,15 @@ def test_code_action(config, workspace, document, code_action_context):
                     document.uri: [
                         {
                             "range": {
-                                "start": {"line": 3, "character": 0},
-                                "end": {"line": 4, "character": 0},
+                                "start": {"line": ANY, "character": ANY},
+                                "end": {"line": ANY, "character": ANY},
                             },
-                            "newText": "replacement text",
+                            "newText": ANY,
                         },
                     ],
                 },
             },
         },
     )
+
+    assert document.uri in edit_request[0][1]["edit"]["changes"]
