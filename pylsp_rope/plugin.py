@@ -1,5 +1,6 @@
 import logging
 
+import rope.base.exceptions
 from pylsp import hookimpl
 from rope.refactor import extract, inline
 
@@ -49,7 +50,9 @@ def pylsp_settings():
 def pylsp_code_actions(config, workspace, document, range, context):
     logger.info("textDocument/codeAction: %s %s %s", document, range, context)
 
+    current_document, resource = get_resource(workspace, document.uri)
     range_selection = range["start"] != range["end"]
+    position = range["start"]
 
     code_actions = []
 
@@ -71,7 +74,15 @@ def pylsp_code_actions(config, workspace, document, range, context):
         },
     )
 
-    if not range_selection:
+    try:
+        can_inline = inline.create_inline(
+            project=get_project(workspace),
+            resource=resource,
+            offset=current_document.offset_at_position(position),
+        )
+    except rope.base.exceptions.RefactoringError as e:
+        pass
+    else:
         code_actions.append(
             {
                 "title": "Inline method/variable",

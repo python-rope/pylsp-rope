@@ -50,13 +50,12 @@ def test_inline(config, workspace, code_action_context):
     assert "extracted_method" not in new_text
 
 
-def test_inline_not_offered_when_selecting_range(
+def test_inline_not_offered_when_selecting_unsuitable_range(
     config, workspace, code_action_context
 ):
-    document = create_document(workspace, "simple_extract_method.py")
-    line = 6
-    start_col = document.lines[line].index("extracted_method")
-    end_col = start_col + 1
+    document = create_document(workspace, "simple_extract_variable.py")
+    line = 4
+    start_col = end_col = document.lines[line].index("stdin")
     selection = Range((line, start_col), (line, end_col))
 
     response = plugin.pylsp_code_actions(
