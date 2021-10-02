@@ -40,24 +40,7 @@ def test_extract_method(config, workspace, document, code_action_context):
 
     edit_request = workspace._endpoint.request.call_args
 
-    assert edit_request == call(
-        "workspace/applyEdit",
-        {
-            "edit": {
-                "changes": {
-                    document.uri: [
-                        {
-                            "range": {
-                                "start": {"line": ANY, "character": ANY},
-                                "end": {"line": ANY, "character": ANY},
-                            },
-                            "newText": ANY,
-                        },
-                    ],
-                },
-            },
-        },
-    )
+    document_changeset = assert_single_document_edit(edit_request, document)
 
     assert document.uri in edit_request[0][1]["edit"]["changes"]
     assert "def new_method(" in list(edit_request[0][1]["edit"]["changes"].values())[0][0]["newText"]
@@ -95,24 +78,32 @@ def test_extract_variable(config, workspace, document, code_action_context):
 
     edit_request = workspace._endpoint.request.call_args
 
+    document_changeset = assert_single_document_edit(edit_request, document)
+
+    assert document.uri in edit_request[0][1]["edit"]["changes"]
+    assert "new_variable = " in list(edit_request[0][1]["edit"]["changes"].values())[0][0]["newText"]
+
+
+def assert_single_document_edit(edit_request, document):
     assert edit_request == call(
         "workspace/applyEdit",
         {
             "edit": {
                 "changes": {
-                    document.uri: [
-                        {
-                            "range": {
-                                "start": {"line": ANY, "character": ANY},
-                                "end": {"line": ANY, "character": ANY},
-                            },
-                            "newText": ANY,
-                        },
-                    ],
+                    document.uri: ANY,
                 },
             },
         },
     )
 
-    assert document.uri in edit_request[0][1]["edit"]["changes"]
-    assert "new_variable = " in list(edit_request[0][1]["edit"]["changes"].values())[0][0]["newText"]
+    document_changeset, = edit_request[0][1]["edit"]["changes"].values()
+    for change in document_changeset:
+        assert change == {
+            "range": {
+                "start": {"line": ANY, "character": ANY},
+                "end": {"line": ANY, "character": ANY},
+            },
+            "newText": ANY,
+        }
+
+    return document_changeset
