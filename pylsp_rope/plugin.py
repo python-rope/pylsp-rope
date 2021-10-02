@@ -4,7 +4,11 @@ from pylsp import hookimpl
 from rope.refactor import extract
 
 from pylsp_rope.commands import COMMAND_REFACTOR_EXTRACT_METHOD
-from pylsp_rope.project import get_project, get_resource, rope_changeset_to_workspace_changeset
+from pylsp_rope.project import (
+    get_project,
+    get_resource,
+    rope_changeset_to_workspace_changeset,
+)
 
 
 logger = logging.getLogger(__name__)
@@ -58,24 +62,30 @@ def pylsp_code_actions(config, workspace, document, range, context):
 def pylsp_execute_command(config, workspace, command, arguments):
     logger.info("workspace/executeCommand: %s %s", command, arguments)
     if command == COMMAND_REFACTOR_EXTRACT_METHOD:
-        current_document_uri, range = arguments
-
-        project = get_project(workspace)
-        current_document, resource = get_resource(workspace, current_document_uri)
-        refactoring = extract.ExtractMethod(
-            project=project,
-            resource=resource,
-            start_offset=current_document.offset_at_position(range["start"]),
-            end_offset=current_document.offset_at_position(range["end"]),
-        )
-        rope_changeset = refactoring.get_changes(extracted_name="new_extracted")
-        workspace_changeset = rope_changeset_to_workspace_changeset(workspace, rope_changeset)
-
-        workspace_edit = {
-            "changes": workspace_changeset,
-        }
-
-        logger.info("applying workspace edit: %s %s", command, workspace_edit)
-        workspace.apply_edit(workspace_edit)
+        document_uri, range = arguments
+        refactor_extract_method(workspace, document_uri, range)
 
 
+def refactor_extract_method(workspace, document_uri, range):
+    current_document, resource = get_resource(workspace, document_uri)
+
+    refactoring = extract.ExtractMethod(
+        project=get_project(workspace),
+        resource=resource,
+        start_offset=current_document.offset_at_position(range["start"]),
+        end_offset=current_document.offset_at_position(range["end"]),
+    )
+    rope_changeset = refactoring.get_changes(
+        extracted_name="new_extracted",
+    )
+    workspace_changeset = rope_changeset_to_workspace_changeset(
+        workspace,
+        rope_changeset,
+    )
+
+    workspace_edit = {
+        "changes": workspace_changeset,
+    }
+
+    logger.info("applying workspace edit: %s", workspace_edit)
+    workspace.apply_edit(workspace_edit)
