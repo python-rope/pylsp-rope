@@ -1,7 +1,8 @@
 from unittest.mock import ANY, call
 
 from pylsp_rope import plugin
-from pylsp_rope.text import Position, Range
+from pylsp_rope.commands import COMMAND_REFACTOR_EXTRACT_METHOD
+from pylsp_rope.text import Range
 
 
 def test_extract_method(config, workspace, document, code_action_context):
@@ -19,7 +20,7 @@ def test_extract_method(config, workspace, document, code_action_context):
         {
             "title": "Extract method",
             "kind": "refactor.extract",
-            "command": "lsp_rope.refactor.extract",
+            "command": COMMAND_REFACTOR_EXTRACT_METHOD,
             "arguments": [document.uri, selection],
         }
     ]

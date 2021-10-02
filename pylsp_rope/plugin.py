@@ -3,6 +3,7 @@ import logging
 from pylsp import hookimpl, uris
 from rope.refactor import extract
 
+from pylsp_rope.commands import COMMAND_REFACTOR_EXTRACT_METHOD
 from pylsp_rope.project import get_project, get_resource
 
 
@@ -47,7 +48,7 @@ def pylsp_code_actions(config, workspace, document, range, context):
         {
             "title": "Extract method",
             "kind": "refactor.extract",
-            "command": "lsp_rope.refactor.extract",
+            "command": COMMAND_REFACTOR_EXTRACT_METHOD,
             "arguments": [document.uri, range],
         }
     ]
@@ -56,7 +57,7 @@ def pylsp_code_actions(config, workspace, document, range, context):
 @hookimpl
 def pylsp_execute_command(config, workspace, command, arguments):
     logger.info("workspace/executeCommand: %s %s", command, arguments)
-    if command == "lsp_rope.refactor.extract":
+    if command == COMMAND_REFACTOR_EXTRACT_METHOD:
         current_document_uri, range = arguments
 
         project = get_project(workspace)
