@@ -6,10 +6,11 @@ from pylsp_rope.commands import (
     COMMAND_REFACTOR_EXTRACT_VARIABLE,
 )
 from pylsp_rope.text import Range
+from test.conftest import fixtures_dir
 
 
 def test_extract_method(config, workspace, document, code_action_context):
-    selection = Range(5)
+    selection = Range(4)
 
     response = plugin.pylsp_code_actions(
         config=config,
@@ -41,13 +42,15 @@ def test_extract_method(config, workspace, document, code_action_context):
     edit_request = workspace._endpoint.request.call_args
 
     document_changeset = assert_single_document_edit(edit_request, document)
-
-    assert document.uri in edit_request[0][1]["edit"]["changes"]
-    assert "def new_method(" in list(edit_request[0][1]["edit"]["changes"].values())[0][0]["newText"]
+    new_text = assert_wholefile_changeset(document_changeset, target=fixtures_dir / "simple_extract_method.py")
+    assert "def new_method(" in new_text
 
 
 def test_extract_variable(config, workspace, document, code_action_context):
-    selection = Range(5)
+    line = 4
+    start_col = document.lines[line].index('sys')
+    end_col = document.lines[line].index(')\n')
+    selection = Range((line, start_col), (line, end_col))
 
     response = plugin.pylsp_code_actions(
         config=config,
@@ -79,9 +82,8 @@ def test_extract_variable(config, workspace, document, code_action_context):
     edit_request = workspace._endpoint.request.call_args
 
     document_changeset = assert_single_document_edit(edit_request, document)
-
-    assert document.uri in edit_request[0][1]["edit"]["changes"]
-    assert "new_variable = " in list(edit_request[0][1]["edit"]["changes"].values())[0][0]["newText"]
+    new_text = assert_wholefile_changeset(document_changeset, target=fixtures_dir / "simple_extract_variable.py")
+    assert "new_variable = " in new_text
 
 
 def assert_single_document_edit(edit_request, document):
@@ -107,3 +109,11 @@ def assert_single_document_edit(edit_request, document):
         }
 
     return document_changeset
+
+
+def assert_wholefile_changeset(document_changeset, target):
+    assert len(document_changeset) == 1
+    change, = document_changeset
+    new_text = open(target, 'r').read()
+    assert change["newText"] == new_text
+    return new_text

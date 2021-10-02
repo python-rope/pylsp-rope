@@ -106,5 +106,3 @@ def refactor_extract_variable(workspace, document_uri, range):
         extracted_name="new_variable",
     )
     apply_rope_changeset(workspace, rope_changeset)
-
-
