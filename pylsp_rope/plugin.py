@@ -48,31 +48,42 @@ def pylsp_settings():
 @hookimpl
 def pylsp_code_actions(config, workspace, document, range, context):
     logger.info("textDocument/codeAction: %s %s %s", document, range, context)
-    return [
+    code_actions = []
+
+    code_actions.append(
         {
             "title": "Extract method",
             "kind": "refactor.extract",
             "command": commands.COMMAND_REFACTOR_EXTRACT_METHOD,
             "arguments": [document.uri, range],
-        },
+        }
+    )
+
+    code_actions.append(
         {
             "title": "Extract variable",
             "kind": "refactor.extract",
             "command": commands.COMMAND_REFACTOR_EXTRACT_VARIABLE,
             "arguments": [document.uri, range],
         },
+    )
+
+    code_actions.append(
         {
             "title": "Inline method/variable",
             "kind": "refactor.inline",
             "command": commands.COMMAND_REFACTOR_INLINE,
             "arguments": [document.uri, range],
         },
-    ]
+    )
+
+    return code_actions
 
 
 @hookimpl
 def pylsp_execute_command(config, workspace, command, arguments):
     logger.info("workspace/executeCommand: %s %s", command, arguments)
+
     if command == commands.COMMAND_REFACTOR_EXTRACT_METHOD:
         document_uri, range = arguments
         refactor_extract_method(workspace, document_uri, range)
