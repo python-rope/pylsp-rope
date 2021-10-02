@@ -48,6 +48,9 @@ def pylsp_settings():
 @hookimpl
 def pylsp_code_actions(config, workspace, document, range, context):
     logger.info("textDocument/codeAction: %s %s %s", document, range, context)
+
+    range_selection = range["start"] != range["end"]
+
     code_actions = []
 
     code_actions.append(
@@ -68,14 +71,15 @@ def pylsp_code_actions(config, workspace, document, range, context):
         },
     )
 
-    code_actions.append(
-        {
-            "title": "Inline method/variable",
-            "kind": "refactor.inline",
-            "command": commands.COMMAND_REFACTOR_INLINE,
-            "arguments": [document.uri, range],
-        },
-    )
+    if not range_selection:
+        code_actions.append(
+            {
+                "title": "Inline method/variable",
+                "kind": "refactor.inline",
+                "command": commands.COMMAND_REFACTOR_INLINE,
+                "arguments": [document.uri, range],
+            },
+        )
 
     return code_actions
 

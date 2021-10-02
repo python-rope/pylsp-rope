@@ -1,6 +1,11 @@
 from unittest.mock import ANY, call
 
 
+def assert_code_actions_do_not_offer(response, command):
+    for action in response:
+        assert action["command"] != command
+
+
 def assert_wholefile_changeset(document_changeset, target):
     assert len(document_changeset) == 1
     (change,) = document_changeset

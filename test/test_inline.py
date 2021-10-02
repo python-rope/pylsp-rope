@@ -1,7 +1,11 @@
 from pylsp_rope import plugin, commands
 from pylsp_rope.text import Range
 from test.conftest import fixtures_dir, create_document
-from test.helpers import assert_single_document_edit, assert_wholefile_changeset
+from test.helpers import (
+    assert_code_actions_do_not_offer,
+    assert_single_document_edit,
+    assert_wholefile_changeset,
+)
 
 
 def test_inline(config, workspace, code_action_context):
@@ -44,3 +48,26 @@ def test_inline(config, workspace, code_action_context):
         document_changeset, target=fixtures_dir / "simple.py"
     )
     assert "extracted_method" not in new_text
+
+
+def test_inline_not_offered_when_selecting_range(
+    config, workspace, code_action_context
+):
+    document = create_document(workspace, "simple_extract_method.py")
+    line = 6
+    start_col = document.lines[line].index("extracted_method")
+    end_col = start_col + 1
+    selection = Range((line, start_col), (line, end_col))
+
+    response = plugin.pylsp_code_actions(
+        config=config,
+        workspace=workspace,
+        document=document,
+        range=selection,
+        context=code_action_context,
+    )
+
+    assert_code_actions_do_not_offer(
+        response,
+        command=commands.COMMAND_REFACTOR_INLINE,
+    )
