@@ -14,7 +14,15 @@ pip install pylsp-rope
 
 ## Configuration
 
-... TODO ...
+There is no configuration yet.
+
+## Features
+
+This plugin adds the following features to `pylsp`:
+
+- extract method (codeAction)
+- extract variable (codeAction)
+- inline method/variable/parameter (codeAction)
 
 ## Developing
 
