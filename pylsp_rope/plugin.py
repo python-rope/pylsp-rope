@@ -1,10 +1,10 @@
 import logging
 
-from pylsp import hookimpl, uris
+from pylsp import hookimpl
 from rope.refactor import extract
 
 from pylsp_rope.commands import COMMAND_REFACTOR_EXTRACT_METHOD
-from pylsp_rope.project import get_project, get_resource
+from pylsp_rope.project import get_project, get_resource, rope_changeset_to_workspace_changeset
 
 
 logger = logging.getLogger(__name__)
@@ -69,21 +69,10 @@ def pylsp_execute_command(config, workspace, command, arguments):
             end_offset=current_document.offset_at_position(range["end"]),
         )
         rope_changeset = refactoring.get_changes(extracted_name="new_extracted")
-
-        workspace_changes = {}
-        for change in rope_changeset.changes:
-            doc = workspace.get_document(uris.from_fs_path(change.resource.real_path))
-            document_changes = workspace_changes.setdefault(doc.uri, [])
-            document_changes.append({
-                "range": {
-                    "start": {"line": 0, "character": 0},
-                    "end": {"line": len(doc.lines), "character": 0},
-                },
-                "newText": change.new_contents,
-            })
+        workspace_changeset = rope_changeset_to_workspace_changeset(workspace, rope_changeset)
 
         workspace_edit = {
-            "changes": workspace_changes,
+            "changes": workspace_changeset,
         }
 
         logger.info("applying workspace edit: %s %s", command, workspace_edit)
