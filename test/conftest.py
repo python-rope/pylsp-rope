@@ -1,3 +1,4 @@
+import shutil
 from pathlib import Path
 from unittest.mock import Mock
 
@@ -37,8 +38,7 @@ def workspace(tmpdir):
 
 @pytest.fixture
 def document(workspace):
-    document_uri = uris.from_fs_path(str(fixtures_dir / "simple.py"))
-    return Document(document_uri, workspace)
+    return create_document(workspace, "simple.py")
 
 
 @pytest.fixture
@@ -60,3 +60,11 @@ def code_action_context():
         "diagnostics": [],
         "only": code_action_kind,
     }
+
+
+def create_document(workspace, name):
+    template_path = fixtures_dir / name
+    dest_path = Path(workspace.root_path) / name
+    shutil.copy(template_path, dest_path)
+    document_uri = uris.from_fs_path(str(dest_path))
+    return Document(document_uri, workspace)
