@@ -1,10 +1,6 @@
 from unittest.mock import ANY, call
 
-from pylsp_rope import plugin
-from pylsp_rope.commands import (
-    COMMAND_REFACTOR_EXTRACT_METHOD,
-    COMMAND_REFACTOR_EXTRACT_VARIABLE,
-)
+from pylsp_rope import plugin, commands
 from pylsp_rope.text import Range
 from test.conftest import fixtures_dir
 
@@ -23,7 +19,7 @@ def test_extract_method(config, workspace, document, code_action_context):
     expected = {
         "title": "Extract method",
         "kind": "refactor.extract",
-        "command": COMMAND_REFACTOR_EXTRACT_METHOD,
+        "command": commands.COMMAND_REFACTOR_EXTRACT_METHOD,
         "arguments": [document.uri, selection],
     }
 
@@ -63,7 +59,7 @@ def test_extract_variable(config, workspace, document, code_action_context):
     expected = {
         "title": "Extract variable",
         "kind": "refactor.extract",
-        "command": COMMAND_REFACTOR_EXTRACT_VARIABLE,
+        "command": commands.COMMAND_REFACTOR_EXTRACT_VARIABLE,
         "arguments": [document.uri, selection],
     }
 

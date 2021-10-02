@@ -3,10 +3,7 @@ import logging
 from pylsp import hookimpl
 from rope.refactor import extract
 
-from pylsp_rope.commands import (
-    COMMAND_REFACTOR_EXTRACT_METHOD,
-    COMMAND_REFACTOR_EXTRACT_VARIABLE,
-)
+from pylsp_rope import commands
 from pylsp_rope.project import (
     get_project,
     get_resource,
@@ -55,13 +52,13 @@ def pylsp_code_actions(config, workspace, document, range, context):
         {
             "title": "Extract method",
             "kind": "refactor.extract",
-            "command": COMMAND_REFACTOR_EXTRACT_METHOD,
+            "command": commands.COMMAND_REFACTOR_EXTRACT_METHOD,
             "arguments": [document.uri, range],
         },
         {
             "title": "Extract variable",
             "kind": "refactor.extract",
-            "command": COMMAND_REFACTOR_EXTRACT_VARIABLE,
+            "command": commands.COMMAND_REFACTOR_EXTRACT_VARIABLE,
             "arguments": [document.uri, range],
         },
     ]
@@ -70,10 +67,10 @@ def pylsp_code_actions(config, workspace, document, range, context):
 @hookimpl
 def pylsp_execute_command(config, workspace, command, arguments):
     logger.info("workspace/executeCommand: %s %s", command, arguments)
-    if command == COMMAND_REFACTOR_EXTRACT_METHOD:
+    if command == commands.COMMAND_REFACTOR_EXTRACT_METHOD:
         document_uri, range = arguments
         refactor_extract_method(workspace, document_uri, range)
-    elif command == COMMAND_REFACTOR_EXTRACT_VARIABLE:
+    elif command == commands.COMMAND_REFACTOR_EXTRACT_VARIABLE:
         document_uri, range = arguments
         refactor_extract_variable(workspace, document_uri, range)
 
