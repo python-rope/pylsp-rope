@@ -66,7 +66,10 @@ def pylsp_code_actions(config, workspace, document, range, context):
             "title": "Extract method",
             "kind": "refactor.extract",
             "command": commands.COMMAND_REFACTOR_EXTRACT_METHOD,
-            "arguments": [document.uri, range],
+            "arguments": {
+                "document_uri": document.uri,
+                "range": range,
+            },
         }
     )
 
@@ -81,7 +84,10 @@ def pylsp_code_actions(config, workspace, document, range, context):
                 "title": "Extract variable",
                 "kind": "refactor.extract",
                 "command": commands.COMMAND_REFACTOR_EXTRACT_VARIABLE,
-                "arguments": [document.uri, range],
+                "arguments": {
+                    "document_uri": document.uri,
+                    "range": range,
+                },
             },
         )
 
@@ -99,7 +105,10 @@ def pylsp_code_actions(config, workspace, document, range, context):
                 "title": "Inline method/variable",
                 "kind": "refactor.inline",
                 "command": commands.COMMAND_REFACTOR_INLINE,
-                "arguments": [document.uri, range],
+                "arguments": {
+                    "document_uri": document.uri,
+                    "position": range["start"],
+                },
             },
         )
 
@@ -111,17 +120,13 @@ def pylsp_execute_command(config, workspace, command, arguments):
     logger.info("workspace/executeCommand: %s %s", command, arguments)
 
     if command == commands.COMMAND_REFACTOR_EXTRACT_METHOD:
-        document_uri, range = arguments
-        refactor_extract_method(workspace, document_uri, range)
+        refactor_extract_method(workspace, **arguments)
 
     elif command == commands.COMMAND_REFACTOR_EXTRACT_VARIABLE:
-        document_uri, range = arguments
-        refactor_extract_variable(workspace, document_uri, range)
+        refactor_extract_variable(workspace, **arguments)
 
     elif command == commands.COMMAND_REFACTOR_INLINE:
-        document_uri, range = arguments
-        position = range["start"]
-        refactor_inline(workspace, document_uri, position)
+        refactor_inline(workspace, **arguments)
 
 
 def refactor_extract_method(workspace, document_uri, range):

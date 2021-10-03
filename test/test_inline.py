@@ -26,7 +26,10 @@ def test_inline(config, workspace, code_action_context):
         "title": "Inline method/variable",
         "kind": "refactor.inline",
         "command": commands.COMMAND_REFACTOR_INLINE,
-        "arguments": [document.uri, selection],
+        "arguments": {
+            "document_uri": document.uri,
+            "position": selection["start"],
+        },
     }
 
     assert expected in response

@@ -26,7 +26,10 @@ def test_extract_variable(config, workspace, document, code_action_context):
         "title": "Extract variable",
         "kind": "refactor.extract",
         "command": commands.COMMAND_REFACTOR_EXTRACT_VARIABLE,
-        "arguments": [document.uri, selection],
+        "arguments": {
+            "document_uri": document.uri,
+            "range": selection,
+        },
     }
 
     assert expected in response
@@ -87,7 +90,10 @@ def test_extract_method(config, workspace, document, code_action_context):
         "title": "Extract method",
         "kind": "refactor.extract",
         "command": commands.COMMAND_REFACTOR_EXTRACT_METHOD,
-        "arguments": [document.uri, selection],
+        "arguments": {
+            "document_uri": document.uri,
+            "range": selection,
+        },
     }
 
     assert expected in response
