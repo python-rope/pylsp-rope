@@ -5,6 +5,8 @@ from pylsp import uris
 from rope.base import libutils
 from rope.base.project import Project
 
+from pylsp_rope.lsp_diff import lsp_diff
+
 
 logger = logging.getLogger(__name__)
 
@@ -22,20 +24,29 @@ def get_resource(workspace, document_uri):
     return document, resource
 
 
+def get_document(workspace, resource):
+    return workspace.get_document(uris.from_fs_path(resource.real_path))
+
+
 def rope_changeset_to_workspace_changeset(workspace, rope_changeset):
+    def _get_contents(change):
+        old = change.old_contents
+        new = change.new_contents
+        if old is None:
+            if change.resource.exists():
+                old = change.resource.read()
+            else:
+                old = ""
+        return old.splitlines(keepends=True), new.splitlines(keepends=True)
+
     workspace_changeset = {}
     for change in rope_changeset.changes:
-        doc = workspace.get_document(uris.from_fs_path(change.resource.real_path))
-        document_changes = workspace_changeset.setdefault(doc.uri, [])
-        document_changes.append(
-            {
-                "range": {
-                    "start": {"line": 0, "character": 0},
-                    "end": {"line": len(doc.lines), "character": 0},
-                },
-                "newText": change.new_contents,
-            }
-        )
+        lines_old, lines_new = _get_contents(change)
+
+        document = get_document(workspace, change.resource)
+        document_changes = workspace_changeset.setdefault(document.uri, [])
+        document_changes.extend(lsp_diff(lines_old, lines_new))
+
     return workspace_changeset
 
 

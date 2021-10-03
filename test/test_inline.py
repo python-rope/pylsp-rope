@@ -2,9 +2,9 @@ from pylsp_rope import plugin, commands
 from pylsp_rope.text import Range
 from test.conftest import fixtures_dir, create_document
 from test.helpers import (
+    assert_changeset,
     assert_code_actions_do_not_offer,
     assert_single_document_edit,
-    assert_wholefile_changeset,
 )
 
 
@@ -44,9 +44,7 @@ def test_inline(config, workspace, code_action_context):
     edit_request = workspace._endpoint.request.call_args
 
     document_changeset = assert_single_document_edit(edit_request, document)
-    new_text = assert_wholefile_changeset(
-        document_changeset, target=fixtures_dir / "simple.py"
-    )
+    new_text = assert_changeset(document_changeset, target=fixtures_dir / "simple.py")
     assert "extracted_method" not in new_text
 
 

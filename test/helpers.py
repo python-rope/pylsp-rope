@@ -14,6 +14,13 @@ def assert_wholefile_changeset(document_changeset, target):
     return new_text
 
 
+def assert_changeset(document_changeset, target):
+    new_text = open(target, "r").read()
+    for change in document_changeset:
+        assert change["newText"] in new_text
+    return new_text
+
+
 def assert_single_document_edit(edit_request, document):
     assert edit_request == call(
         "workspace/applyEdit",
