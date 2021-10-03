@@ -12,8 +12,13 @@ logger = logging.getLogger(__name__)
 
 
 @cache
-def get_project(workspace):
+def _get_project(workspace):
     project = Project(workspace.root_path)
+    return project
+
+
+def get_project(workspace):
+    project = _get_project(workspace)
     project.validate()
     return project
 
