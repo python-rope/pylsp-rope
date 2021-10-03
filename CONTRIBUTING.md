@@ -3,7 +3,7 @@
 Install development dependencies with (you might want to create a virtualenv first):
 
 ``` bash
-git clone https://github.com/lieryan/pylsp-rope pylsp-rope
+git clone https://github.com/python-rope/pylsp-rope.git pylsp-rope
 cd pylsp-rope
 pip install -e '.[dev]'
 ```
