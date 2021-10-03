@@ -4,11 +4,12 @@ Extended refactoring capabilities for Python LSP Server using
 [Rope](https://github.com/python-rope/rope).
 
 This is a plugin for [Python LSP
-Server](https://github.com/python-lsp/python-lsp-server).
+Server](https://github.com/python-lsp/python-lsp-server), so you also need to
+have it installed.
 
-`python-lsp-server` already has basic built-in support for using Rope, but it's
+python-lsp-server already has basic built-in support for using Rope, but it's
 currently limited to just renaming and completion. Installing this plugin adds
-more refactoring functionality to `python-lsp-server`.
+more refactoring functionality to python-lsp-server.
 
 ## Installation
 
@@ -19,13 +20,18 @@ python-lsp-server itself.
 pip install pylsp-rope
 ```
 
+Then run `pylsp` as usual, the plugin will be auto-discovered by
+python-lsp-server if you've installed it to the right environment. Refer to
+your IDE/text editor's documentation on how to setup a language server in your
+IDE/text editor.
+
 ## Configuration
 
 There is no configuration yet.
 
 ## Features
 
-This plugin adds the following features to `pylsp`:
+This plugin adds the following features to python-lsp-server:
 
 - extract method (codeAction)
 - extract variable (codeAction)
@@ -54,11 +60,12 @@ Before you start refactoring you must save all unsaved changes in your text
 editor. I highly recommended that you enable autosave on your text editor.
 
 This plugin is in early development, so expect some bugs. Please report in
-Github issue tracker if you had any issues.
+[Github issue tracker](https://github.com/python-lsp/python-lsp-server/issues)
+if you had any issues with the plugin.
 
 ## Developing
 
-See [CONTRIBUTING.md](CONTRIBUTING.md).
+See [CONTRIBUTING.md](https://github.com/python-rope/pylsp-rope/blob/main/CONTRIBUTING.md).
 
 ## Credits
 
