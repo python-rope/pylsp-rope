@@ -1,12 +1,19 @@
 # pylsp-rope
 
-Extended refactoring capabilities for Python LSP Server using [Rope](https://github.com/python-rope/rope).
+Extended refactoring capabilities for Python LSP Server using
+[Rope](https://github.com/python-rope/rope).
 
-This is a plugin for [Python LSP Server](https://github.com/python-lsp/python-lsp-server).
+This is a plugin for [Python LSP
+Server](https://github.com/python-lsp/python-lsp-server).
+
+`python-lsp-server` already has basic built-in support for using Rope, but it's
+currently limited to just renaming and completion. Installing this plugin adds
+more refactoring functionality to `python-lsp-server`.
 
 ## Installation
 
-Install into the same virtualenv as python-lsp-server itself.
+To use this plugin, you need to install this plugin in the same virtualenv as
+python-lsp-server itself.
 
 ``` bash
 pip install pylsp-rope
@@ -24,6 +31,30 @@ This plugin adds the following features to `pylsp`:
 - extract variable (codeAction)
 - inline method/variable/parameter (codeAction)
 - more to come...
+
+## Usage
+
+### Extract method
+
+This refactoring works when selecting a block of code.
+
+### Extract variable
+
+This refactoring works when selecting a Python expression.
+
+### Inline
+
+This refactoring works when the cursor is on a resolvable Python identifier.
+
+## Caveat
+
+Support for working on unsaved document is currently incomplete.
+
+Before you start refactoring you must save all unsaved changes in your text
+editor. I highly recommended that you enable autosave on your text editor.
+
+This plugin is in early development, so expect some bugs. Please report in
+Github issue tracker if you had any issues.
 
 ## Developing
 
