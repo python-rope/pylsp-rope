@@ -25,17 +25,19 @@ def test_extract_variable(config, workspace, document, code_action_context):
     expected = {
         "title": "Extract variable",
         "kind": "refactor.extract",
-        "command": commands.COMMAND_REFACTOR_EXTRACT_VARIABLE,
-        "arguments": {
-            "document_uri": document.uri,
-            "range": selection,
+        "command": {
+            "command": commands.COMMAND_REFACTOR_EXTRACT_VARIABLE,
+            "arguments": {
+                "document_uri": document.uri,
+                "range": selection,
+            },
         },
     }
 
     assert expected in response
 
-    command = expected["command"]
-    arguments = expected["arguments"]
+    command = expected["command"]["command"]
+    arguments = expected["command"]["arguments"]
 
     response = plugin.pylsp_execute_command(
         config=config,
@@ -89,17 +91,19 @@ def test_extract_method(config, workspace, document, code_action_context):
     expected = {
         "title": "Extract method",
         "kind": "refactor.extract",
-        "command": commands.COMMAND_REFACTOR_EXTRACT_METHOD,
-        "arguments": {
-            "document_uri": document.uri,
-            "range": selection,
+        "command": {
+            "command": commands.COMMAND_REFACTOR_EXTRACT_METHOD,
+            "arguments": {
+                "document_uri": document.uri,
+                "range": selection,
+            },
         },
     }
 
     assert expected in response
 
-    command = expected["command"]
-    arguments = expected["arguments"]
+    command = expected["command"]["command"]
+    arguments = expected["command"]["arguments"]
 
     response = plugin.pylsp_execute_command(
         config=config,

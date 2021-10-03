@@ -25,17 +25,19 @@ def test_inline(config, workspace, code_action_context):
     expected = {
         "title": "Inline method/variable",
         "kind": "refactor.inline",
-        "command": commands.COMMAND_REFACTOR_INLINE,
-        "arguments": {
-            "document_uri": document.uri,
-            "position": selection["start"],
+        "command": {
+            "command": commands.COMMAND_REFACTOR_INLINE,
+            "arguments": {
+                "document_uri": document.uri,
+                "position": selection["start"],
+            },
         },
     }
 
     assert expected in response
 
-    command = expected["command"]
-    arguments = expected["arguments"]
+    command = expected["command"]["command"]
+    arguments = expected["command"]["arguments"]
 
     response = plugin.pylsp_execute_command(
         config=config,

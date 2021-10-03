@@ -70,10 +70,12 @@ def pylsp_code_actions(config, workspace, document, range, context):
         {
             "title": "Extract method",
             "kind": "refactor.extract",
-            "command": commands.COMMAND_REFACTOR_EXTRACT_METHOD,
-            "arguments": {
-                "document_uri": document.uri,
-                "range": range,
+            "command": {
+                "command": commands.COMMAND_REFACTOR_EXTRACT_METHOD,
+                "arguments": {
+                    "document_uri": document.uri,
+                    "range": range,
+                },
             },
         }
     )
@@ -88,11 +90,13 @@ def pylsp_code_actions(config, workspace, document, range, context):
             {
                 "title": "Extract variable",
                 "kind": "refactor.extract",
-                "command": commands.COMMAND_REFACTOR_EXTRACT_VARIABLE,
-                "arguments": {
-                    "document_uri": document.uri,
-                    "range": range,
-                },
+                "command": {
+                    "command": commands.COMMAND_REFACTOR_EXTRACT_VARIABLE,
+                    "arguments": {
+                        "document_uri": document.uri,
+                        "range": range,
+                    },
+                }
             },
         )
 
@@ -109,10 +113,12 @@ def pylsp_code_actions(config, workspace, document, range, context):
             {
                 "title": "Inline method/variable",
                 "kind": "refactor.inline",
-                "command": commands.COMMAND_REFACTOR_INLINE,
-                "arguments": {
-                    "document_uri": document.uri,
-                    "position": range["start"],
+                "command": {
+                    "command": commands.COMMAND_REFACTOR_INLINE,
+                    "arguments": {
+                        "document_uri": document.uri,
+                        "position": range["start"],
+                    },
                 },
             },
         )
