@@ -48,6 +48,11 @@ def pylsp_settings():
 
 
 @hookimpl
+def pylsp_commands(config, workspace):
+    return [getattr(commands, cmd) for cmd in dir(commands) if not cmd.startswith('_')]
+
+
+@hookimpl
 def pylsp_code_actions(config, workspace, document, range, context):
     logger.info("textDocument/codeAction: %s %s %s", document, range, context)
 
