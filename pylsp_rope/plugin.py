@@ -3,7 +3,7 @@ import logging
 
 import rope.base.exceptions
 from pylsp import hookimpl
-from rope.refactor import extract, inline
+from rope.refactor import extract, inline, method_object
 
 from pylsp_rope import commands
 from pylsp_rope.project import (
@@ -128,6 +128,21 @@ def pylsp_code_actions(config, workspace, document, range, context):
             },
         )
 
+    code_actions.append(
+        {
+            "title": "To method object",
+            "kind": "refactor",
+            "command": {
+                "command": commands.COMMAND_REFACTOR_METHOD_TO_METHOD_OBJECT,
+                "arguments": [
+                    {
+                        "document_uri": document.uri,
+                        "position": range["start"],
+                    }
+                ],
+            },
+        },
+    )
     return code_actions
 
 
@@ -143,6 +158,9 @@ def pylsp_execute_command(config, workspace, command, arguments):
 
     elif command == commands.COMMAND_REFACTOR_INLINE:
         refactor_inline(workspace, **arguments[0])
+
+    elif command == commands.COMMAND_REFACTOR_METHOD_TO_METHOD_OBJECT:
+        refactor_method_to_method_object(workspace, **arguments[0])
 
 
 def refactor_extract_method(workspace, document_uri, range):
@@ -184,4 +202,16 @@ def refactor_inline(workspace, document_uri, position):
         offset=current_document.offset_at_position(position),
     )
     rope_changeset = refactoring.get_changes()
+    apply_rope_changeset(workspace, rope_changeset)
+
+
+def refactor_method_to_method_object(workspace, document_uri, position):
+    current_document, resource = get_resource(workspace, document_uri)
+
+    refactoring = method_object.MethodObject(
+        project=get_project(workspace),
+        resource=resource,
+        offset=current_document.offset_at_position(position),
+    )
+    rope_changeset = refactoring.get_changes(classname="NewMethodObject")
     apply_rope_changeset(workspace, rope_changeset)
