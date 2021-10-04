@@ -1,5 +1,5 @@
 import logging
-from functools import cache
+from functools import lru_cache
 
 from pylsp import uris
 from rope.base import libutils
@@ -11,7 +11,7 @@ from pylsp_rope.lsp_diff import lsp_diff
 logger = logging.getLogger(__name__)
 
 
-@cache
+@lru_cache(maxsize=None)
 def _get_project(workspace):
     project = Project(workspace.root_path)
     return project
