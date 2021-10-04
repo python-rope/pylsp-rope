@@ -28,11 +28,11 @@ twine check dist/*
 3. Then upload using Twine:
 
 ```
-twine upload dist/*
+twine upload -s dist/*
 ```
 
 Alternatively, you may want to upload to Test PyPI first before going live:
 
 ```
-twine upload --repository testpypi dist/*
+twine upload -s --repository testpypi dist/*
 ```
