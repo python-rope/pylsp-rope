@@ -1,15 +1,11 @@
-import shutil
 from pathlib import Path
 from unittest.mock import Mock
 
+import pkg_resources
 import pytest
 from pylsp import uris
 from pylsp.config.config import Config
 from pylsp.workspace import Workspace, Document
-
-
-here = Path(__file__).parent
-fixtures_dir = here / "fixtures"
 
 
 @pytest.fixture
@@ -62,9 +58,12 @@ def code_action_context():
     }
 
 
+def read_fixture_file(name):
+    return pkg_resources.resource_string(__name__, "fixtures/" + name).decode()
+
+
 def create_document(workspace, name):
-    template_path = fixtures_dir / name
     dest_path = Path(workspace.root_path) / name
-    shutil.copy(template_path, dest_path)
+    dest_path.write_text(read_fixture_file(name))
     document_uri = uris.from_fs_path(str(dest_path))
     return Document(document_uri, workspace)
