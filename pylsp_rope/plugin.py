@@ -150,20 +150,20 @@ def pylsp_code_actions(config, workspace, document, range, context):
 def pylsp_execute_command(config, workspace, command, arguments):
     logger.info("workspace/executeCommand: %s %s", command, arguments)
 
-    if command == commands.COMMAND_REFACTOR_EXTRACT_METHOD:
-        CommandRefactorExtractMethod(workspace, **arguments[0])()
+    commands = [
+        CommandRefactorExtractMethod,
+        CommandRefactorExtractVariable,
+        CommandRefactorInline,
+        CommandRefactorMethodToMethodObject,
+    ]
 
-    elif command == commands.COMMAND_REFACTOR_EXTRACT_VARIABLE:
-        CommandRefactorExtractVariable(workspace, **arguments[0])()
-
-    elif command == commands.COMMAND_REFACTOR_INLINE:
-        CommandRefactorInline(workspace, **arguments[0])()
-
-    elif command == commands.COMMAND_REFACTOR_METHOD_TO_METHOD_OBJECT:
-        CommandRefactorMethodToMethodObject(workspace, **arguments[0])()
+    for cmd in commands:
+        if command == cmd.name:
+            cmd(workspace, **arguments[0])()
 
 
 class CommandRefactorExtractMethod:
+    name = commands.COMMAND_REFACTOR_EXTRACT_METHOD
 
     def __init__(self, workspace, document_uri, range):
         self.workspace = workspace
@@ -186,6 +186,7 @@ class CommandRefactorExtractMethod:
 
 
 class CommandRefactorExtractVariable:
+    name = commands.COMMAND_REFACTOR_EXTRACT_VARIABLE
 
     def __init__(self, workspace, document_uri, range):
         self.workspace = workspace
@@ -208,6 +209,7 @@ class CommandRefactorExtractVariable:
 
 
 class CommandRefactorInline:
+    name = commands.COMMAND_REFACTOR_INLINE
 
     def __init__(self, workspace, document_uri, position):
         self.workspace = workspace
@@ -227,6 +229,7 @@ class CommandRefactorInline:
 
 
 class CommandRefactorMethodToMethodObject:
+    name = commands.COMMAND_REFACTOR_METHOD_TO_METHOD_OBJECT
 
     def __init__(self, workspace, document_uri, position):
         self.workspace = workspace
