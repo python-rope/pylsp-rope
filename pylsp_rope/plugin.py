@@ -84,7 +84,7 @@ def pylsp_code_actions(config, workspace, document, range, context):
     # FIXME: requires rope.refactor.extract._ExceptionalConditionChecker for proper checking
     try:
         ast.parse(selected_text, mode="eval")
-    except SyntaxError:
+    except Exception:
         pass
     else:
         code_actions.append(
@@ -109,7 +109,7 @@ def pylsp_code_actions(config, workspace, document, range, context):
             resource=resource,
             offset=current_document.offset_at_position(position),
         )
-    except rope.base.exceptions.RefactoringError as e:
+    except Exception as e:
         pass
     else:
         code_actions.append(
