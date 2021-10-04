@@ -65,12 +65,13 @@ def pylsp_code_actions(config, workspace, document, range, context):
     code_actions = []
 
     # FIXME: requires rope.refactor.extract._ExceptionalConditionChecker for proper checking
+    cmd = CommandRefactorExtractMethod(workspace, document.uri, range)
     code_actions.append(
         {
             "title": "Extract method",
-            "kind": "refactor.extract",
+            "kind": cmd.kind,
             "command": {
-                "command": commands.COMMAND_REFACTOR_EXTRACT_METHOD,
+                "command": cmd.name,
                 "arguments": [
                     {
                         "document_uri": document.uri,
@@ -87,12 +88,13 @@ def pylsp_code_actions(config, workspace, document, range, context):
     except Exception:
         pass
     else:
+        cmd = CommandRefactorExtractVariable(workspace, document.uri, range)
         code_actions.append(
             {
                 "title": "Extract variable",
-                "kind": "refactor.extract",
+                "kind": cmd.kind,
                 "command": {
-                    "command": commands.COMMAND_REFACTOR_EXTRACT_VARIABLE,
+                    "command": cmd.name,
                     "arguments": [
                         {
                             "document_uri": document.uri,
@@ -112,12 +114,13 @@ def pylsp_code_actions(config, workspace, document, range, context):
     except Exception as e:
         pass
     else:
+        cmd = CommandRefactorInline(workspace, document.uri, range["start"])
         code_actions.append(
             {
                 "title": "Inline method/variable",
-                "kind": "refactor.inline",
+                "kind": cmd.kind,
                 "command": {
-                    "command": commands.COMMAND_REFACTOR_INLINE,
+                    "command": cmd.name,
                     "arguments": [
                         {
                             "document_uri": document.uri,
@@ -128,12 +131,13 @@ def pylsp_code_actions(config, workspace, document, range, context):
             },
         )
 
+    cmd = CommandRefactorMethodToMethodObject(workspace, document.uri, range["start"])
     code_actions.append(
         {
             "title": "To method object",
-            "kind": "refactor",
+            "kind": cmd.kind,
             "command": {
-                "command": commands.COMMAND_REFACTOR_METHOD_TO_METHOD_OBJECT,
+                "command": cmd.name,
                 "arguments": [
                     {
                         "document_uri": document.uri,
