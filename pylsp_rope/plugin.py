@@ -168,6 +168,7 @@ class Command:
 
 class CommandRefactorExtractMethod(Command):
     name = commands.COMMAND_REFACTOR_EXTRACT_METHOD
+    kind = "refactor.extract"
 
     def __init__(self, workspace, document_uri, range):
         self.workspace = workspace
@@ -191,6 +192,7 @@ class CommandRefactorExtractMethod(Command):
 
 class CommandRefactorExtractVariable(Command):
     name = commands.COMMAND_REFACTOR_EXTRACT_VARIABLE
+    kind = "refactor.extract"
 
     def __init__(self, workspace, document_uri, range):
         self.workspace = workspace
@@ -214,6 +216,7 @@ class CommandRefactorExtractVariable(Command):
 
 class CommandRefactorInline(Command):
     name = commands.COMMAND_REFACTOR_INLINE
+    kind = "refactor.inline"
 
     def __init__(self, workspace, document_uri, position):
         self.workspace = workspace
@@ -234,6 +237,7 @@ class CommandRefactorInline(Command):
 
 class CommandRefactorMethodToMethodObject(Command):
     name = commands.COMMAND_REFACTOR_METHOD_TO_METHOD_OBJECT
+    kind = "refactor"
 
     def __init__(self, workspace, document_uri, position):
         self.workspace = workspace
