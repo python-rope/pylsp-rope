@@ -151,67 +151,95 @@ def pylsp_execute_command(config, workspace, command, arguments):
     logger.info("workspace/executeCommand: %s %s", command, arguments)
 
     if command == commands.COMMAND_REFACTOR_EXTRACT_METHOD:
-        refactor_extract_method(workspace, **arguments[0])
+        CommandRefactorExtractMethod(workspace, **arguments[0])()
 
     elif command == commands.COMMAND_REFACTOR_EXTRACT_VARIABLE:
-        refactor_extract_variable(workspace, **arguments[0])
+        CommandRefactorExtractVariable(workspace, **arguments[0])()
 
     elif command == commands.COMMAND_REFACTOR_INLINE:
-        refactor_inline(workspace, **arguments[0])
+        CommandRefactorInline(workspace, **arguments[0])()
 
     elif command == commands.COMMAND_REFACTOR_METHOD_TO_METHOD_OBJECT:
-        refactor_method_to_method_object(workspace, **arguments[0])
+        CommandRefactorMethodToMethodObject(workspace, **arguments[0])()
 
 
-def refactor_extract_method(workspace, document_uri, range):
-    current_document, resource = get_resource(workspace, document_uri)
+class CommandRefactorExtractMethod:
 
-    refactoring = extract.ExtractMethod(
-        project=get_project(workspace),
-        resource=resource,
-        start_offset=current_document.offset_at_position(range["start"]),
-        end_offset=current_document.offset_at_position(range["end"]),
-    )
-    rope_changeset = refactoring.get_changes(
-        extracted_name="extracted_method",
-    )
-    apply_rope_changeset(workspace, rope_changeset)
+    def __init__(self, workspace, document_uri, range):
+        self.workspace = workspace
+        self.document_uri = document_uri
+        self.range = range
 
+    def __call__(self):
+        current_document, resource = get_resource(self.workspace, self.document_uri)
 
-def refactor_extract_variable(workspace, document_uri, range):
-    current_document, resource = get_resource(workspace, document_uri)
-
-    refactoring = extract.ExtractVariable(
-        project=get_project(workspace),
-        resource=resource,
-        start_offset=current_document.offset_at_position(range["start"]),
-        end_offset=current_document.offset_at_position(range["end"]),
-    )
-    rope_changeset = refactoring.get_changes(
-        extracted_name="extracted_variable",
-    )
-    apply_rope_changeset(workspace, rope_changeset)
+        refactoring = extract.ExtractMethod(
+            project=get_project(self.workspace),
+            resource=resource,
+            start_offset=current_document.offset_at_position(self.range["start"]),
+            end_offset=current_document.offset_at_position(self.range["end"]),
+        )
+        rope_changeset = refactoring.get_changes(
+            extracted_name="extracted_method",
+        )
+        apply_rope_changeset(self.workspace, rope_changeset)
 
 
-def refactor_inline(workspace, document_uri, position):
-    current_document, resource = get_resource(workspace, document_uri)
+class CommandRefactorExtractVariable:
 
-    refactoring = inline.create_inline(
-        project=get_project(workspace),
-        resource=resource,
-        offset=current_document.offset_at_position(position),
-    )
-    rope_changeset = refactoring.get_changes()
-    apply_rope_changeset(workspace, rope_changeset)
+    def __init__(self, workspace, document_uri, range):
+        self.workspace = workspace
+        self.document_uri = document_uri
+        self.range = range
+
+    def __call__(self):
+        current_document, resource = get_resource(self.workspace, self.document_uri)
+
+        refactoring = extract.ExtractVariable(
+            project=get_project(self.workspace),
+            resource=resource,
+            start_offset=current_document.offset_at_position(self.range["start"]),
+            end_offset=current_document.offset_at_position(self.range["end"]),
+        )
+        rope_changeset = refactoring.get_changes(
+            extracted_name="extracted_variable",
+        )
+        apply_rope_changeset(self.workspace, rope_changeset)
 
 
-def refactor_method_to_method_object(workspace, document_uri, position):
-    current_document, resource = get_resource(workspace, document_uri)
+class CommandRefactorInline:
 
-    refactoring = method_object.MethodObject(
-        project=get_project(workspace),
-        resource=resource,
-        offset=current_document.offset_at_position(position),
-    )
-    rope_changeset = refactoring.get_changes(classname="NewMethodObject")
-    apply_rope_changeset(workspace, rope_changeset)
+    def __init__(self, workspace, document_uri, position):
+        self.workspace = workspace
+        self.document_uri = document_uri
+        self.position = position
+
+    def __call__(self):
+        current_document, resource = get_resource(self.workspace, self.document_uri)
+
+        refactoring = inline.create_inline(
+            project=get_project(self.workspace),
+            resource=resource,
+            offset=current_document.offset_at_position(self.position),
+        )
+        rope_changeset = refactoring.get_changes()
+        apply_rope_changeset(self.workspace, rope_changeset)
+
+
+class CommandRefactorMethodToMethodObject:
+
+    def __init__(self, workspace, document_uri, position):
+        self.workspace = workspace
+        self.document_uri = document_uri
+        self.position = position
+
+    def __call__(self):
+        current_document, resource = get_resource(self.workspace, self.document_uri)
+
+        refactoring = method_object.MethodObject(
+            project=get_project(self.workspace),
+            resource=resource,
+            offset=current_document.offset_at_position(self.position),
+        )
+        rope_changeset = refactoring.get_changes(classname="NewMethodObject")
+        apply_rope_changeset(self.workspace, rope_changeset)
