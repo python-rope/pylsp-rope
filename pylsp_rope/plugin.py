@@ -162,7 +162,11 @@ def pylsp_execute_command(config, workspace, command, arguments):
             cmd(workspace, **arguments[0])()
 
 
-class CommandRefactorExtractMethod:
+class Command:
+    pass
+
+
+class CommandRefactorExtractMethod(Command):
     name = commands.COMMAND_REFACTOR_EXTRACT_METHOD
 
     def __init__(self, workspace, document_uri, range):
@@ -185,7 +189,7 @@ class CommandRefactorExtractMethod:
         apply_rope_changeset(self.workspace, rope_changeset)
 
 
-class CommandRefactorExtractVariable:
+class CommandRefactorExtractVariable(Command):
     name = commands.COMMAND_REFACTOR_EXTRACT_VARIABLE
 
     def __init__(self, workspace, document_uri, range):
@@ -208,7 +212,7 @@ class CommandRefactorExtractVariable:
         apply_rope_changeset(self.workspace, rope_changeset)
 
 
-class CommandRefactorInline:
+class CommandRefactorInline(Command):
     name = commands.COMMAND_REFACTOR_INLINE
 
     def __init__(self, workspace, document_uri, position):
@@ -228,7 +232,7 @@ class CommandRefactorInline:
         apply_rope_changeset(self.workspace, rope_changeset)
 
 
-class CommandRefactorMethodToMethodObject:
+class CommandRefactorMethodToMethodObject(Command):
     name = commands.COMMAND_REFACTOR_METHOD_TO_METHOD_OBJECT
 
     def __init__(self, workspace, document_uri, position):
