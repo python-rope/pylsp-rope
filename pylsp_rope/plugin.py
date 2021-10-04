@@ -57,7 +57,6 @@ def pylsp_code_actions(config, workspace, document, range, context):
     logger.info("textDocument/codeAction: %s %s %s", document, range, context)
 
     current_document, resource = get_resource(workspace, document.uri)
-    range_selection = range["start"] != range["end"]
     position = range["start"]
     start_offset = current_document.offset_at_position(range["start"])
     end_offset = current_document.offset_at_position(range["end"])
