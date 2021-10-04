@@ -25,7 +25,14 @@ python setup.py sdist
 twine check dist/*
 ```
 
-3. Then upload using Twine:
+3. Tag the release:
+
+```
+git tag -s 0.1.3
+git push origin 0.1.3
+```
+
+4. Then upload using Twine:
 
 ```
 twine upload -s dist/*
