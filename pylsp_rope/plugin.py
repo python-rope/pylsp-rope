@@ -72,10 +72,12 @@ def pylsp_code_actions(config, workspace, document, range, context):
             "kind": "refactor.extract",
             "command": {
                 "command": commands.COMMAND_REFACTOR_EXTRACT_METHOD,
-                "arguments": {
-                    "document_uri": document.uri,
-                    "range": range,
-                },
+                "arguments": [
+                    {
+                        "document_uri": document.uri,
+                        "range": range,
+                    }
+                ],
             },
         }
     )
@@ -92,10 +94,12 @@ def pylsp_code_actions(config, workspace, document, range, context):
                 "kind": "refactor.extract",
                 "command": {
                     "command": commands.COMMAND_REFACTOR_EXTRACT_VARIABLE,
-                    "arguments": {
-                        "document_uri": document.uri,
-                        "range": range,
-                    },
+                    "arguments": [
+                        {
+                            "document_uri": document.uri,
+                            "range": range,
+                        }
+                    ],
                 },
             },
         )
@@ -115,10 +119,12 @@ def pylsp_code_actions(config, workspace, document, range, context):
                 "kind": "refactor.inline",
                 "command": {
                     "command": commands.COMMAND_REFACTOR_INLINE,
-                    "arguments": {
-                        "document_uri": document.uri,
-                        "position": range["start"],
-                    },
+                    "arguments": [
+                        {
+                            "document_uri": document.uri,
+                            "position": range["start"],
+                        }
+                    ],
                 },
             },
         )
@@ -131,13 +137,13 @@ def pylsp_execute_command(config, workspace, command, arguments):
     logger.info("workspace/executeCommand: %s %s", command, arguments)
 
     if command == commands.COMMAND_REFACTOR_EXTRACT_METHOD:
-        refactor_extract_method(workspace, **arguments)
+        refactor_extract_method(workspace, **arguments[0])
 
     elif command == commands.COMMAND_REFACTOR_EXTRACT_VARIABLE:
-        refactor_extract_variable(workspace, **arguments)
+        refactor_extract_variable(workspace, **arguments[0])
 
     elif command == commands.COMMAND_REFACTOR_INLINE:
-        refactor_inline(workspace, **arguments)
+        refactor_inline(workspace, **arguments[0])
 
 
 def refactor_extract_method(workspace, document_uri, range):

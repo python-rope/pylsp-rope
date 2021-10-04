@@ -27,10 +27,12 @@ def test_inline(config, workspace, code_action_context):
         "kind": "refactor.inline",
         "command": {
             "command": commands.COMMAND_REFACTOR_INLINE,
-            "arguments": {
-                "document_uri": document.uri,
-                "position": selection["start"],
-            },
+            "arguments": [
+                {
+                    "document_uri": document.uri,
+                    "position": selection["start"],
+                }
+            ],
         },
     }
 

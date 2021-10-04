@@ -26,10 +26,12 @@ def test_extract_variable(config, workspace, document, code_action_context):
         "kind": "refactor.extract",
         "command": {
             "command": commands.COMMAND_REFACTOR_EXTRACT_VARIABLE,
-            "arguments": {
-                "document_uri": document.uri,
-                "range": selection,
-            },
+            "arguments": [
+                {
+                    "document_uri": document.uri,
+                    "range": selection,
+                }
+            ],
         },
     }
 
@@ -90,10 +92,12 @@ def test_extract_method(config, workspace, document, code_action_context):
         "kind": "refactor.extract",
         "command": {
             "command": commands.COMMAND_REFACTOR_EXTRACT_METHOD,
-            "arguments": {
-                "document_uri": document.uri,
-                "range": selection,
-            },
+            "arguments": [
+                {
+                    "document_uri": document.uri,
+                    "range": selection,
+                }
+            ],
         },
     }
 
