@@ -42,15 +42,15 @@ This plugin adds the following features to python-lsp-server:
 
 ### Extract method
 
-This refactoring works when selecting a block of code.
+This refactoring works by triggering a CodeAction when selecting a block of code.
 
 ### Extract variable
 
-This refactoring works when selecting a Python expression.
+This refactoring works by triggering a CodeAction when selecting a Python expression.
 
 ### Inline
 
-This refactoring works when the cursor is on a resolvable Python identifier.
+This refactoring works by triggering a CodeAction when the cursor is on a resolvable Python identifier.
 
 ## Caveat
 
