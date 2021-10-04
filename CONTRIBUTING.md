@@ -28,18 +28,18 @@ twine check dist/*
 3. Tag the release:
 
 ```
-git tag -s 0.1.3
+git tag --sign 0.1.3
 git push origin 0.1.3
 ```
 
 4. Then upload using Twine:
 
 ```
-twine upload -s dist/*
+twine upload --sign dist/*
 ```
 
 Alternatively, you may want to upload to Test PyPI first before going live:
 
 ```
-twine upload -s --repository testpypi dist/*
+twine upload --sign --repository testpypi dist/*
 ```
