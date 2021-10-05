@@ -56,98 +56,41 @@ def pylsp_commands(config, workspace):
 def pylsp_code_actions(config, workspace, document, range, context):
     logger.info("textDocument/codeAction: %s %s %s", document, range, context)
 
-    current_document, resource = get_resource(workspace, document.uri)
-    position = range["start"]
-    start_offset = current_document.offset_at_position(range["start"])
-    end_offset = current_document.offset_at_position(range["end"])
-    selected_text = document.source[start_offset:end_offset]
+    class info:
+        current_document, resource = get_resource(workspace, document.uri)
+        position = range["start"]
+        start_offset = current_document.offset_at_position(range["start"])
+        end_offset = current_document.offset_at_position(range["end"])
+        selected_text = document.source[start_offset:end_offset]
 
-    code_actions = []
+    commands = {
+        "Extract method": CommandRefactorExtractMethod(
+            workspace,
+            document_uri=document.uri,
+            range=range,
+        ),
+        "Extract variable": CommandRefactorExtractVariable(
+            workspace,
+            document_uri=document.uri,
+            range=range,
+        ),
+        "Inline method/variable": CommandRefactorInline(
+            workspace,
+            document_uri=document.uri,
+            position=info.position,
+        ),
+        "To method object": CommandRefactorMethodToMethodObject(
+            workspace,
+            document_uri=document.uri,
+            position=info.position,
+        ),
+    }
 
-    # FIXME: requires rope.refactor.extract._ExceptionalConditionChecker for proper checking
-    cmd = CommandRefactorExtractMethod(workspace, document.uri, range)
-    code_actions.append(
-        {
-            "title": "Extract method",
-            "kind": cmd.kind,
-            "command": {
-                "command": cmd.name,
-                "arguments": [
-                    {
-                        "document_uri": document.uri,
-                        "range": range,
-                    }
-                ],
-            },
-        }
-    )
-
-    # FIXME: requires rope.refactor.extract._ExceptionalConditionChecker for proper checking
-    try:
-        ast.parse(selected_text, mode="eval")
-    except Exception:
-        pass
-    else:
-        cmd = CommandRefactorExtractVariable(workspace, document.uri, range)
-        code_actions.append(
-            {
-                "title": "Extract variable",
-                "kind": cmd.kind,
-                "command": {
-                    "command": cmd.name,
-                    "arguments": [
-                        {
-                            "document_uri": document.uri,
-                            "range": range,
-                        }
-                    ],
-                },
-            },
-        )
-
-    try:
-        can_inline = inline.create_inline(
-            project=get_project(workspace),
-            resource=resource,
-            offset=current_document.offset_at_position(position),
-        )
-    except Exception as e:
-        pass
-    else:
-        cmd = CommandRefactorInline(workspace, document.uri, range["start"])
-        code_actions.append(
-            {
-                "title": "Inline method/variable",
-                "kind": cmd.kind,
-                "command": {
-                    "command": cmd.name,
-                    "arguments": [
-                        {
-                            "document_uri": document.uri,
-                            "position": range["start"],
-                        }
-                    ],
-                },
-            },
-        )
-
-    cmd = CommandRefactorMethodToMethodObject(workspace, document.uri, range["start"])
-    code_actions.append(
-        {
-            "title": "To method object",
-            "kind": cmd.kind,
-            "command": {
-                "command": cmd.name,
-                "arguments": [
-                    {
-                        "document_uri": document.uri,
-                        "position": range["start"],
-                    }
-                ],
-            },
-        },
-    )
-    return code_actions
+    return [
+        cmd.get_code_action(title=title)
+        for title, cmd in commands.items()
+        if cmd.is_valid(info)
+    ]
 
 
 @hookimpl
@@ -167,17 +110,41 @@ def pylsp_execute_command(config, workspace, command, arguments):
 
 
 class Command:
-    pass
+    def __init__(self, workspace, **arguments):
+        self.workspace = workspace
+        self.arguments = arguments
+        self.__dict__.update(**arguments)
+
+    def is_valid(self, info):
+        try:
+            is_valid = self._is_valid(info)
+        except Exception:
+            return False
+        else:
+            return is_valid
+        return False
+
+    def _is_valid(self, info):
+        return True
+
+    def get_code_action(self, title):
+        return {
+            "title": title,
+            "kind": self.kind,
+            "command": {
+                "command": self.name,
+                "arguments": [self.arguments],
+            },
+        }
 
 
 class CommandRefactorExtractMethod(Command):
     name = commands.COMMAND_REFACTOR_EXTRACT_METHOD
     kind = "refactor.extract"
 
-    def __init__(self, workspace, document_uri, range):
-        self.workspace = workspace
-        self.document_uri = document_uri
-        self.range = range
+    # FIXME: requires rope.refactor.extract._ExceptionalConditionChecker for proper checking
+    # def _is_valid(self, info):
+    #     ...
 
     def __call__(self):
         current_document, resource = get_resource(self.workspace, self.document_uri)
@@ -198,10 +165,10 @@ class CommandRefactorExtractVariable(Command):
     name = commands.COMMAND_REFACTOR_EXTRACT_VARIABLE
     kind = "refactor.extract"
 
-    def __init__(self, workspace, document_uri, range):
-        self.workspace = workspace
-        self.document_uri = document_uri
-        self.range = range
+    def _is_valid(self, info):
+        # FIXME: requires rope.refactor.extract._ExceptionalConditionChecker for proper checking
+        ast.parse(info.selected_text, mode="eval")
+        return True
 
     def __call__(self):
         current_document, resource = get_resource(self.workspace, self.document_uri)
@@ -222,10 +189,13 @@ class CommandRefactorInline(Command):
     name = commands.COMMAND_REFACTOR_INLINE
     kind = "refactor.inline"
 
-    def __init__(self, workspace, document_uri, position):
-        self.workspace = workspace
-        self.document_uri = document_uri
-        self.position = position
+    def _is_valid(self, info):
+        inline.create_inline(
+            project=get_project(self.workspace),
+            resource=info.resource,
+            offset=info.current_document.offset_at_position(info.position),
+        )
+        return True
 
     def __call__(self):
         current_document, resource = get_resource(self.workspace, self.document_uri)
@@ -242,11 +212,6 @@ class CommandRefactorInline(Command):
 class CommandRefactorMethodToMethodObject(Command):
     name = commands.COMMAND_REFACTOR_METHOD_TO_METHOD_OBJECT
     kind = "refactor"
-
-    def __init__(self, workspace, document_uri, position):
-        self.workspace = workspace
-        self.document_uri = document_uri
-        self.position = position
 
     def __call__(self):
         current_document, resource = get_resource(self.workspace, self.document_uri)
