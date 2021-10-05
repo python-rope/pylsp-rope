@@ -39,6 +39,9 @@ This plugin adds the following features to python-lsp-server:
 - method to method object (codeAction)
 - more to come...
 
+Refer to [Rope documentation](https://github.com/python-rope/rope/blob/master/docs/overview.rst)
+for more details on how these refactoring works.
+
 ## Usage
 
 ### Extract method
