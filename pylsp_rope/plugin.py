@@ -90,6 +90,13 @@ def pylsp_code_actions(config, workspace, document, range, context):
             position=info.position,
         ),
 
+        "Use function for current file only": CommandRefactorUseFunction(
+            workspace,
+            document_uri=document.uri,
+            position=info.position,
+            resources=[document.uri],
+        ),
+
         "To method object": CommandRefactorMethodToMethodObject(
             workspace,
             document_uri=document.uri,
@@ -248,12 +255,22 @@ class CommandRefactorUseFunction(Command):
     def __call__(self):
         current_document, resource = get_resource(self.workspace, self.document_uri)
 
+        if "resources" in self.arguments:
+            resources = [
+                get_resource(self.workspace, document_uri)[1]
+                for document_uri in self.resources
+            ]
+        else:
+            resources = None
+
         refactoring = usefunction.UseFunction(
             project=get_project(self.workspace),
             resource=resource,
             offset=current_document.offset_at_position(self.position),
         )
-        rope_changeset = refactoring.get_changes()
+        rope_changeset = refactoring.get_changes(
+            resources=resources,
+        )
         apply_rope_changeset(self.workspace, rope_changeset)
 
 

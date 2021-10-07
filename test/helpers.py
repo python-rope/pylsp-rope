@@ -67,3 +67,8 @@ def is_document_uri(uri):
 
 def assert_modified_documents(workspace_changeset, document_uris):
     assert workspace_changeset.keys() == set(document_uris)
+
+
+def assert_unmodified_document(workspace_changeset, document_uri):
+    assert is_document_uri(document_uri)
+    assert document_uri not in workspace_changeset

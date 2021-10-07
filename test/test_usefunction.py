@@ -6,6 +6,7 @@ from test.helpers import (
     assert_is_apply_edit_request,
     assert_modified_documents,
     assert_single_document_edit,
+    assert_unmodified_document,
 )
 
 
@@ -65,3 +66,59 @@ def test_use_function_globally(config, workspace, code_action_context):
     )
     assert "import function" in new_text
     assert "{function.add(a, b)}" in new_text
+
+
+def test_use_function_in_current_file(config, workspace, code_action_context):
+    document = create_document(workspace, "function.py")
+    document2 = create_document(workspace, "method_object.py")
+
+    line = 0
+    pos = document.lines[line].index("def add") + 4
+    selection = Range((line, pos), (line, pos))
+
+    response = plugin.pylsp_code_actions(
+        config=config,
+        workspace=workspace,
+        document=document,
+        range=selection,
+        context=code_action_context,
+    )
+
+    expected = {
+        "title": "Use function for current file only",
+        "kind": "refactor",
+        "command": {
+            "command": commands.COMMAND_REFACTOR_USE_FUNCTION,
+            "arguments": [
+                {
+                    "document_uri": document.uri,
+                    "position": selection["start"],
+                    "resources": [document.uri],
+                },
+            ],
+        },
+    }
+
+    assert expected in response
+
+    command = expected["command"]["command"]
+    arguments = expected["command"]["arguments"]
+
+    response = plugin.pylsp_execute_command(
+        config=config,
+        workspace=workspace,
+        command=command,
+        arguments=arguments,
+    )
+
+    edit_request = workspace._endpoint.request.call_args
+
+    workspace_changeset = assert_is_apply_edit_request(edit_request)
+    assert_modified_documents(workspace_changeset, {document.uri})
+
+    new_text = assert_changeset(
+        workspace_changeset[document.uri], target="use_function.py"
+    )
+    assert "{add(a, b)}" in new_text
+
+    assert_unmodified_document(workspace_changeset, document2.uri)
