@@ -1,4 +1,5 @@
 import ast
+from pylsp.lsp import MessageType
 import logging
 
 import rope.base.exceptions
@@ -64,26 +65,31 @@ def pylsp_code_actions(config, workspace, document, range, context):
         selected_text = document.source[start_offset:end_offset]
 
     commands = {
+
         "Extract method": CommandRefactorExtractMethod(
             workspace,
             document_uri=document.uri,
             range=range,
         ),
+
         "Extract variable": CommandRefactorExtractVariable(
             workspace,
             document_uri=document.uri,
             range=range,
         ),
+
         "Inline method/variable": CommandRefactorInline(
             workspace,
             document_uri=document.uri,
             position=info.position,
         ),
+
         "To method object": CommandRefactorMethodToMethodObject(
             workspace,
             document_uri=document.uri,
             position=info.position,
         ),
+
     }
 
     return [
@@ -104,9 +110,20 @@ def pylsp_execute_command(config, workspace, command, arguments):
         CommandRefactorMethodToMethodObject,
     ]
 
-    for cmd in commands:
-        if command == cmd.name:
-            cmd(workspace, **arguments[0])()
+    try:
+        for cmd in commands:
+            if command == cmd.name:
+                cmd(workspace, **arguments[0])()
+    except Exception as exc:
+        logger.exception(
+            "Exception when doing workspace/executeCommand: %s",
+            str(exc),
+            exc_info=exc,
+        )
+        workspace.show_message(
+            f"pylsp-rope: {exc}",
+            msg_type=MessageType.Error,
+        )
 
 
 class Command:
