@@ -23,7 +23,7 @@ def test_inline(config, workspace, code_action_context):
     )
 
     expected = {
-        "title": "Inline method/variable",
+        "title": "Inline method/variable/parameter",
         "kind": "refactor.inline",
         "command": {
             "command": commands.COMMAND_REFACTOR_INLINE,

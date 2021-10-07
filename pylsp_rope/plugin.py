@@ -78,7 +78,7 @@ def pylsp_code_actions(config, workspace, document, range, context):
             range=range,
         ),
 
-        "Inline method/variable": CommandRefactorInline(
+        "Inline method/variable/parameter": CommandRefactorInline(
             workspace,
             document_uri=document.uri,
             position=info.position,
