@@ -1,3 +1,6 @@
 def add(a, b):
-    print(f"{a} + {b} = {a + b}")
     return a + b
+
+
+def main():
+    print(f"{a} + {b} = {a + b}")

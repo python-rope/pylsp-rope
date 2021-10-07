@@ -9,5 +9,8 @@ class NewMethodObject(object):
         self.b = b
 
     def __call__(self):
-        print(f"{self.a} + {self.b} = {self.a + self.b}")
         return self.a + self.b
+
+
+def main():
+    print(f"{a} + {b} = {a + b}")
