@@ -168,6 +168,12 @@ class Command:
             },
         }
 
+    @property  # FIXME: backport cached_property
+    def project(self):
+        if not hasattr(self, "_project"):
+            self._project = get_project(self.workspace)
+        return self._project
+
 
 class CommandRefactorExtractMethod(Command):
     name = commands.COMMAND_REFACTOR_EXTRACT_METHOD
@@ -181,7 +187,7 @@ class CommandRefactorExtractMethod(Command):
         current_document, resource = get_resource(self.workspace, self.document_uri)
 
         refactoring = extract.ExtractMethod(
-            project=get_project(self.workspace),
+            project=self.project,
             resource=resource,
             start_offset=current_document.offset_at_position(self.range["start"]),
             end_offset=current_document.offset_at_position(self.range["end"]),
@@ -205,7 +211,7 @@ class CommandRefactorExtractVariable(Command):
         current_document, resource = get_resource(self.workspace, self.document_uri)
 
         refactoring = extract.ExtractVariable(
-            project=get_project(self.workspace),
+            project=self.project,
             resource=resource,
             start_offset=current_document.offset_at_position(self.range["start"]),
             end_offset=current_document.offset_at_position(self.range["end"]),
@@ -222,7 +228,7 @@ class CommandRefactorInline(Command):
 
     def _is_valid(self, info):
         inline.create_inline(
-            project=get_project(self.workspace),
+            project=self.project,
             resource=info.resource,
             offset=info.current_document.offset_at_position(info.position),
         )
@@ -232,7 +238,7 @@ class CommandRefactorInline(Command):
         current_document, resource = get_resource(self.workspace, self.document_uri)
 
         refactoring = inline.create_inline(
-            project=get_project(self.workspace),
+            project=self.project,
             resource=resource,
             offset=current_document.offset_at_position(self.position),
         )
@@ -246,7 +252,7 @@ class CommandRefactorUseFunction(Command):
 
     def _is_valid(self, info):
         usefunction.UseFunction(
-            project=get_project(self.workspace),
+            project=self.project,
             resource=info.resource,
             offset=info.current_document.offset_at_position(info.position),
         )
@@ -264,7 +270,7 @@ class CommandRefactorUseFunction(Command):
             resources = None
 
         refactoring = usefunction.UseFunction(
-            project=get_project(self.workspace),
+            project=self.project,
             resource=resource,
             offset=current_document.offset_at_position(self.position),
         )
@@ -282,7 +288,7 @@ class CommandRefactorMethodToMethodObject(Command):
         current_document, resource = get_resource(self.workspace, self.document_uri)
 
         refactoring = method_object.MethodObject(
-            project=get_project(self.workspace),
+            project=self.project,
             resource=resource,
             offset=current_document.offset_at_position(self.position),
         )
