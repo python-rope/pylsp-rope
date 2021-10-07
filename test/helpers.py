@@ -24,25 +24,46 @@ def assert_changeset(document_changeset, target):
 
 
 def assert_single_document_edit(edit_request, document):
+    workspace_changeset = assert_is_apply_edit_request(edit_request)
+
+    assert_modified_documents(
+        workspace_changeset,
+        document_uris={document.uri},
+    )
+
+    assert len(workspace_changeset) == 1
+    (document_changeset,) = workspace_changeset.values()
+    return document_changeset
+
+
+def assert_is_apply_edit_request(edit_request):
     assert edit_request == call(
         "workspace/applyEdit",
         {
             "edit": {
-                "changes": {
-                    document.uri: ANY,
-                },
+                "changes": ANY,
             },
         },
     )
 
-    (document_changeset,) = edit_request[0][1]["edit"]["changes"].values()
-    for change in document_changeset:
-        assert change == {
-            "range": {
-                "start": {"line": ANY, "character": ANY},
-                "end": {"line": ANY, "character": ANY},
-            },
-            "newText": ANY,
-        }
+    workspace_changeset = edit_request[0][1]["edit"]["changes"]
+    for document_uri, document_changeset in workspace_changeset.items():
+        assert is_document_uri(document_uri)
+        for change in document_changeset:
+            assert change == {
+                "range": {
+                    "start": {"line": ANY, "character": ANY},
+                    "end": {"line": ANY, "character": ANY},
+                },
+                "newText": ANY,
+            }
 
-    return document_changeset
+    return workspace_changeset
+
+
+def is_document_uri(uri):
+    return isinstance(uri, str) and uri.startswith("file://")
+
+
+def assert_modified_documents(workspace_changeset, document_uris):
+    assert workspace_changeset.keys() == set(document_uris)
