@@ -4,7 +4,7 @@ import logging
 
 import rope.base.exceptions
 from pylsp import hookimpl
-from rope.refactor import extract, inline, method_object
+from rope.refactor import extract, inline, method_object, usefunction
 
 from pylsp_rope import commands
 from pylsp_rope.project import (
@@ -84,6 +84,12 @@ def pylsp_code_actions(config, workspace, document, range, context):
             position=info.position,
         ),
 
+        "Use function": CommandRefactorUseFunction(
+            workspace,
+            document_uri=document.uri,
+            position=info.position,
+        ),
+
         "To method object": CommandRefactorMethodToMethodObject(
             workspace,
             document_uri=document.uri,
@@ -107,6 +113,7 @@ def pylsp_execute_command(config, workspace, command, arguments):
         CommandRefactorExtractMethod,
         CommandRefactorExtractVariable,
         CommandRefactorInline,
+        CommandRefactorUseFunction,
         CommandRefactorMethodToMethodObject,
     ]
 
@@ -218,6 +225,30 @@ class CommandRefactorInline(Command):
         current_document, resource = get_resource(self.workspace, self.document_uri)
 
         refactoring = inline.create_inline(
+            project=get_project(self.workspace),
+            resource=resource,
+            offset=current_document.offset_at_position(self.position),
+        )
+        rope_changeset = refactoring.get_changes()
+        apply_rope_changeset(self.workspace, rope_changeset)
+
+
+class CommandRefactorUseFunction(Command):
+    name = commands.COMMAND_REFACTOR_USE_FUNCTION
+    kind = "refactor"
+
+    def _is_valid(self, info):
+        usefunction.UseFunction(
+            project=get_project(self.workspace),
+            resource=info.resource,
+            offset=info.current_document.offset_at_position(info.position),
+        )
+        return True
+
+    def __call__(self):
+        current_document, resource = get_resource(self.workspace, self.document_uri)
+
+        refactoring = usefunction.UseFunction(
             project=get_project(self.workspace),
             resource=resource,
             offset=current_document.offset_at_position(self.position),
