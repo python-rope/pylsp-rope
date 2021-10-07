@@ -228,7 +228,7 @@ class CommandRefactorInline(Command):
 
 class CommandRefactorMethodToMethodObject(Command):
     name = commands.COMMAND_REFACTOR_METHOD_TO_METHOD_OBJECT
-    kind = "refactor"
+    kind = "refactor.rewrite"
 
     def __call__(self):
         current_document, resource = get_resource(self.workspace, self.document_uri)

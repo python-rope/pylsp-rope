@@ -24,7 +24,7 @@ def test_method_to_method_object(config, workspace, code_action_context):
 
     expected = {
         "title": "To method object",
-        "kind": "refactor",
+        "kind": "refactor.rewrite",
         "command": {
             "command": commands.COMMAND_REFACTOR_METHOD_TO_METHOD_OBJECT,
             "arguments": [
