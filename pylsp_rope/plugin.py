@@ -284,6 +284,14 @@ class CommandRefactorMethodToMethodObject(Command):
     name = commands.COMMAND_REFACTOR_METHOD_TO_METHOD_OBJECT
     kind = "refactor.rewrite"
 
+    def _is_valid(self, info):
+        method_object.MethodObject(
+            project=self.project,
+            resource=info.resource,
+            offset=info.current_document.offset_at_position(self.position),
+        )
+        return True
+
     def __call__(self):
         current_document, resource = get_resource(self.workspace, self.document_uri)
 
