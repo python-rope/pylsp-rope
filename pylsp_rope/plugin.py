@@ -1,18 +1,19 @@
 import ast
-from pylsp.lsp import MessageType
 import logging
+from typing import List
 
-import rope.base.exceptions
 from pylsp import hookimpl
+from pylsp.lsp import MessageType
 from rope.refactor import extract, inline, method_object, usefunction
 
-from pylsp_rope import commands
+from pylsp_rope import typing, commands
 from pylsp_rope.project import (
     get_project,
     get_resource,
     get_resources,
     apply_rope_changeset,
 )
+from pylsp_rope.typing import DocumentUri, CodeActionKind
 
 
 logger = logging.getLogger(__name__)
@@ -50,12 +51,14 @@ def pylsp_settings():
 
 
 @hookimpl
-def pylsp_commands(config, workspace):
+def pylsp_commands(config, workspace) -> List[str]:
     return [getattr(commands, cmd) for cmd in dir(commands) if not cmd.startswith("_")]
 
 
 @hookimpl
-def pylsp_code_actions(config, workspace, document, range, context):
+def pylsp_code_actions(
+    config, workspace, document, range, context
+) -> List[typing.CodeAction]:
     logger.info("textDocument/codeAction: %s %s %s", document, range, context)
 
     class info:
@@ -127,10 +130,20 @@ def pylsp_execute_command(config, workspace, command, arguments):
 
 
 class Command:
+    name: str
+    title: str
+    kind: CodeActionKind
+
     def __init__(self, workspace, **arguments):
         self.workspace = workspace
         self.arguments = arguments
         self.__dict__.update(**arguments)
+
+    def __call__(self):
+        pass
+
+    def validate(self, info):
+        pass
 
     def is_valid(self, info):
         try:
@@ -141,10 +154,7 @@ class Command:
             return True
         return False
 
-    def validate(self, info):
-        pass
-
-    def get_code_action(self, title):
+    def get_code_action(self, title: str) -> typing.CodeAction:
         return {
             "title": title,
             "kind": self.kind,
@@ -164,7 +174,10 @@ class Command:
 
 class CommandRefactorExtractMethod(Command):
     name = commands.COMMAND_REFACTOR_EXTRACT_METHOD
-    kind = "refactor.extract"
+    kind: CodeActionKind = "refactor.extract"
+
+    document_uri: DocumentUri
+    range: typing.Range
 
     # FIXME: requires rope.refactor.extract._ExceptionalConditionChecker for proper checking
     # def _is_valid(self, info):
@@ -187,7 +200,10 @@ class CommandRefactorExtractMethod(Command):
 
 class CommandRefactorExtractVariable(Command):
     name = commands.COMMAND_REFACTOR_EXTRACT_VARIABLE
-    kind = "refactor.extract"
+    kind: CodeActionKind = "refactor.extract"
+
+    document_uri: DocumentUri
+    range: typing.Range
 
     def validate(self, info):
         # FIXME: requires rope.refactor.extract._ExceptionalConditionChecker for proper checking
@@ -210,7 +226,10 @@ class CommandRefactorExtractVariable(Command):
 
 class CommandRefactorInline(Command):
     name = commands.COMMAND_REFACTOR_INLINE
-    kind = "refactor.inline"
+    kind: CodeActionKind = "refactor.inline"
+
+    document_uri: DocumentUri
+    position: typing.Range
 
     def validate(self, info):
         inline.create_inline(
@@ -233,7 +252,10 @@ class CommandRefactorInline(Command):
 
 class CommandRefactorUseFunction(Command):
     name = commands.COMMAND_REFACTOR_USE_FUNCTION
-    kind = "refactor"
+    kind: CodeActionKind = "refactor"
+
+    document_uri: DocumentUri
+    position: typing.Range
 
     def validate(self, info):
         usefunction.UseFunction(
@@ -258,7 +280,10 @@ class CommandRefactorUseFunction(Command):
 
 class CommandRefactorMethodToMethodObject(Command):
     name = commands.COMMAND_REFACTOR_METHOD_TO_METHOD_OBJECT
-    kind = "refactor.rewrite"
+    kind: CodeActionKind = "refactor.rewrite"
+
+    document_uri: DocumentUri
+    position: typing.Range
 
     def validate(self, info):
         method_object.MethodObject(
