@@ -36,6 +36,7 @@ This plugin adds the following features to python-lsp-server:
 - extract method (codeAction)
 - extract variable (codeAction)
 - inline method/variable/parameter (codeAction)
+- use function (codeAction)
 - method to method object (codeAction)
 - more to come...
 
@@ -46,19 +47,28 @@ for more details on how these refactoring works.
 
 ### Extract method
 
-This refactoring works by triggering a CodeAction when selecting a block of code.
+This refactoring works by triggering a CodeAction when selecting a block of
+code.
 
 ### Extract variable
 
-This refactoring works by triggering a CodeAction when selecting a Python expression.
+This refactoring works by triggering a CodeAction when selecting a Python
+expression.
 
 ### Inline
 
-This refactoring works by triggering a CodeAction when the cursor is on a resolvable Python identifier.
+This refactoring works by triggering a CodeAction when the cursor is on a
+resolvable Python identifier.
+
+### Use function
+
+This works by triggering a CodeAction when the cursor is on the function name
+of a `def` statement.
 
 ### Method to method object
 
-This refactoring works when the cursor is on a function definition.
+This works by triggering a CodeAction when the cursor is on the function name
+of a `def` statement.
 
 ## Caveat
 
