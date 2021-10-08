@@ -29,6 +29,15 @@ def get_resource(workspace, document_uri):
     return document, resource
 
 
+def get_resources(workspace, documents):
+    if documents is None:
+        return None
+    return [
+        get_resource(self.workspace, document_uri)[1]
+        for document_uri in documents
+    ]
+
+
 def get_document(workspace, resource):
     return workspace.get_document(uris.from_fs_path(resource.real_path))
 

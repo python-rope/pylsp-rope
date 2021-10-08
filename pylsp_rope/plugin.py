@@ -10,6 +10,7 @@ from pylsp_rope import commands
 from pylsp_rope.project import (
     get_project,
     get_resource,
+    get_resources,
     apply_rope_changeset,
 )
 
@@ -89,7 +90,7 @@ def pylsp_code_actions(config, workspace, document, range, context):
             workspace,
             document_uri=document.uri,
             position=info.position,
-            resources=[document.uri],
+            documents=[document.uri],
         ),
         "To method object": CommandRefactorMethodToMethodObject(
             workspace,
@@ -254,21 +255,13 @@ class CommandRefactorUseFunction(Command):
     def __call__(self):
         current_document, resource = get_resource(self.workspace, self.document_uri)
 
-        if "resources" in self.arguments:
-            resources = [
-                get_resource(self.workspace, document_uri)[1]
-                for document_uri in self.resources
-            ]
-        else:
-            resources = None
-
         refactoring = usefunction.UseFunction(
             project=self.project,
             resource=resource,
             offset=current_document.offset_at_position(self.position),
         )
         rope_changeset = refactoring.get_changes(
-            resources=resources,
+            resources=get_resources(getattr(self, 'documents', None)),
         )
         apply_rope_changeset(self.workspace, rope_changeset)
 
