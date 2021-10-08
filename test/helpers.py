@@ -1,7 +1,15 @@
-from typing import Collection
+from typing import (
+    Collection,
+    Dict,
+    List,
+)
 from unittest.mock import ANY, call
 
-from pylsp_rope.typing import WorkspaceEdit, DocumentUri, TextEdit
+from pylsp_rope.typing import (
+    DocumentUri,
+    TextEdit,
+    WorkspaceEdit,
+)
 from test.conftest import read_fixture_file
 
 
@@ -10,14 +18,14 @@ def assert_code_actions_do_not_offer(response, command):
         assert action["command"] != command, f"CodeAction should not offer {action}"
 
 
-def assert_changeset(document_changeset, target):
+def assert_text_edits(document_edits: List[TextEdit], target: str):
     new_text = read_fixture_file(target)
-    for change in document_changeset:
+    for change in document_edits:
         assert change["newText"] in new_text
     return new_text
 
 
-def assert_single_document_edit(edit_request, document) -> TextEdit:
+def assert_single_document_edit(edit_request, document) -> List[TextEdit]:
     workspace_edit = assert_is_apply_edit_request(edit_request)
 
     assert_modified_documents(
@@ -26,11 +34,11 @@ def assert_single_document_edit(edit_request, document) -> TextEdit:
     )
 
     assert len(workspace_edit["changes"]) == 1
-    (document_changeset,) = workspace_edit["changes"].values()
-    return document_changeset
+    document_edits = next(iter(workspace_edit["changes"].values()))
+    return document_edits
 
 
-def assert_is_apply_edit_request(edit_request) -> WorkspaceEdit:
+def assert_is_apply_edit_request(edit_request: Dict) -> WorkspaceEdit:
     assert edit_request == call(
         "workspace/applyEdit",
         {
@@ -41,9 +49,9 @@ def assert_is_apply_edit_request(edit_request) -> WorkspaceEdit:
     )
 
     workspace_edit = edit_request[0][1]["edit"]
-    for document_uri, document_changeset in workspace_edit["changes"].items():
+    for document_uri, document_edits in workspace_edit["changes"].items():
         assert is_document_uri(document_uri)
-        for change in document_changeset:
+        for change in document_edits:
             assert change == {
                 "range": {
                     "start": {"line": ANY, "character": ANY},
@@ -55,7 +63,7 @@ def assert_is_apply_edit_request(edit_request) -> WorkspaceEdit:
     return workspace_edit
 
 
-def is_document_uri(uri: DocumentUri):
+def is_document_uri(uri: DocumentUri) -> bool:
     return isinstance(uri, str) and uri.startswith("file://")
 
 

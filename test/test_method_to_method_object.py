@@ -2,7 +2,7 @@ from pylsp_rope import commands, plugin
 from pylsp_rope.text import Range
 from test.conftest import create_document
 from test.helpers import (
-    assert_changeset,
+    assert_text_edits,
     assert_code_actions_do_not_offer,
     assert_single_document_edit,
 )
@@ -50,8 +50,8 @@ def test_method_to_method_object(config, workspace, code_action_context):
 
     edit_request = workspace._endpoint.request.call_args
 
-    document_changeset = assert_single_document_edit(edit_request, document)
-    new_text = assert_changeset(document_changeset, target="method_object.py")
+    document_edits = assert_single_document_edit(edit_request, document)
+    new_text = assert_text_edits(document_edits, target="method_object.py")
     assert "class NewMethodObject(object)" in new_text
     assert "NewMethodObject(a, b)()" in new_text
 

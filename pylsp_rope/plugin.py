@@ -250,7 +250,7 @@ class CommandRefactorUseFunction(Command):
             offset=current_document.offset_at_position(self.position),
         )
         rope_changeset = refactoring.get_changes(
-            resources=get_resources(self.workspace, getattr(self, 'documents', None)),
+            resources=get_resources(self.workspace, getattr(self, "documents", None)),
         )
         apply_rope_changeset(self.workspace, rope_changeset)
 

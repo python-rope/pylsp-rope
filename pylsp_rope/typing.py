@@ -1,7 +1,7 @@
 from typing import TypedDict, List, Dict, Optional, NewType
 
 
-DocumentUri = NewType('DocumentUri', str)
+DocumentUri = NewType("DocumentUri", str)
 
 
 class Position(TypedDict):
