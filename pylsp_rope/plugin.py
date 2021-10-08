@@ -142,15 +142,15 @@ class Command:
 
     def is_valid(self, info):
         try:
-            is_valid = self._is_valid(info)
+            self.validate(info)
         except Exception:
             return False
         else:
-            return is_valid
+            return True
         return False
 
-    def _is_valid(self, info):
-        return True
+    def validate(self, info):
+        pass
 
     def get_code_action(self, title):
         return {
@@ -196,10 +196,9 @@ class CommandRefactorExtractVariable(Command):
     name = commands.COMMAND_REFACTOR_EXTRACT_VARIABLE
     kind = "refactor.extract"
 
-    def _is_valid(self, info):
+    def validate(self, info):
         # FIXME: requires rope.refactor.extract._ExceptionalConditionChecker for proper checking
         ast.parse(info.selected_text, mode="eval")
-        return True
 
     def __call__(self):
         current_document, resource = get_resource(self.workspace, self.document_uri)
@@ -220,13 +219,12 @@ class CommandRefactorInline(Command):
     name = commands.COMMAND_REFACTOR_INLINE
     kind = "refactor.inline"
 
-    def _is_valid(self, info):
+    def validate(self, info):
         inline.create_inline(
             project=self.project,
             resource=info.resource,
             offset=info.current_document.offset_at_position(info.position),
         )
-        return True
 
     def __call__(self):
         current_document, resource = get_resource(self.workspace, self.document_uri)
@@ -244,13 +242,12 @@ class CommandRefactorUseFunction(Command):
     name = commands.COMMAND_REFACTOR_USE_FUNCTION
     kind = "refactor"
 
-    def _is_valid(self, info):
+    def validate(self, info):
         usefunction.UseFunction(
             project=self.project,
             resource=info.resource,
             offset=info.current_document.offset_at_position(info.position),
         )
-        return True
 
     def __call__(self):
         current_document, resource = get_resource(self.workspace, self.document_uri)
@@ -270,13 +267,12 @@ class CommandRefactorMethodToMethodObject(Command):
     name = commands.COMMAND_REFACTOR_METHOD_TO_METHOD_OBJECT
     kind = "refactor.rewrite"
 
-    def _is_valid(self, info):
+    def validate(self, info):
         method_object.MethodObject(
             project=self.project,
             resource=info.resource,
             offset=info.current_document.offset_at_position(self.position),
         )
-        return True
 
     def __call__(self):
         current_document, resource = get_resource(self.workspace, self.document_uri)
