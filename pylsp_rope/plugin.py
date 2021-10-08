@@ -110,19 +110,10 @@ def pylsp_code_actions(config, workspace, document, range, context):
 def pylsp_execute_command(config, workspace, command, arguments):
     logger.info("workspace/executeCommand: %s %s", command, arguments)
 
-    commands = [
-        CommandRefactorExtractMethod,
-        CommandRefactorExtractVariable,
-        CommandRefactorInline,
-        CommandRefactorUseFunction,
-        CommandRefactorMethodToMethodObject,
-    ]
+    commands = {cmd.name: cmd for cmd in Command.__subclasses__()}
 
     try:
-        for cmd in commands:
-            if command == cmd.name:
-                cmd(workspace, **arguments[0])()
-                break
+        return commands[command](workspace, **arguments[0])()
     except Exception as exc:
         logger.exception(
             "Exception when doing workspace/executeCommand: %s",
