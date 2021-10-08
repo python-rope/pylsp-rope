@@ -1,6 +1,7 @@
 from typing import TypedDict, List, Dict, Optional, NewType
 
 
+# LSP types
 DocumentUri = NewType("DocumentUri", str)
 
 
@@ -23,3 +24,7 @@ class WorkspaceEdit(TypedDict):
     changes: Optional[Dict[DocumentUri, List[TextEdit]]]
     # documentChanges: ...
     # changeAnnotations: ...
+
+
+# pylsp-rope types
+DocumentContent = NewType("DocumentContent", str)

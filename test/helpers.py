@@ -6,6 +6,7 @@ from typing import (
 from unittest.mock import ANY, call
 
 from pylsp_rope.typing import (
+    DocumentContent,
     DocumentUri,
     TextEdit,
     WorkspaceEdit,
@@ -13,16 +14,16 @@ from pylsp_rope.typing import (
 from test.conftest import read_fixture_file
 
 
-def assert_code_actions_do_not_offer(response, command):
+def assert_code_actions_do_not_offer(response: Dict, command: str) -> None:
     for action in response:
         assert action["command"] != command, f"CodeAction should not offer {action}"
 
 
-def assert_text_edits(document_edits: List[TextEdit], target: str):
+def assert_text_edits(document_edits: List[TextEdit], target: str) -> DocumentContent:
     new_text = read_fixture_file(target)
     for change in document_edits:
         assert change["newText"] in new_text
-    return new_text
+    return DocumentContent(new_text)
 
 
 def assert_single_document_edit(edit_request, document) -> List[TextEdit]:
@@ -70,13 +71,13 @@ def is_document_uri(uri: DocumentUri) -> bool:
 def assert_modified_documents(
     workspace_edit: WorkspaceEdit,
     document_uris: Collection[DocumentUri],
-):
+) -> None:
     assert workspace_edit["changes"].keys() == set(document_uris)
 
 
 def assert_unmodified_document(
     workspace_edit: WorkspaceEdit,
     document_uri: DocumentUri,
-):
+) -> None:
     assert is_document_uri(document_uri)
     assert document_uri not in workspace_edit["changes"]
