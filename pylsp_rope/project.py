@@ -32,10 +32,7 @@ def get_resource(workspace, document_uri):
 def get_resources(workspace, documents):
     if documents is None:
         return None
-    return [
-        get_resource(workspace, document_uri)[1]
-        for document_uri in documents
-    ]
+    return [get_resource(workspace, document_uri)[1] for document_uri in documents]
 
 
 def get_document(workspace, resource):
