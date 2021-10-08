@@ -5,7 +5,6 @@ from test.helpers import (
     assert_changeset,
     assert_is_apply_edit_request,
     assert_modified_documents,
-    assert_single_document_edit,
     assert_unmodified_document,
 )
 
