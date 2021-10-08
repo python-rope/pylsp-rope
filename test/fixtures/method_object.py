@@ -13,4 +13,5 @@ class NewMethodObject(object):
 
 
 def main():
+    a, b = 10, 20
     print(f"{a} + {b} = {a + b}")
