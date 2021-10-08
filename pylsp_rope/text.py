@@ -1,11 +1,62 @@
-def Position(line, character=None, _default_character=0):
+from typing import Tuple, Union, overload, Optional
+
+from typing_extensions import Literal
+
+from pylsp_rope import typing
+from pylsp_rope.typing import LineNumber, CharNumber
+
+
+START_OF_LINE: Literal["^"] = "^"
+END_OF_LINE: Literal["$"] = "$"
+
+
+_CharNumberOrMarker = Union[CharNumber, Literal["^", "$"]]
+_PrimitiveLineCharNumber = Union[LineNumber, Tuple[LineNumber, Optional[_CharNumberOrMarker]]]
+
+
+@overload
+def Position(
+    line: Tuple[LineNumber, Optional[_CharNumberOrMarker]],
+    *,
+    _default_character: _CharNumberOrMarker=CharNumber(0),
+) -> typing.Position: ...
+
+
+@overload
+def Position(
+    line: LineNumber,
+    *,
+    _default_character: _CharNumberOrMarker=CharNumber(0),
+) -> typing.Position: ...
+
+
+@overload
+def Position(
+    line: LineNumber,
+    character: CharNumber,
+) -> typing.Position: ...
+
+
+@overload
+def Position(
+    line: LineNumber,
+    character: Literal["^", "$"],
+) -> typing.Position: ...
+
+
+def Position(
+    line: _PrimitiveLineCharNumber,
+    character: Optional[_CharNumberOrMarker]=None,
+    *,
+    _default_character: _CharNumberOrMarker=CharNumber(0),
+) -> typing.Position:
     """
     Returns a [Position](https://microsoft.github.io/language-server-protocol/specification#position)
     object for a document.
 
     `pos` can be:
 
-    - Tuple[line, character] are passed directly to the object
+    - Tuple[LineNumber, CharNumber] are passed directly to the object
     - int selects the start of the line
     - "^" the first non-blank character of the line
     - "$" the end of the line, which is the start of the next line
@@ -25,25 +76,31 @@ def Position(line, character=None, _default_character=0):
 
     """
     if isinstance(line, tuple):
-        assert (
-            character is None
-        ), "If `line` is a tuple, then `character` must not be supplied"
-        line, character = line
+        # assert (
+        #     character is None
+        # ), "If `line` is a tuple, then `character` must not be supplied"
+        lineno, character = line
+    else:
+        lineno = line
 
     if character is None:
         character = _default_character
 
     if character == "$":
-        line += 1
-        character = 0
+        lineno = LineNumber(lineno + 1)
+        character = CharNumber(0)
+    assert character != "^", "not implemented yet"
 
     return {
-        "line": line,
+        "line": lineno,
         "character": character,
     }
 
 
-def Range(start, end=None):
+def Range(
+    start: _PrimitiveLineCharNumber,
+    end: Optional[_PrimitiveLineCharNumber]=None,
+) -> typing.Range:
     """
     Returns a [Range](https://microsoft.github.io/language-server-protocol/specification#range)
     object for a document.
@@ -71,6 +128,6 @@ def Range(start, end=None):
         end = start
 
     return {
-        "start": Position(start, _default_character=0),
-        "end": Position(end, _default_character="$"),
+        "start": Position(start, _default_character=CharNumber(0)),
+        "end": Position(end, _default_character=END_OF_LINE),
     }
