@@ -149,6 +149,7 @@ class Command:
             "title": title,
             "kind": self.kind,
             "command": {
+                "title": title,
                 "command": self.name,
                 "arguments": [self.arguments],
             },

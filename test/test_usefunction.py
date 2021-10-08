@@ -89,7 +89,7 @@ def test_use_function_in_current_file(config, workspace, code_action_context):
         "title": "Use function for current file only",
         "kind": "refactor",
         "command": {
-            "title": "Use function",
+            "title": "Use function for current file only",
             "command": commands.COMMAND_REFACTOR_USE_FUNCTION,
             "arguments": [
                 {
