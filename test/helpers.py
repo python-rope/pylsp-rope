@@ -8,14 +8,6 @@ def assert_code_actions_do_not_offer(response, command):
         assert action["command"] != command, f"CodeAction should not offer {action}"
 
 
-def assert_wholefile_changeset(document_changeset, target):
-    assert len(document_changeset) == 1
-    (change,) = document_changeset
-    new_text = read_fixture_file(target)
-    assert change["newText"].strip() == new_text.strip()
-    return new_text
-
-
 def assert_changeset(document_changeset, target):
     new_text = read_fixture_file(target)
     for change in document_changeset:
