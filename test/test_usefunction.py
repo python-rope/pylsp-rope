@@ -52,16 +52,16 @@ def test_use_function_globally(config, workspace, code_action_context):
 
     edit_request = workspace._endpoint.request.call_args
 
-    workspace_changeset = assert_is_apply_edit_request(edit_request)
-    assert_modified_documents(workspace_changeset, {document.uri, document2.uri})
+    workspace_edit = assert_is_apply_edit_request(edit_request)
+    assert_modified_documents(workspace_edit, {document.uri, document2.uri})
 
     new_text = assert_changeset(
-        workspace_changeset[document.uri], target="use_function.py"
+        workspace_edit["changes"][document.uri], target="use_function.py"
     )
     assert "{add(a, b)}" in new_text
 
     new_text = assert_changeset(
-        workspace_changeset[document2.uri], target="method_object_use_function.py"
+        workspace_edit["changes"][document2.uri], target="method_object_use_function.py"
     )
     assert "import function" in new_text
     assert "{function.add(a, b)}" in new_text
@@ -83,7 +83,7 @@ def test_use_function_in_current_file(config, workspace, code_action_context):
         context=code_action_context,
     )
 
-    expected = {
+    expected: dict = {
         "title": "Use function for current file only",
         "kind": "refactor",
         "command": {
@@ -112,12 +112,12 @@ def test_use_function_in_current_file(config, workspace, code_action_context):
 
     edit_request = workspace._endpoint.request.call_args
 
-    workspace_changeset = assert_is_apply_edit_request(edit_request)
-    assert_modified_documents(workspace_changeset, {document.uri})
+    workspace_edit = assert_is_apply_edit_request(edit_request)
+    assert_modified_documents(workspace_edit, {document.uri})
 
     new_text = assert_changeset(
-        workspace_changeset[document.uri], target="use_function.py"
+        workspace_edit["changes"][document.uri], target="use_function.py"
     )
     assert "{add(a, b)}" in new_text
 
-    assert_unmodified_document(workspace_changeset, document2.uri)
+    assert_unmodified_document(workspace_edit, document2.uri)

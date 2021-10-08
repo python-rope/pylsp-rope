@@ -1,2 +1,10 @@
 [tool.black]
 exclude = '.ropeproject|test/fixtures'
+
+
+[tool.mypy]
+python_version = "3.6"
+warn_return_any = true
+warn_unused_configs = true
+ignore_missing_imports = true
+check_untyped_defs = true
