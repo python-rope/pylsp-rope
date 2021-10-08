@@ -6,6 +6,7 @@ from rope.base import libutils
 from rope.base.project import Project
 
 from pylsp_rope.lsp_diff import lsp_diff
+from pylsp_rope.typing import WorkspaceEdit
 
 
 logger = logging.getLogger(__name__)
@@ -39,7 +40,7 @@ def get_document(workspace, resource):
     return workspace.get_document(uris.from_fs_path(resource.real_path))
 
 
-def rope_changeset_to_workspace_changeset(workspace, rope_changeset):
+def rope_changeset_to_workspace_edit(workspace, rope_changeset) -> WorkspaceEdit:
     def _get_contents(change):
         old = change.old_contents
         new = change.new_contents
@@ -58,18 +59,16 @@ def rope_changeset_to_workspace_changeset(workspace, rope_changeset):
         document_changes = workspace_changeset.setdefault(document.uri, [])
         document_changes.extend(lsp_diff(lines_old, lines_new))
 
-    return workspace_changeset
+    return {
+        "changes": workspace_changeset,
+    }
 
 
 def apply_rope_changeset(workspace, rope_changeset):
-    workspace_changeset = rope_changeset_to_workspace_changeset(
+    workspace_edit = rope_changeset_to_workspace_edit(
         workspace,
         rope_changeset,
     )
-
-    workspace_edit = {
-        "changes": workspace_changeset,
-    }
 
     logger.info("applying workspace edit: %s", workspace_edit)
     workspace.apply_edit(workspace_edit)

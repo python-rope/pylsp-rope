@@ -3,7 +3,7 @@ from rope.refactor import inline
 from pylsp_rope.project import (
     get_project,
     get_resource,
-    rope_changeset_to_workspace_changeset,
+    rope_changeset_to_workspace_edit,
 )
 from test.conftest import create_document
 
@@ -11,12 +11,12 @@ from test.conftest import create_document
 def test_rope_changeset_to_workspace_changeset(workspace):
     document = create_document(workspace, "many_changes.py")
     rope_changeset = get_rope_changeset(workspace, document)
-    workspace_changeset = rope_changeset_to_workspace_changeset(
+    workspace_edit = rope_changeset_to_workspace_edit(
         workspace,
         rope_changeset,
     )
 
-    assert workspace_changeset == {
+    assert workspace_edit["changes"] == {
         document.uri: [
             {
                 "range": {
