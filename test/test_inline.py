@@ -1,4 +1,4 @@
-from pylsp_rope import plugin, commands
+from pylsp_rope import commands, plugin, typing
 from pylsp_rope.text import Range
 from test.conftest import create_document
 from test.helpers import (
@@ -22,10 +22,11 @@ def test_inline(config, workspace, code_action_context):
         context=code_action_context,
     )
 
-    expected = {
+    expected: typing.CodeAction = {
         "title": "Inline method/variable/parameter",
         "kind": "refactor.inline",
         "command": {
+            "title": "Inline method/variable/parameter",
             "command": commands.COMMAND_REFACTOR_INLINE,
             "arguments": [
                 {
@@ -38,6 +39,7 @@ def test_inline(config, workspace, code_action_context):
 
     assert expected in response
 
+    assert expected["command"] is not None
     command = expected["command"]["command"]
     arguments = expected["command"]["arguments"]
 

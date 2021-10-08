@@ -1,4 +1,4 @@
-from pylsp_rope import commands, plugin
+from pylsp_rope import commands, plugin, typing
 from pylsp_rope.text import Range
 from test.helpers import (
     assert_text_edits,
@@ -21,10 +21,11 @@ def test_extract_variable(config, workspace, document, code_action_context):
         context=code_action_context,
     )
 
-    expected = {
+    expected: typing.CodeAction = {
         "title": "Extract variable",
         "kind": "refactor.extract",
         "command": {
+            "title": "Extract variable",
             "command": commands.COMMAND_REFACTOR_EXTRACT_VARIABLE,
             "arguments": [
                 {
@@ -37,6 +38,7 @@ def test_extract_variable(config, workspace, document, code_action_context):
 
     assert expected in response
 
+    assert expected["command"] is not None
     command = expected["command"]["command"]
     arguments = expected["command"]["arguments"]
 
@@ -87,10 +89,11 @@ def test_extract_method(config, workspace, document, code_action_context):
         context=code_action_context,
     )
 
-    expected = {
+    expected: typing.CodeAction = {
         "title": "Extract method",
         "kind": "refactor.extract",
         "command": {
+            "title": "Extract method",
             "command": commands.COMMAND_REFACTOR_EXTRACT_METHOD,
             "arguments": [
                 {
@@ -103,6 +106,7 @@ def test_extract_method(config, workspace, document, code_action_context):
 
     assert expected in response
 
+    assert expected["command"] is not None
     command = expected["command"]["command"]
     arguments = expected["command"]["arguments"]
 

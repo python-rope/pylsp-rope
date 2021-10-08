@@ -1,4 +1,4 @@
-from pylsp_rope import plugin, commands
+from pylsp_rope import plugin, commands, typing
 from pylsp_rope.text import Range
 from test.conftest import create_document
 from test.helpers import (
@@ -24,10 +24,11 @@ def test_use_function_globally(config, workspace, code_action_context):
         context=code_action_context,
     )
 
-    expected = {
+    expected: typing.CodeAction = {
         "title": "Use function",
         "kind": "refactor",
         "command": {
+            "title": "Use function",
             "command": commands.COMMAND_REFACTOR_USE_FUNCTION,
             "arguments": [
                 {
@@ -40,6 +41,7 @@ def test_use_function_globally(config, workspace, code_action_context):
 
     assert expected in response
 
+    assert expected["command"] is not None
     command = expected["command"]["command"]
     arguments = expected["command"]["arguments"]
 
@@ -83,10 +85,11 @@ def test_use_function_in_current_file(config, workspace, code_action_context):
         context=code_action_context,
     )
 
-    expected: dict = {
+    expected: typing.CodeAction = {
         "title": "Use function for current file only",
         "kind": "refactor",
         "command": {
+            "title": "Use function",
             "command": commands.COMMAND_REFACTOR_USE_FUNCTION,
             "arguments": [
                 {
@@ -100,6 +103,7 @@ def test_use_function_in_current_file(config, workspace, code_action_context):
 
     assert expected in response
 
+    assert expected["command"] is not None
     command = expected["command"]["command"]
     arguments = expected["command"]["arguments"]
 

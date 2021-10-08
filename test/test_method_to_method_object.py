@@ -1,4 +1,4 @@
-from pylsp_rope import commands, plugin
+from pylsp_rope import commands, plugin, typing
 from pylsp_rope.text import Range
 from test.conftest import create_document
 from test.helpers import (
@@ -22,10 +22,11 @@ def test_method_to_method_object(config, workspace, code_action_context):
         context=code_action_context,
     )
 
-    expected = {
+    expected: typing.CodeAction = {
         "title": "To method object",
         "kind": "refactor.rewrite",
         "command": {
+            "title": "To method object",
             "command": commands.COMMAND_REFACTOR_METHOD_TO_METHOD_OBJECT,
             "arguments": [
                 {
@@ -38,6 +39,7 @@ def test_method_to_method_object(config, workspace, code_action_context):
 
     assert expected in response
 
+    assert expected["command"] is not None
     command = expected["command"]["command"]
     arguments = expected["command"]["arguments"]
 
