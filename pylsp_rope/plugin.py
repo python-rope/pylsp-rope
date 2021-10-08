@@ -65,44 +65,37 @@ def pylsp_code_actions(config, workspace, document, range, context):
         selected_text = document.source[start_offset:end_offset]
 
     commands = {
-
         "Extract method": CommandRefactorExtractMethod(
             workspace,
             document_uri=document.uri,
             range=range,
         ),
-
         "Extract variable": CommandRefactorExtractVariable(
             workspace,
             document_uri=document.uri,
             range=range,
         ),
-
         "Inline method/variable/parameter": CommandRefactorInline(
             workspace,
             document_uri=document.uri,
             position=info.position,
         ),
-
         "Use function": CommandRefactorUseFunction(
             workspace,
             document_uri=document.uri,
             position=info.position,
         ),
-
         "Use function for current file only": CommandRefactorUseFunction(
             workspace,
             document_uri=document.uri,
             position=info.position,
             resources=[document.uri],
         ),
-
         "To method object": CommandRefactorMethodToMethodObject(
             workspace,
             document_uri=document.uri,
             position=info.position,
         ),
-
     }
 
     return [
