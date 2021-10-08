@@ -8,6 +8,26 @@ cd pylsp-rope
 pip install -e '.[dev]'
 ```
 
+### Enabling logging
+
+Run pylsp in development mode, enable logs:
+
+    pylsp -v --log-file /tmp/ale-pylsp.log
+
+Vim users should refer to [Rope in Vim or Neovim](https://github.com/python-rope/rope/wiki/Rope-in-Vim-or-Neovim)
+for how to configure their LSP client to run `pylsp` in development mode.
+
+### Enabling tcp mode
+
+Optionally, run in tcp mode if you want to be able to use the standard
+input/output, for example when using IPython or pudb:
+
+    pylsp -v --tcp --port 7090
+
+TODO: document how to connect to pylsp via pylsp from LSP clients.
+
+### Testing 
+
 Run `pytest` to run plugin tests.
 
 ## Publishing
