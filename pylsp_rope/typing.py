@@ -71,6 +71,8 @@ class CodeAction(TypedDict):
 ########################
 
 DocumentContent = NewType("DocumentContent", str)
+Line = NewType("Line", str)
+LineNumber = NewType("LineNumber", int)
 
 
 class SimpleWorkspaceEdit(TypedDict):
