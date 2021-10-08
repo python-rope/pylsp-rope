@@ -122,6 +122,7 @@ def pylsp_execute_command(config, workspace, command, arguments):
         for cmd in commands:
             if command == cmd.name:
                 cmd(workspace, **arguments[0])()
+                break
     except Exception as exc:
         logger.exception(
             "Exception when doing workspace/executeCommand: %s",
