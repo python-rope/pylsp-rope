@@ -93,7 +93,7 @@ def test_use_function_in_current_file(config, workspace, code_action_context):
                 {
                     "document_uri": document.uri,
                     "position": selection["start"],
-                    "resources": [document.uri],
+                    "documents": [document.uri],
                 },
             ],
         },
