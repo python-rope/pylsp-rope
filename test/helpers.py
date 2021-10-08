@@ -1,15 +1,18 @@
 from typing import (
+    Any,
     Collection,
     Dict,
     List,
 )
 from unittest.mock import ANY, call
 
+from pylsp.workspace import Document
+
 from pylsp_rope.typing import (
     DocumentContent,
     DocumentUri,
+    SimpleWorkspaceEdit,
     TextEdit,
-    WorkspaceEdit,
 )
 from test.conftest import read_fixture_file
 
@@ -26,20 +29,24 @@ def assert_text_edits(document_edits: List[TextEdit], target: str) -> DocumentCo
     return DocumentContent(new_text)
 
 
-def assert_single_document_edit(edit_request, document) -> List[TextEdit]:
+def assert_single_document_edit(
+    edit_request: Any, document: Document
+) -> List[TextEdit]:
     workspace_edit = assert_is_apply_edit_request(edit_request)
 
+    document_uri: DocumentUri = document.uri
     assert_modified_documents(
         workspace_edit,
-        document_uris={document.uri},
+        document_uris={document_uri},
     )
 
     assert len(workspace_edit["changes"]) == 1
-    document_edits = next(iter(workspace_edit["changes"].values()))
+    document_edits = workspace_edit["changes"][document_uri]
+    assert isinstance(document_edits, list)
     return document_edits
 
 
-def assert_is_apply_edit_request(edit_request: Dict) -> WorkspaceEdit:
+def assert_is_apply_edit_request(edit_request: Any) -> SimpleWorkspaceEdit:
     assert edit_request == call(
         "workspace/applyEdit",
         {
@@ -49,7 +56,7 @@ def assert_is_apply_edit_request(edit_request: Dict) -> WorkspaceEdit:
         },
     )
 
-    workspace_edit = edit_request[0][1]["edit"]
+    workspace_edit: SimpleWorkspaceEdit = edit_request[0][1]["edit"]
     for document_uri, document_edits in workspace_edit["changes"].items():
         assert is_document_uri(document_uri)
         for change in document_edits:
@@ -69,14 +76,14 @@ def is_document_uri(uri: DocumentUri) -> bool:
 
 
 def assert_modified_documents(
-    workspace_edit: WorkspaceEdit,
+    workspace_edit: SimpleWorkspaceEdit,
     document_uris: Collection[DocumentUri],
 ) -> None:
     assert workspace_edit["changes"].keys() == set(document_uris)
 
 
 def assert_unmodified_document(
-    workspace_edit: WorkspaceEdit,
+    workspace_edit: SimpleWorkspaceEdit,
     document_uri: DocumentUri,
 ) -> None:
     assert is_document_uri(document_uri)
