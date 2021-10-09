@@ -1,5 +1,7 @@
 # pylsp-rope
 
+[![Python package](https://github.com/python-rope/pylsp-rope/actions/workflows/run-test.yml/badge.svg)](https://github.com/python-rope/pylsp-rope/actions/workflows/run-test.yml)
+
 Extended refactoring capabilities for Python LSP Server using
 [Rope](https://github.com/python-rope/rope).
 
