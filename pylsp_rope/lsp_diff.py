@@ -8,7 +8,9 @@ from pylsp_rope.typing import TextEdit, Line, LineNumber
 _DifflibOpcode = Tuple[str, LineNumber, LineNumber, LineNumber, LineNumber]
 
 
-def _difflib_ops_to_text_edit_ops(opcode: _DifflibOpcode, lines: List[Line]) -> TextEdit:
+def _difflib_ops_to_text_edit_ops(
+    opcode: _DifflibOpcode, lines: List[Line]
+) -> TextEdit:
     op, start_old, end_old, start_new, end_new = opcode
 
     if op == "replace" or op == "insert":
@@ -35,5 +37,7 @@ def lsp_diff(lines_old: List[Line], lines_new: List[Line]) -> Iterator[TextEdit]
         if opcode[0] == "equal":
             continue
 
-        text_edit_ops = _difflib_ops_to_text_edit_ops(cast(_DifflibOpcode, opcode), lines_new)
+        text_edit_ops = _difflib_ops_to_text_edit_ops(
+            cast(_DifflibOpcode, opcode), lines_new
+        )
         yield text_edit_ops

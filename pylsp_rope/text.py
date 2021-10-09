@@ -11,44 +11,50 @@ END_OF_LINE: Literal["$"] = "$"
 
 
 _CharNumberOrMarker = Union[CharNumber, Literal["^", "$"]]
-_PrimitiveLineCharNumber = Union[LineNumber, Tuple[LineNumber, Optional[_CharNumberOrMarker]]]
+_PrimitiveLineCharNumber = Union[
+    LineNumber, Tuple[LineNumber, Optional[_CharNumberOrMarker]]
+]
 
 
 @overload
 def Position(
     line: Tuple[LineNumber, Optional[_CharNumberOrMarker]],
     *,
-    _default_character: _CharNumberOrMarker=CharNumber(0),
-) -> typing.Position: ...
+    _default_character: _CharNumberOrMarker = CharNumber(0),
+) -> typing.Position:
+    ...
 
 
 @overload
 def Position(
     line: LineNumber,
     *,
-    _default_character: _CharNumberOrMarker=CharNumber(0),
-) -> typing.Position: ...
+    _default_character: _CharNumberOrMarker = CharNumber(0),
+) -> typing.Position:
+    ...
 
 
 @overload
 def Position(
     line: LineNumber,
     character: CharNumber,
-) -> typing.Position: ...
+) -> typing.Position:
+    ...
 
 
 @overload
 def Position(
     line: LineNumber,
     character: Literal["^", "$"],
-) -> typing.Position: ...
+) -> typing.Position:
+    ...
 
 
 def Position(
     line: _PrimitiveLineCharNumber,
-    character: Optional[_CharNumberOrMarker]=None,
+    character: Optional[_CharNumberOrMarker] = None,
     *,
-    _default_character: _CharNumberOrMarker=CharNumber(0),
+    _default_character: _CharNumberOrMarker = CharNumber(0),
 ) -> typing.Position:
     """
     Returns a [Position](https://microsoft.github.io/language-server-protocol/specification#position)
@@ -99,7 +105,7 @@ def Position(
 
 def Range(
     start: _PrimitiveLineCharNumber,
-    end: Optional[_PrimitiveLineCharNumber]=None,
+    end: Optional[_PrimitiveLineCharNumber] = None,
 ) -> typing.Range:
     """
     Returns a [Range](https://microsoft.github.io/language-server-protocol/specification#range)

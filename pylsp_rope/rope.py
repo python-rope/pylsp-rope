@@ -4,8 +4,8 @@ from rope.base.resources import Resource
 
 
 __all__ = [
-    'Change',
-    'ChangeSet',
-    'Project',
-    'Resource',
+    "Change",
+    "ChangeSet",
+    "Project",
+    "Resource",
 ]

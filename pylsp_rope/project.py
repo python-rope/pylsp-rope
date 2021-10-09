@@ -25,13 +25,17 @@ def get_project(workspace) -> rope.Project:
     return project
 
 
-def get_resource(workspace, document_uri: DocumentUri) -> Tuple[workspace.Document, rope.Resource]:
+def get_resource(
+    workspace, document_uri: DocumentUri
+) -> Tuple[workspace.Document, rope.Resource]:
     document = workspace.get_document(document_uri)
     resource = libutils.path_to_resource(_get_project(workspace), document.path)
     return document, resource
 
 
-def get_resources(workspace, documents: List[workspace.Document]) -> List[rope.Resource]:
+def get_resources(
+    workspace, documents: List[workspace.Document]
+) -> List[rope.Resource]:
     if documents is None:
         return None
     return [get_resource(workspace, document_uri)[1] for document_uri in documents]
@@ -41,7 +45,9 @@ def get_document(workspace, resource: rope.Resource) -> workspace.Document:
     return workspace.get_document(uris.from_fs_path(resource.real_path))
 
 
-def rope_changeset_to_workspace_edit(workspace, rope_changeset: rope.ChangeSet) -> WorkspaceEdit:
+def rope_changeset_to_workspace_edit(
+    workspace, rope_changeset: rope.ChangeSet
+) -> WorkspaceEdit:
     def _get_contents(change: rope.Change) -> Tuple[List[Line], List[Line]]:
         old = change.old_contents
         new = change.new_contents
