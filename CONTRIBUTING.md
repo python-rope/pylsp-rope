@@ -13,7 +13,7 @@ pip install -e '.[dev]'
 Run pylsp in development mode, enable logs:
 
 ``` bash
-pylsp -v --log-file /tmp/ale-pylsp.log
+pylsp -v --log-file /tmp/pylsp.log
 ```
 
 Vim users should refer to [Rope in Vim or Neovim](https://github.com/python-rope/rope/wiki/Rope-in-Vim-or-Neovim)
@@ -25,7 +25,7 @@ Optionally, run in tcp mode if you want to be able to use the standard
 input/output, for example when using IPython or pudb, run this from terminal:
 
 ``` bash
-pylsp -v --tcp --port 8772 --log-file /tmp/log.txt
+pylsp -v --tcp --port 8772 --log-file /tmp/pylsp.log
 ```
 
 #### Connecting to tcp mode pylsp from lsp-vim
