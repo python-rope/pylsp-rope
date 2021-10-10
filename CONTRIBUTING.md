@@ -12,7 +12,9 @@ pip install -e '.[dev]'
 
 Run pylsp in development mode, enable logs:
 
-    pylsp -v --log-file /tmp/ale-pylsp.log
+``` bash
+pylsp -v --log-file /tmp/ale-pylsp.log
+```
 
 Vim users should refer to [Rope in Vim or Neovim](https://github.com/python-rope/rope/wiki/Rope-in-Vim-or-Neovim)
 for how to configure their LSP client to run `pylsp` in development mode.
@@ -20,9 +22,21 @@ for how to configure their LSP client to run `pylsp` in development mode.
 ### Enabling tcp mode
 
 Optionally, run in tcp mode if you want to be able to use the standard
-input/output, for example when using IPython or pudb:
+input/output, for example when using IPython or pudb, run this from terminal:
 
-    pylsp -v --tcp --port 7090
+``` bash
+pylsp -v --tcp --port 8772 --log-file /tmp/log.txt
+```
+
+#### Connecting to tcp mode pylsp from lsp-vim
+
+``` vim
+autocmd User lsp_setup call lsp#register_server({
+    \ 'name': 'pylsp-debug',
+    \ 'cmd': ["nc", "localhost", "8772"],
+    \ 'allowlist': ['python'],
+    \ })
+```
 
 TODO: document how to connect to pylsp via pylsp from LSP clients.
 
@@ -47,19 +61,19 @@ twine check dist/*
 
 3. Tag the release:
 
-```
+``` bash
 git tag --sign 0.1.3
 git push origin 0.1.3
 ```
 
 4. Then upload using Twine:
 
-```
+``` bash
 twine upload --sign dist/*
 ```
 
 Alternatively, you may want to upload to Test PyPI first before going live:
 
-```
+``` bash
 twine upload --sign --repository testpypi dist/*
 ```
