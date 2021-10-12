@@ -1,6 +1,11 @@
+import sys
 from typing import List, Dict, Optional, NewType, Any
 
-from typing_extensions import TypedDict, Literal
+
+if sys.version_info >= (3, 8):
+    from typing import TypedDict, Literal
+else:
+    from typing_extensions import TypedDict, Literal
 
 
 ##########################
