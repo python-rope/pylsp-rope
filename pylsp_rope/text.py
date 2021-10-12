@@ -1,24 +1,26 @@
 from typing import Tuple, Union, overload, Optional
 
-from typing_extensions import Literal
-
 from pylsp_rope import typing
-from pylsp_rope.typing import LineNumber, CharNumber
+from pylsp_rope.typing import LineNumber, CharNumber, Literal
 
 
 START_OF_LINE: Literal["^"] = "^"
 END_OF_LINE: Literal["$"] = "$"
 
 
-_CharNumberOrMarker = Union[CharNumber, Literal["^", "$"]]
+AutoLineNumber = Union[LineNumber, int]
+AutoCharNumber = Union[CharNumber, int]
+
+
+_CharNumberOrMarker = Union[AutoCharNumber, Literal["^", "$"]]
 _PrimitiveLineCharNumber = Union[
-    LineNumber, Tuple[LineNumber, Optional[_CharNumberOrMarker]]
+    AutoLineNumber, Tuple[AutoLineNumber, Optional[_CharNumberOrMarker]]
 ]
 
 
 @overload
 def Position(
-    line: Tuple[LineNumber, Optional[_CharNumberOrMarker]],
+    line: Tuple[AutoLineNumber, Optional[_CharNumberOrMarker]],
     *,
     _default_character: _CharNumberOrMarker = CharNumber(0),
 ) -> typing.Position:
@@ -27,7 +29,7 @@ def Position(
 
 @overload
 def Position(
-    line: LineNumber,
+    line: AutoLineNumber,
     *,
     _default_character: _CharNumberOrMarker = CharNumber(0),
 ) -> typing.Position:
@@ -36,15 +38,15 @@ def Position(
 
 @overload
 def Position(
-    line: LineNumber,
-    character: CharNumber,
+    line: AutoLineNumber,
+    character: AutoCharNumber,
 ) -> typing.Position:
     ...
 
 
 @overload
 def Position(
-    line: LineNumber,
+    line: AutoLineNumber,
     character: Literal["^", "$"],
 ) -> typing.Position:
     ...
