@@ -68,6 +68,10 @@ def pylsp_code_actions(
         end_offset = current_document.offset_at_position(range["end"])
         selected_text = document.source[start_offset:end_offset]
 
+    project = get_project(workspace)
+    for resource in get_resources(workspace, workspace.documents.keys()):
+        project.pycore._invalidate_resource_cache(resource)
+
     commands = {
         "Extract method": CommandRefactorExtractMethod(
             workspace,

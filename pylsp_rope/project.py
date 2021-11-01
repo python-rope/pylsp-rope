@@ -15,22 +15,16 @@ logger = logging.getLogger(__name__)
 
 
 @lru_cache(maxsize=None)
-def _get_project(workspace) -> rope.Project:
+def get_project(workspace) -> rope.Project:
     fscommands = WorkspaceFileCommands(workspace)
     return rope.Project(workspace.root_path, fscommands=fscommands)
-
-
-def get_project(workspace) -> rope.Project:
-    project = _get_project(workspace)
-    project.validate()
-    return project
 
 
 def get_resource(
     workspace, document_uri: DocumentUri
 ) -> Tuple[workspace.Document, rope.Resource]:
     document = workspace.get_document(document_uri)
-    resource = libutils.path_to_resource(_get_project(workspace), document.path)
+    resource = libutils.path_to_resource(get_project(workspace), document.path)
     return document, resource
 
 
