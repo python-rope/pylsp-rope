@@ -33,9 +33,7 @@ def get_resource(
     return document, resource
 
 
-def get_resources(
-    workspace, documents: List[workspace.Document]
-) -> List[rope.Resource]:
+def get_resources(workspace, documents: List[DocumentUri]) -> List[rope.Resource]:
     if documents is None:
         return None
     return [get_resource(workspace, document_uri)[1] for document_uri in documents]
