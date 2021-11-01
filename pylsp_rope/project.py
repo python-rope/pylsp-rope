@@ -99,9 +99,9 @@ class WorkspaceFileCommands(object):
         document = self.workspace.get_maybe_document(document_uri)
         if document is None:
             content = self.normal_actions.read(path)
-            logger.info('pylsp-rope reading from filesystem: "%s":', path)
+            logger.info('reading from filesystem: "%s":', path)
             return content
         else:
             content = document.source.encode("utf-8")
-            logger.info('pylsp-rope reading from workspace: "%s":', path)
+            logger.info('reading from workspace: "%s":', path)
             return content
