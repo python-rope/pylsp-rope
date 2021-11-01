@@ -4,6 +4,7 @@ from typing import List, Dict, Tuple
 
 from pylsp import uris, workspace
 from rope.base import libutils
+from rope.base.fscommands import FileSystemCommands
 
 from pylsp_rope import rope
 from pylsp_rope.lsp_diff import lsp_diff
@@ -15,7 +16,8 @@ logger = logging.getLogger(__name__)
 
 @lru_cache(maxsize=None)
 def _get_project(workspace) -> rope.Project:
-    project = rope.Project(workspace.root_path)
+    fscommands = WorkspaceFileCommands(workspace)
+    project = rope.Project(workspace.root_path, fscommands=fscommands)
     return project
 
 
@@ -79,3 +81,36 @@ def apply_rope_changeset(workspace, rope_changeset: rope.ChangeSet) -> None:
 
     logger.info("applying workspace edit: %s", workspace_edit)
     workspace.apply_edit(workspace_edit)
+
+
+class WorkspaceFileCommands(object):
+    def __init__(self, workspace):
+        self.workspace = workspace
+        self.normal_actions = FileSystemCommands()
+
+    def create_file(self, path):
+        return self.normal_actions.create_file(path)
+
+    def create_folder(self, path):
+        return self.normal_actions.create_folder(path)
+
+    def move(self, path, new_location):
+        return self.normal_actions.move(path, new_location)
+
+    def remove(self, path):
+        return self.normal_actions.remove(path)
+
+    def write(self, path, data):
+        return self.normal_actions.write(path, data)
+
+    def read(self, path):
+        document_uri = uris.from_fs_path(path)
+        document = self.workspace.get_maybe_document(document_uri)
+        if document is None:
+            content = self.normal_actions.read(path)
+            logger.info('pylsp-rope reading from filesystem: "%s":', path)
+            return content
+        else:
+            content = document.source.encode('utf-8')
+            logger.info('pylsp-rope reading from workspace: "%s":', path)
+            return content

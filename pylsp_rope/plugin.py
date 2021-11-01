@@ -129,6 +129,15 @@ def pylsp_execute_command(config, workspace, command, arguments):
         )
 
 
+@hookimpl
+def pylsp_lint(config, workspace, document, is_saved):
+    logger.info("linting/validating document=%s is_saved=%s", document, is_saved)
+    project = get_project(workspace)
+    current_document, resource = get_resource(workspace, document.uri)
+    project.pycore._invalidate_resource_cache(resource)
+    return []
+
+
 class Command:
     name: str
     title: str
