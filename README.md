@@ -23,9 +23,11 @@ pip install pylsp-rope
 ```
 
 Then run `pylsp` as usual, the plugin will be auto-discovered by
-python-lsp-server if you've installed it to the right environment. Refer to
-your IDE/text editor's documentation on how to setup a language server in your
-IDE/text editor.
+python-lsp-server if you've installed it to the right environment. On Vim,
+refer to [Rope in Vim or
+Neovim](https://github.com/python-rope/rope/wiki/Rope-in-Vim-or-Neovim). For
+other editors, refer to your IDE/text editor's documentation on how to setup a
+language server. 
 
 ## Configuration
 
