@@ -74,10 +74,7 @@ of a `def` statement.
 
 ## Caveat
 
-Support for working on unsaved document is currently incomplete.
-
-Before you start refactoring you must save all unsaved changes in your text
-editor. I highly recommended that you enable autosave on your text editor.
+Support for working on unsaved document is currently experimental.
 
 This plugin is in early development, so expect some bugs. Please report in
 [Github issue tracker](https://github.com/python-lsp/python-lsp-server/issues)
