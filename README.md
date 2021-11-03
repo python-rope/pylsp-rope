@@ -42,6 +42,7 @@ This plugin adds the following features to python-lsp-server:
 - inline method/variable/parameter (codeAction)
 - use function (codeAction)
 - method to method object (codeAction)
+- convert local variable to field (codeAction)
 - more to come...
 
 Refer to [Rope documentation](https://github.com/python-rope/rope/blob/master/docs/overview.rst)
@@ -66,13 +67,18 @@ resolvable Python identifier.
 
 ### Use function
 
-This works by triggering a CodeAction when the cursor is on the function name
-of a `def` statement.
+This refactoring works by triggering a CodeAction when the cursor is on the
+function name of a `def` statement.
 
 ### Method to method object
 
-This works by triggering a CodeAction when the cursor is on the function name
-of a `def` statement.
+This refactoring works by triggering a CodeAction when the cursor is on the
+function name of a `def` statement.
+
+### Convert local variable to field
+
+This refactoring works by triggering a CodeAction when the cursor is on a local
+variable.
 
 ## Caveat
 
