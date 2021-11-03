@@ -149,6 +149,10 @@ class Command:
         self.__dict__.update(**arguments)
 
     def __call__(self):
+        rope_changeset = self.get_changes()
+        apply_rope_changeset(self.workspace, rope_changeset)
+
+    def get_changes(self):
         pass
 
     def validate(self, info):
@@ -192,7 +196,7 @@ class CommandRefactorExtractMethod(Command):
     # def _is_valid(self, info):
     #     ...
 
-    def __call__(self):
+    def get_changes(self):
         current_document, resource = get_resource(self.workspace, self.document_uri)
 
         refactoring = extract.ExtractMethod(
@@ -204,7 +208,7 @@ class CommandRefactorExtractMethod(Command):
         rope_changeset = refactoring.get_changes(
             extracted_name="extracted_method",
         )
-        apply_rope_changeset(self.workspace, rope_changeset)
+        return rope_changeset
 
 
 class CommandRefactorExtractVariable(Command):
@@ -218,7 +222,7 @@ class CommandRefactorExtractVariable(Command):
         # FIXME: requires rope.refactor.extract._ExceptionalConditionChecker for proper checking
         ast.parse(info.selected_text, mode="eval")
 
-    def __call__(self):
+    def get_changes(self):
         current_document, resource = get_resource(self.workspace, self.document_uri)
 
         refactoring = extract.ExtractVariable(
@@ -230,7 +234,7 @@ class CommandRefactorExtractVariable(Command):
         rope_changeset = refactoring.get_changes(
             extracted_name="extracted_variable",
         )
-        apply_rope_changeset(self.workspace, rope_changeset)
+        return rope_changeset
 
 
 class CommandRefactorInline(Command):
@@ -247,7 +251,7 @@ class CommandRefactorInline(Command):
             offset=info.current_document.offset_at_position(info.position),
         )
 
-    def __call__(self):
+    def get_changes(self):
         current_document, resource = get_resource(self.workspace, self.document_uri)
 
         refactoring = inline.create_inline(
@@ -256,7 +260,7 @@ class CommandRefactorInline(Command):
             offset=current_document.offset_at_position(self.position),
         )
         rope_changeset = refactoring.get_changes()
-        apply_rope_changeset(self.workspace, rope_changeset)
+        return rope_changeset
 
 
 class CommandRefactorUseFunction(Command):
@@ -273,7 +277,7 @@ class CommandRefactorUseFunction(Command):
             offset=info.current_document.offset_at_position(info.position),
         )
 
-    def __call__(self):
+    def get_changes(self):
         current_document, resource = get_resource(self.workspace, self.document_uri)
 
         refactoring = usefunction.UseFunction(
@@ -284,7 +288,7 @@ class CommandRefactorUseFunction(Command):
         rope_changeset = refactoring.get_changes(
             resources=get_resources(self.workspace, getattr(self, "documents", None)),
         )
-        apply_rope_changeset(self.workspace, rope_changeset)
+        return rope_changeset
 
 
 class CommandRefactorMethodToMethodObject(Command):
@@ -301,7 +305,7 @@ class CommandRefactorMethodToMethodObject(Command):
             offset=info.current_document.offset_at_position(self.position),
         )
 
-    def __call__(self):
+    def get_changes(self):
         current_document, resource = get_resource(self.workspace, self.document_uri)
 
         refactoring = method_object.MethodObject(
@@ -310,7 +314,7 @@ class CommandRefactorMethodToMethodObject(Command):
             offset=current_document.offset_at_position(self.position),
         )
         rope_changeset = refactoring.get_changes(classname="NewMethodObject")
-        apply_rope_changeset(self.workspace, rope_changeset)
+        return rope_changeset
 
 
 class CommandRefactorLocalToField(Command):
@@ -327,7 +331,7 @@ class CommandRefactorLocalToField(Command):
             offset=info.current_document.offset_at_position(self.position),
         )
 
-    def __call__(self):
+    def get_changes(self):
         current_document, resource = get_resource(self.workspace, self.document_uri)
 
         refactoring = localtofield.LocalToField(
@@ -336,4 +340,4 @@ class CommandRefactorLocalToField(Command):
             offset=current_document.offset_at_position(self.position),
         )
         rope_changeset = refactoring.get_changes()
-        apply_rope_changeset(self.workspace, rope_changeset)
+        return rope_changeset
