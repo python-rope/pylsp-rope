@@ -4,7 +4,7 @@ from typing import List
 
 from pylsp import hookimpl
 from pylsp.lsp import MessageType
-from rope.refactor import extract, inline, method_object, usefunction
+from rope.refactor import extract, inline, method_object, usefunction, localtofield
 
 from pylsp_rope import typing, commands
 from pylsp_rope.project import (
@@ -100,6 +100,11 @@ def pylsp_code_actions(
             documents=[document.uri],
         ),
         "To method object": CommandRefactorMethodToMethodObject(
+            workspace,
+            document_uri=document.uri,
+            position=info.position,
+        ),
+        "Convert local variable to field": CommandRefactorLocalToField(
             workspace,
             document_uri=document.uri,
             position=info.position,
@@ -305,4 +310,30 @@ class CommandRefactorMethodToMethodObject(Command):
             offset=current_document.offset_at_position(self.position),
         )
         rope_changeset = refactoring.get_changes(classname="NewMethodObject")
+        apply_rope_changeset(self.workspace, rope_changeset)
+
+
+class CommandRefactorLocalToField(Command):
+    name = commands.COMMAND_REFACTOR_LOCAL_TO_FIELD
+    kind: CodeActionKind = "refactor.rewrite"
+
+    document_uri: DocumentUri
+    position: typing.Range
+
+    def validate(self, info):
+        localtofield.LocalToField(
+            project=self.project,
+            resource=info.resource,
+            offset=info.current_document.offset_at_position(self.position),
+        )
+
+    def __call__(self):
+        current_document, resource = get_resource(self.workspace, self.document_uri)
+
+        refactoring = localtofield.LocalToField(
+            project=self.project,
+            resource=resource,
+            offset=current_document.offset_at_position(self.position),
+        )
+        rope_changeset = refactoring.get_changes()
         apply_rope_changeset(self.workspace, rope_changeset)
