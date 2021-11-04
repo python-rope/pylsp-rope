@@ -4,7 +4,14 @@ from typing import List
 
 from pylsp import hookimpl
 from pylsp.lsp import MessageType
-from rope.refactor import extract, inline, method_object, usefunction, localtofield
+from rope.refactor import (
+    extract,
+    inline,
+    method_object,
+    usefunction,
+    localtofield,
+    importutils,
+)
 
 from pylsp_rope import typing, commands
 from pylsp_rope.project import (
@@ -108,6 +115,10 @@ def pylsp_code_actions(
             workspace,
             document_uri=document.uri,
             position=info.position,
+        ),
+        "Organize import": CommandSourceOrganizeImport(
+            workspace,
+            document_uri=document.uri,
         ),
     }
 
@@ -340,4 +351,22 @@ class CommandRefactorLocalToField(Command):
             offset=current_document.offset_at_position(self.position),
         )
         rope_changeset = refactoring.get_changes()
+        return rope_changeset
+
+
+class CommandSourceOrganizeImport(Command):
+    name = commands.COMMAND_SOURCE_ORGANIZE_IMPORT
+    kind: CodeActionKind = "source.organizeImports"
+
+    document_uri: DocumentUri
+
+    def get_changes(self):
+        current_document, resource = get_resource(self.workspace, self.document_uri)
+
+        organizer = importutils.ImportOrganizer(
+            project=self.project,
+        )
+        rope_changeset = organizer.organize_imports(
+            resource=resource,
+        )
         return rope_changeset

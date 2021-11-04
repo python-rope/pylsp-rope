@@ -43,6 +43,7 @@ This plugin adds the following features to python-lsp-server:
 - use function (codeAction)
 - method to method object (codeAction)
 - convert local variable to field (codeAction)
+- organize imports (codeAction)
 - more to come...
 
 Refer to [Rope documentation](https://github.com/python-rope/rope/blob/master/docs/overview.rst)
@@ -52,33 +53,36 @@ for more details on how these refactoring works.
 
 ### Extract method
 
-This refactoring works by triggering a CodeAction when selecting a block of
-code.
+This refactoring works by triggering CodeAction when selecting a block of code.
 
 ### Extract variable
 
-This refactoring works by triggering a CodeAction when selecting a Python
+This refactoring works by triggering CodeAction when selecting a Python
 expression.
 
 ### Inline
 
-This refactoring works by triggering a CodeAction when the cursor is on a
+This refactoring works by triggering CodeAction when the cursor is on a
 resolvable Python identifier.
 
 ### Use function
 
-This refactoring works by triggering a CodeAction when the cursor is on the
+This refactoring works by triggering CodeAction when the cursor is on the
 function name of a `def` statement.
 
 ### Method to method object
 
-This refactoring works by triggering a CodeAction when the cursor is on the
+This refactoring works by triggering CodeAction when the cursor is on the
 function name of a `def` statement.
 
 ### Convert local variable to field
 
-This refactoring works by triggering a CodeAction when the cursor is on a local
+This refactoring works by triggering CodeAction when the cursor is on a local
 variable.
+
+### Organize import
+
+This refactoring works by triggering CodeAction anywhere.
 
 ## Caveat
 
