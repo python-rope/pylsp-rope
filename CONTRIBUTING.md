@@ -64,6 +64,7 @@ twine check dist/*
 ``` bash
 git tag --sign 0.1.3
 git push origin 0.1.3
+git push origin main
 ```
 
 4. Then upload using Twine:
