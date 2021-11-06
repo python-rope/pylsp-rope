@@ -46,7 +46,7 @@ def test_command_error_handling(caplog, config, workspace, document):
         "window/showMessage",
         params={
             "type": MessageType.Error,
-            "message": f"pylsp-rope: some unexpected exception",
+            "message": "pylsp-rope: some unexpected exception",
         },
     )
     assert "Traceback (most recent call last):" in caplog.text
