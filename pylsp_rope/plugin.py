@@ -161,7 +161,8 @@ class Command:
 
     def __call__(self):
         rope_changeset = self.get_changes()
-        apply_rope_changeset(self.workspace, rope_changeset)
+        if rope_changeset is not None:
+            apply_rope_changeset(self.workspace, rope_changeset)
 
     def get_changes(self):
         pass
