@@ -88,3 +88,7 @@ def assert_unmodified_document(
 ) -> None:
     assert is_document_uri(document_uri)
     assert document_uri not in workspace_edit["changes"]
+
+
+def assert_no_execute_command(workspace: Workspace) -> None:
+    workspace._endpoint.request.assert_not_called()
