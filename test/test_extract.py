@@ -1,13 +1,15 @@
 from pylsp_rope import commands, plugin, typing
 from pylsp_rope.text import Range
+from test.conftest import create_document
 from test.helpers import (
-    assert_text_edits,
     assert_code_actions_do_not_offer,
     assert_single_document_edit,
+    assert_text_edits,
 )
 
 
-def test_extract_variable(config, workspace, document, code_action_context):
+def test_extract_variable(config, workspace, code_action_context):
+    document = create_document(workspace, "simple.py")
     line = 4
     start_col = document.lines[line].index("sys")
     end_col = document.lines[line].index(")\n")
@@ -78,7 +80,8 @@ def test_extract_variable_not_offered_when_selecting_non_expression(
     )
 
 
-def test_extract_method(config, workspace, document, code_action_context):
+def test_extract_method(config, workspace, code_action_context):
+    document = create_document(workspace, "simple.py")
     selection = Range(4)
 
     response = plugin.pylsp_code_actions(
