@@ -1,14 +1,14 @@
 from typing import (
     Any,
     Collection,
-    Dict,
     List,
 )
 from unittest.mock import ANY, call
 
-from pylsp.workspace import Document
+from pylsp.workspace import Workspace, Document
 
 from pylsp_rope.typing import (
+    CodeAction,
     DocumentContent,
     DocumentUri,
     SimpleWorkspaceEdit,
@@ -17,9 +17,12 @@ from pylsp_rope.typing import (
 from test.conftest import read_fixture_file
 
 
-def assert_code_actions_do_not_offer(response: Dict, command: str) -> None:
+def assert_code_actions_do_not_offer(response: List[CodeAction], command: str) -> None:
     for action in response:
-        assert action["command"] != command, f"CodeAction should not offer {action}"
+        assert action["command"] is not None
+        assert (
+            action["command"]["command"] != command
+        ), f"CodeAction should not offer {action}"
 
 
 def assert_text_edits(document_edits: List[TextEdit], target: str) -> DocumentContent:
