@@ -2,5 +2,12 @@ import sys
 
 
 def main():
-    extracted_variable = sys.stdin.read()
+    a = int(sys.stdin.read())
+    b = 20
+    extracted_variable = a + b
     print(extracted_variable)
+    c = a + b
+
+
+a, b = 30, 40
+print(a + b)

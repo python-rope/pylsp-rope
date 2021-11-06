@@ -3,7 +3,6 @@ from pylsp_rope.text import Range
 from test.conftest import create_document
 from test.helpers import (
     assert_text_edits,
-    assert_code_actions_do_not_offer,
     assert_single_document_edit,
 )
 

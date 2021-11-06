@@ -10,8 +10,8 @@ from test.helpers import (
 
 def test_extract_variable(config, workspace, code_action_context):
     document = create_document(workspace, "simple.py")
-    line = 4
-    start_col = document.lines[line].index("sys")
+    line = 6
+    start_col = document.lines[line].index("a + b")
     end_col = document.lines[line].index(")\n")
     selection = Range((line, start_col), (line, end_col))
 
@@ -61,9 +61,9 @@ def test_extract_variable(config, workspace, code_action_context):
 def test_extract_variable_not_offered_when_selecting_non_expression(
     config, workspace, document, code_action_context
 ):
-    line = 4
+    line = 6
     start_col = document.lines[line].index("print")
-    end_col = document.lines[line].index(".read())\n")
+    end_col = document.lines[line].index("+")
     selection = Range((line, start_col), (line, end_col))
 
     response = plugin.pylsp_code_actions(
@@ -82,7 +82,7 @@ def test_extract_variable_not_offered_when_selecting_non_expression(
 
 def test_extract_method(config, workspace, code_action_context):
     document = create_document(workspace, "simple.py")
-    selection = Range(4)
+    selection = Range(6)
 
     response = plugin.pylsp_code_actions(
         config=config,

@@ -2,7 +2,14 @@ import sys
 
 
 def main():
-    extracted_method()
+    a = int(sys.stdin.read())
+    b = 20
+    extracted_method(a, b)
+    c = a + b
 
-def extracted_method():
-    print(sys.stdin.read())
+def extracted_method(a, b):
+    print(a + b)
+
+
+a, b = 30, 40
+print(a + b)
