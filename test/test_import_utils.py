@@ -54,5 +54,5 @@ def test_organize_import(config, workspace, document, code_action_context):
 
     document_edits = assert_single_document_edit(edit_request, document)
     new_text = assert_text_edits(document_edits, target="simple.py")
-    assert document.source.count('import sys') == 2
-    assert new_text.count('import sys') == 1
+    assert document.source.count("import sys") == 2
+    assert new_text.count("import sys") == 1
