@@ -165,10 +165,15 @@ class Command:
             apply_rope_changeset(self.workspace, rope_changeset)
 
     def get_changes(self):
-        pass
+        """
+        Calculate the rope changeset to perform this refactoring.
+        """
 
-    def validate(self, info):
-        pass
+    def validate(self, info) -> None:
+        """
+        Override this method to raise an exception if this refactoring command
+        cannot be performed
+        """
 
     def is_valid(self, info):
         try:
