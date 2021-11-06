@@ -54,11 +54,12 @@ for more details on how these refactoring works.
 ### Extract method
 
 This refactoring works by triggering CodeAction when selecting a block of code.
+Optionally, similar statements can also be extracted.
 
 ### Extract variable
 
 This refactoring works by triggering CodeAction when selecting a Python
-expression.
+expression. Optionally, similar statements can also be extracted.
 
 ### Inline
 

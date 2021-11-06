@@ -33,6 +33,7 @@ def test_extract_variable(config, workspace, code_action_context):
                 {
                     "document_uri": document.uri,
                     "range": selection,
+                    "similar": False,
                 }
             ],
         },
@@ -56,6 +57,61 @@ def test_extract_variable(config, workspace, code_action_context):
     document_edits = assert_single_document_edit(edit_request, document)
     new_text = assert_text_edits(document_edits, target="simple_extract_variable.py")
     assert "extracted_variable = " in new_text
+    assert new_text.count("a + b") == 3
+
+
+def test_extract_variable_with_similar(config, workspace, code_action_context):
+    document = create_document(workspace, "simple.py")
+    line = 6
+    start_col = document.lines[line].index("a + b")
+    end_col = document.lines[line].index(")\n")
+    selection = Range((line, start_col), (line, end_col))
+
+    response = plugin.pylsp_code_actions(
+        config=config,
+        workspace=workspace,
+        document=document,
+        range=selection,
+        context=code_action_context,
+    )
+
+    expected: typing.CodeAction = {
+        "title": "Extract variable including similar statements",
+        "kind": "refactor.extract",
+        "command": {
+            "title": "Extract variable including similar statements",
+            "command": commands.COMMAND_REFACTOR_EXTRACT_VARIABLE,
+            "arguments": [
+                {
+                    "document_uri": document.uri,
+                    "range": selection,
+                    "similar": True,
+                }
+            ],
+        },
+    }
+
+    assert expected in response
+
+    assert expected["command"] is not None
+    command = expected["command"]["command"]
+    arguments = expected["command"]["arguments"]
+
+    response = plugin.pylsp_execute_command(
+        config=config,
+        workspace=workspace,
+        command=command,
+        arguments=arguments,
+    )
+
+    edit_request = workspace._endpoint.request.call_args
+
+    document_edits = assert_single_document_edit(edit_request, document)
+    new_text = assert_text_edits(
+        document_edits, target="simple_extract_variable_with_similar.py"
+    )
+    assert "extracted_variable = " in new_text
+    assert new_text.count("a + b") == 2
 
 
 def test_extract_variable_not_offered_when_selecting_non_expression(
@@ -102,6 +158,7 @@ def test_extract_method(config, workspace, code_action_context):
                 {
                     "document_uri": document.uri,
                     "range": selection,
+                    "similar": False,
                 }
             ],
         },
@@ -125,3 +182,57 @@ def test_extract_method(config, workspace, code_action_context):
     document_edits = assert_single_document_edit(edit_request, document)
     new_text = assert_text_edits(document_edits, target="simple_extract_method.py")
     assert "def extracted_method(" in new_text
+    assert new_text.count("print(a + b)") == 2
+    assert new_text.count("extracted_method(a, b)\n") == 1
+
+
+def test_extract_method_with_similar(config, workspace, code_action_context):
+    document = create_document(workspace, "simple.py")
+    selection = Range(6)
+
+    response = plugin.pylsp_code_actions(
+        config=config,
+        workspace=workspace,
+        document=document,
+        range=selection,
+        context=code_action_context,
+    )
+
+    expected: typing.CodeAction = {
+        "title": "Extract method including similar statements",
+        "kind": "refactor.extract",
+        "command": {
+            "title": "Extract method including similar statements",
+            "command": commands.COMMAND_REFACTOR_EXTRACT_METHOD,
+            "arguments": [
+                {
+                    "document_uri": document.uri,
+                    "range": selection,
+                    "similar": True,
+                }
+            ],
+        },
+    }
+
+    assert expected in response
+
+    assert expected["command"] is not None
+    command = expected["command"]["command"]
+    arguments = expected["command"]["arguments"]
+
+    response = plugin.pylsp_execute_command(
+        config=config,
+        workspace=workspace,
+        command=command,
+        arguments=arguments,
+    )
+
+    edit_request = workspace._endpoint.request.call_args
+
+    document_edits = assert_single_document_edit(edit_request, document)
+    new_text = assert_text_edits(
+        document_edits, target="simple_extract_method_with_similar.py"
+    )
+    assert "def extracted_method(" in new_text
+    assert new_text.count("print(a + b)") == 1
+    assert new_text.count("extracted_method(a, b)\n") == 2

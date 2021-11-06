@@ -80,15 +80,29 @@ def pylsp_code_actions(
         project.pycore._invalidate_resource_cache(resource)
 
     commands = {
+        "Extract method including similar statements": CommandRefactorExtractMethod(
+            workspace,
+            document_uri=document.uri,
+            range=range,
+            similar=True,
+        ),
         "Extract method": CommandRefactorExtractMethod(
             workspace,
             document_uri=document.uri,
             range=range,
+            similar=False,
+        ),
+        "Extract variable including similar statements": CommandRefactorExtractVariable(
+            workspace,
+            document_uri=document.uri,
+            range=range,
+            similar=True,
         ),
         "Extract variable": CommandRefactorExtractVariable(
             workspace,
             document_uri=document.uri,
             range=range,
+            similar=False,
         ),
         "Inline method/variable/parameter": CommandRefactorInline(
             workspace,
@@ -208,6 +222,7 @@ class CommandRefactorExtractMethod(Command):
 
     document_uri: DocumentUri
     range: typing.Range
+    similar: bool
 
     # FIXME: requires rope.refactor.extract._ExceptionalConditionChecker for proper checking
     # def _is_valid(self, info):
@@ -224,6 +239,7 @@ class CommandRefactorExtractMethod(Command):
         )
         rope_changeset = refactoring.get_changes(
             extracted_name="extracted_method",
+            similar=self.similar,
         )
         return rope_changeset
 
@@ -234,6 +250,7 @@ class CommandRefactorExtractVariable(Command):
 
     document_uri: DocumentUri
     range: typing.Range
+    similar: bool
 
     def validate(self, info):
         # FIXME: requires rope.refactor.extract._ExceptionalConditionChecker for proper checking
@@ -250,6 +267,7 @@ class CommandRefactorExtractVariable(Command):
         )
         rope_changeset = refactoring.get_changes(
             extracted_name="extracted_variable",
+            similar=self.similar,
         )
         return rope_changeset
 
