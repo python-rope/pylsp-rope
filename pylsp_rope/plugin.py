@@ -92,6 +92,13 @@ def pylsp_code_actions(
             range=range,
             similar=False,
         ),
+        "Extract global method": CommandRefactorExtractMethod(
+            workspace,
+            document_uri=document.uri,
+            range=range,
+            global_=True,
+            similar=False,
+        ),
         "Extract variable including similar statements": CommandRefactorExtractVariable(
             workspace,
             document_uri=document.uri,
@@ -223,6 +230,7 @@ class CommandRefactorExtractMethod(Command):
     document_uri: DocumentUri
     range: typing.Range
     similar: bool
+    global_: bool
 
     # FIXME: requires rope.refactor.extract._ExceptionalConditionChecker for proper checking
     # def _is_valid(self, info):
@@ -240,6 +248,7 @@ class CommandRefactorExtractMethod(Command):
         rope_changeset = refactoring.get_changes(
             extracted_name="extracted_method",
             similar=self.similar,
+            global_=self.global_,
         )
         return rope_changeset
 

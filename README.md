@@ -53,8 +53,14 @@ for more details on how these refactoring works.
 
 ### Extract method
 
+Extract a block of code into a method.
+
 This refactoring works by triggering CodeAction when selecting a block of code.
 Optionally, similar statements can also be extracted.
+
+### Extract global method
+
+Similar to extract method, except always create global function.
 
 ### Extract variable
 
