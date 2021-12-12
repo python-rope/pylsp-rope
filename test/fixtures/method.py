@@ -6,3 +6,4 @@ class MyClass:
         local_var = 10
         print(sys.stdin.read())
         print(local_var)
+        print(sys.stdin.read())

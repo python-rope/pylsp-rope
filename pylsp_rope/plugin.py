@@ -92,6 +92,13 @@ def pylsp_code_actions(
             range=range,
             similar=False,
         ),
+        "Extract global method including similar statements": CommandRefactorExtractMethod(
+            workspace,
+            document_uri=document.uri,
+            range=range,
+            global_=True,
+            similar=True,
+        ),
         "Extract global method": CommandRefactorExtractMethod(
             workspace,
             document_uri=document.uri,

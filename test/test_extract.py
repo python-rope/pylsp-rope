@@ -238,7 +238,7 @@ def test_extract_method_with_similar(config, workspace, code_action_context):
     assert new_text.count("extracted_method(a, b)\n") == 2
 
 
-def test_extract_method_global(config, workspace, code_action_context):
+def test_extract_global_method(config, workspace, code_action_context):
     document = create_document(workspace, "method.py")
     line = 6
     start_col = document.lines[line].index("sys.stdin.read()")
@@ -291,4 +291,62 @@ def test_extract_method_global(config, workspace, code_action_context):
     )
     assert "def extracted_method(" in new_text
     assert new_text.count("return sys.stdin.read()") == 1
+    assert new_text.count("sys.stdin.read()") == 2
     assert new_text.count("extracted_method()") == 2
+
+
+def test_extract_method_global_with_similar(config, workspace, code_action_context):
+    document = create_document(workspace, "method.py")
+    line = 6
+    start_col = document.lines[line].index("sys.stdin.read()")
+    end_col = document.lines[line].index(")\n")
+    selection = Range((line, start_col), (line, end_col))
+
+    response = plugin.pylsp_code_actions(
+        config=config,
+        workspace=workspace,
+        document=document,
+        range=selection,
+        context=code_action_context,
+    )
+
+    expected: typing.CodeAction = {
+        "title": "Extract global method including similar statements",
+        "kind": "refactor.extract",
+        "command": {
+            "title": "Extract global method including similar statements",
+            "command": commands.COMMAND_REFACTOR_EXTRACT_METHOD,
+            "arguments": [
+                {
+                    "document_uri": document.uri,
+                    "range": selection,
+                    "global_": True,
+                    "similar": True,
+                }
+            ],
+        },
+    }
+
+    assert expected in response
+
+    assert expected["command"] is not None
+    command = expected["command"]["command"]
+    arguments = expected["command"]["arguments"]
+
+    response = plugin.pylsp_execute_command(
+        config=config,
+        workspace=workspace,
+        command=command,
+        arguments=arguments,
+    )
+
+    edit_request = workspace._endpoint.request.call_args
+
+    document_edits = assert_single_document_edit(edit_request, document)
+    new_text = assert_text_edits(
+        document_edits, target="method_with_similar_global_function.py"
+    )
+    assert "def extracted_method(" in new_text
+    assert new_text.count("return sys.stdin.read()") == 1
+    assert new_text.count("sys.stdin.read()") == 1
+    assert new_text.count("extracted_method()") == 3

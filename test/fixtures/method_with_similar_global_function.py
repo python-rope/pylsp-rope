@@ -6,7 +6,7 @@ class MyClass:
         local_var = 10
         print(extracted_method())
         print(local_var)
-        print(sys.stdin.read())
+        print(extracted_method())
 
 def extracted_method():
     return sys.stdin.read()
