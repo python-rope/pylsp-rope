@@ -53,25 +53,25 @@ for more details on how these refactoring works.
 
 ### Extract method
 
-Extract a block of code into a method.
+Variants: 
+
+- Extract method
+- Extract global method
+- Extract method including similar statements
+- Extract global method including similar statements
 
 This refactoring works by triggering CodeAction when selecting a block of code.
 Optionally, similar statements can also be extracted.
 
-### Extract global method
-
-Similar to extract method, except always create global function.
-
 ### Extract variable
 
-Extract an expression into a variable.
+- Extract variable
+- Extract global variable
+- Extract variable including similar statements
+- Extract global variable including similar statements
 
 This refactoring works by triggering CodeAction when selecting a Python
 expression. Optionally, similar statements can also be extracted.
-
-### Extract global variable
-
-Similar to extract variable, except always create global variable.
 
 ### Inline
 
