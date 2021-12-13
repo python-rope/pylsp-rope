@@ -112,12 +112,28 @@ def pylsp_code_actions(
             workspace,
             document_uri=document.uri,
             range=range,
+            global_=False,
             similar=True,
         ),
         "Extract variable": CommandRefactorExtractVariable(
             workspace,
             document_uri=document.uri,
             range=range,
+            global_=False,
+            similar=False,
+        ),
+        "Extract global variable including similar statements": CommandRefactorExtractVariable(
+            workspace,
+            document_uri=document.uri,
+            range=range,
+            global_=True,
+            similar=True,
+        ),
+        "Extract global variable": CommandRefactorExtractVariable(
+            workspace,
+            document_uri=document.uri,
+            range=range,
+            global_=True,
             similar=False,
         ),
         "Inline method/variable/parameter": CommandRefactorInline(
@@ -269,6 +285,7 @@ class CommandRefactorExtractVariable(Command):
     document_uri: DocumentUri
     range: typing.Range
     similar: bool
+    global_: bool
 
     def validate(self, info):
         # FIXME: requires rope.refactor.extract._ExceptionalConditionChecker for proper checking
@@ -286,6 +303,7 @@ class CommandRefactorExtractVariable(Command):
         rope_changeset = refactoring.get_changes(
             extracted_name="extracted_variable",
             similar=self.similar,
+            global_=self.global_,
         )
         return rope_changeset
 

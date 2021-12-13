@@ -33,6 +33,7 @@ def test_extract_variable(config, workspace, code_action_context):
                 {
                     "document_uri": document.uri,
                     "range": selection,
+                    "global_": False,
                     "similar": False,
                 }
             ],
@@ -85,6 +86,7 @@ def test_extract_variable_with_similar(config, workspace, code_action_context):
                 {
                     "document_uri": document.uri,
                     "range": selection,
+                    "global_": False,
                     "similar": True,
                 }
             ],
@@ -112,6 +114,118 @@ def test_extract_variable_with_similar(config, workspace, code_action_context):
     )
     assert "extracted_variable = " in new_text
     assert new_text.count("a + b") == 2
+
+
+def test_extract_global_variable(config, workspace, code_action_context):
+    document = create_document(workspace, "method.py")
+    line = 6
+    start_col = document.lines[line].index("sys.stdin.read()")
+    end_col = document.lines[line].index(")\n")
+    selection = Range((line, start_col), (line, end_col))
+
+    response = plugin.pylsp_code_actions(
+        config=config,
+        workspace=workspace,
+        document=document,
+        range=selection,
+        context=code_action_context,
+    )
+
+    expected: typing.CodeAction = {
+        "title": "Extract global variable",
+        "kind": "refactor.extract",
+        "command": {
+            "title": "Extract global variable",
+            "command": commands.COMMAND_REFACTOR_EXTRACT_VARIABLE,
+            "arguments": [
+                {
+                    "document_uri": document.uri,
+                    "range": selection,
+                    "global_": True,
+                    "similar": False,
+                }
+            ],
+        },
+    }
+
+    assert expected in response
+
+    assert expected["command"] is not None
+    command = expected["command"]["command"]
+    arguments = expected["command"]["arguments"]
+
+    response = plugin.pylsp_execute_command(
+        config=config,
+        workspace=workspace,
+        command=command,
+        arguments=arguments,
+    )
+
+    edit_request = workspace._endpoint.request.call_args
+
+    document_edits = assert_single_document_edit(edit_request, document)
+    new_text = assert_text_edits(
+        document_edits, target="method_with_global_variable.py"
+    )
+    assert "extracted_variable = " in new_text
+    assert new_text.count("extracted_variable = sys.stdin.read()") == 1
+    assert new_text.count("sys.stdin.read()") == 2
+
+
+def test_extract_global_variable_with_similar(config, workspace, code_action_context):
+    document = create_document(workspace, "method.py")
+    line = 6
+    start_col = document.lines[line].index("sys.stdin.read()")
+    end_col = document.lines[line].index(")\n")
+    selection = Range((line, start_col), (line, end_col))
+
+    response = plugin.pylsp_code_actions(
+        config=config,
+        workspace=workspace,
+        document=document,
+        range=selection,
+        context=code_action_context,
+    )
+
+    expected: typing.CodeAction = {
+        "title": "Extract global variable including similar statements",
+        "kind": "refactor.extract",
+        "command": {
+            "title": "Extract global variable including similar statements",
+            "command": commands.COMMAND_REFACTOR_EXTRACT_VARIABLE,
+            "arguments": [
+                {
+                    "document_uri": document.uri,
+                    "range": selection,
+                    "global_": True,
+                    "similar": True,
+                }
+            ],
+        },
+    }
+
+    assert expected in response
+
+    assert expected["command"] is not None
+    command = expected["command"]["command"]
+    arguments = expected["command"]["arguments"]
+
+    response = plugin.pylsp_execute_command(
+        config=config,
+        workspace=workspace,
+        command=command,
+        arguments=arguments,
+    )
+
+    edit_request = workspace._endpoint.request.call_args
+
+    document_edits = assert_single_document_edit(edit_request, document)
+    new_text = assert_text_edits(
+        document_edits, target="method_with_similar_global_variable.py"
+    )
+    assert "extracted_variable = " in new_text
+    assert new_text.count("extracted_variable = sys.stdin.read()") == 1
+    assert new_text.count("sys.stdin.read()") == 1
 
 
 def test_extract_variable_not_offered_when_selecting_non_expression(

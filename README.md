@@ -64,8 +64,14 @@ Similar to extract method, except always create global function.
 
 ### Extract variable
 
+Extract an expression into a variable.
+
 This refactoring works by triggering CodeAction when selecting a Python
 expression. Optionally, similar statements can also be extracted.
+
+### Extract global variable
+
+Similar to extract variable, except always create global variable.
 
 ### Inline
 
