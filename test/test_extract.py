@@ -158,6 +158,7 @@ def test_extract_method(config, workspace, code_action_context):
                 {
                     "document_uri": document.uri,
                     "range": selection,
+                    "global_": False,
                     "similar": False,
                 }
             ],
@@ -208,6 +209,7 @@ def test_extract_method_with_similar(config, workspace, code_action_context):
                 {
                     "document_uri": document.uri,
                     "range": selection,
+                    "global_": False,
                     "similar": True,
                 }
             ],

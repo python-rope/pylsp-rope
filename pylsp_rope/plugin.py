@@ -84,12 +84,14 @@ def pylsp_code_actions(
             workspace,
             document_uri=document.uri,
             range=range,
+            global_=False,
             similar=True,
         ),
         "Extract method": CommandRefactorExtractMethod(
             workspace,
             document_uri=document.uri,
             range=range,
+            global_=False,
             similar=False,
         ),
         "Extract global method including similar statements": CommandRefactorExtractMethod(
