@@ -79,94 +79,55 @@ def pylsp_code_actions(
     for resource in get_resources(workspace, workspace.documents.keys()):
         project.pycore._invalidate_resource_cache(resource)
 
-    commands = {
-        "Extract method including similar statements": CommandRefactorExtractMethod(
+    commands = {}
+    commands.update(
+        CommandRefactorExtractMethod.get_code_actions(
             workspace,
-            document_uri=document.uri,
+            document=document,
             range=range,
-            global_=False,
-            similar=True,
         ),
-        "Extract method": CommandRefactorExtractMethod(
+    )
+    commands.update(
+        CommandRefactorExtractVariable.get_code_actions(
             workspace,
-            document_uri=document.uri,
+            document=document,
             range=range,
-            global_=False,
-            similar=False,
         ),
-        "Extract global method including similar statements": CommandRefactorExtractMethod(
-            workspace,
-            document_uri=document.uri,
-            range=range,
-            global_=True,
-            similar=True,
-        ),
-        "Extract global method": CommandRefactorExtractMethod(
-            workspace,
-            document_uri=document.uri,
-            range=range,
-            global_=True,
-            similar=False,
-        ),
-        "Extract variable including similar statements": CommandRefactorExtractVariable(
-            workspace,
-            document_uri=document.uri,
-            range=range,
-            global_=False,
-            similar=True,
-        ),
-        "Extract variable": CommandRefactorExtractVariable(
-            workspace,
-            document_uri=document.uri,
-            range=range,
-            global_=False,
-            similar=False,
-        ),
-        "Extract global variable including similar statements": CommandRefactorExtractVariable(
-            workspace,
-            document_uri=document.uri,
-            range=range,
-            global_=True,
-            similar=True,
-        ),
-        "Extract global variable": CommandRefactorExtractVariable(
-            workspace,
-            document_uri=document.uri,
-            range=range,
-            global_=True,
-            similar=False,
-        ),
-        "Inline method/variable/parameter": CommandRefactorInline(
-            workspace,
-            document_uri=document.uri,
-            position=info.position,
-        ),
-        "Use function": CommandRefactorUseFunction(
-            workspace,
-            document_uri=document.uri,
-            position=info.position,
-        ),
-        "Use function for current file only": CommandRefactorUseFunction(
-            workspace,
-            document_uri=document.uri,
-            position=info.position,
-            documents=[document.uri],
-        ),
-        "To method object": CommandRefactorMethodToMethodObject(
-            workspace,
-            document_uri=document.uri,
-            position=info.position,
-        ),
-        "Convert local variable to field": CommandRefactorLocalToField(
-            workspace,
-            document_uri=document.uri,
-            position=info.position,
-        ),
-        "Organize import": CommandSourceOrganizeImport(
-            workspace,
-            document_uri=document.uri,
-        ),
-    }
+    )
+    commands.update(
+        {
+            "Inline method/variable/parameter": CommandRefactorInline(
+                workspace,
+                document_uri=document.uri,
+                position=info.position,
+            ),
+            "Use function": CommandRefactorUseFunction(
+                workspace,
+                document_uri=document.uri,
+                position=info.position,
+            ),
+            "Use function for current file only": CommandRefactorUseFunction(
+                workspace,
+                document_uri=document.uri,
+                position=info.position,
+                documents=[document.uri],
+            ),
+            "To method object": CommandRefactorMethodToMethodObject(
+                workspace,
+                document_uri=document.uri,
+                position=info.position,
+            ),
+            "Convert local variable to field": CommandRefactorLocalToField(
+                workspace,
+                document_uri=document.uri,
+                position=info.position,
+            ),
+            "Organize import": CommandSourceOrganizeImport(
+                workspace,
+                document_uri=document.uri,
+            ),
+        }
+    )
 
     return [
         cmd.get_code_action(title=title)
@@ -277,6 +238,39 @@ class CommandRefactorExtractMethod(Command):
         )
         return rope_changeset
 
+    @classmethod
+    def get_code_actions(cls, workspace, document, range):
+        return {
+            "Extract method including similar statements": cls(
+                workspace,
+                document_uri=document.uri,
+                range=range,
+                global_=False,
+                similar=True,
+            ),
+            "Extract method": cls(
+                workspace,
+                document_uri=document.uri,
+                range=range,
+                global_=False,
+                similar=False,
+            ),
+            "Extract global method including similar statements": cls(
+                workspace,
+                document_uri=document.uri,
+                range=range,
+                global_=True,
+                similar=True,
+            ),
+            "Extract global method": cls(
+                workspace,
+                document_uri=document.uri,
+                range=range,
+                global_=True,
+                similar=False,
+            ),
+        }
+
 
 class CommandRefactorExtractVariable(Command):
     name = commands.COMMAND_REFACTOR_EXTRACT_VARIABLE
@@ -307,6 +301,38 @@ class CommandRefactorExtractVariable(Command):
         )
         return rope_changeset
 
+    @classmethod
+    def get_code_actions(cls, workspace, document, range):
+        return {
+            "Extract variable including similar statements": cls(
+                workspace,
+                document_uri=document.uri,
+                range=range,
+                global_=False,
+                similar=True,
+            ),
+            "Extract variable": cls(
+                workspace,
+                document_uri=document.uri,
+                range=range,
+                global_=False,
+                similar=False,
+            ),
+            "Extract global variable including similar statements": cls(
+                workspace,
+                document_uri=document.uri,
+                range=range,
+                global_=True,
+                similar=True,
+            ),
+            "Extract global variable": cls(
+                workspace,
+                document_uri=document.uri,
+                range=range,
+                global_=True,
+                similar=False,
+            ),
+        }
 
 class CommandRefactorInline(Command):
     name = commands.COMMAND_REFACTOR_INLINE
