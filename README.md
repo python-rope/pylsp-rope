@@ -44,6 +44,7 @@ This plugin adds the following features to python-lsp-server:
 - method to method object (codeAction)
 - convert local variable to field (codeAction)
 - organize imports (codeAction)
+- introduce parameter (codeAction)
 - more to come...
 
 Refer to [Rope documentation](https://github.com/python-rope/rope/blob/master/docs/overview.rst)
@@ -96,6 +97,11 @@ variable.
 ### Organize import
 
 This refactoring works by triggering CodeAction anywhere.
+
+### Introduce parameter
+
+This refactoring works by triggering CodeAction when the cursor is on any
+Python identifier, including attribute access.
 
 ## Caveat
 

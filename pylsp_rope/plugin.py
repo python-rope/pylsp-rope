@@ -11,6 +11,7 @@ from rope.refactor import (
     usefunction,
     localtofield,
     importutils,
+    introduce_parameter,
 )
 
 from pylsp_rope import typing, commands
@@ -125,6 +126,11 @@ def pylsp_code_actions(
             "Organize import": CommandSourceOrganizeImport(
                 workspace,
                 document_uri=document.uri,
+            ),
+            "Introduce parameter": CommandIntroduceParameter(
+                workspace,
+                document_uri=document.uri,
+                position=info.position,
             ),
         }
     )
@@ -454,5 +460,33 @@ class CommandSourceOrganizeImport(Command):
         )
         rope_changeset = organizer.organize_imports(
             resource=resource,
+        )
+        return rope_changeset
+
+
+class CommandIntroduceParameter(Command):
+    name = commands.COMMAND_INTRODUCE_PARAMETER
+    kind: CodeActionKind = "refactor"
+
+    document_uri: DocumentUri
+    position: typing.Range
+
+    def validate(self, info):
+        introduce_parameter.IntroduceParameter(
+            project=self.project,
+            resource=info.resource,
+            offset=info.current_document.offset_at_position(self.position),
+        )
+
+    def get_changes(self):
+        current_document, resource = get_resource(self.workspace, self.document_uri)
+
+        refactoring = introduce_parameter.IntroduceParameter(
+            project=self.project,
+            resource=resource,
+            offset=current_document.offset_at_position(self.position),
+        )
+        rope_changeset = refactoring.get_changes(
+            new_parameter="new_parameter",
         )
         return rope_changeset
