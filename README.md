@@ -100,8 +100,8 @@ This refactoring works by triggering CodeAction anywhere.
 
 ### Introduce parameter
 
-This refactoring works by triggering CodeAction when the cursor is on any
-Python identifier, including attribute access.
+This refactoring works by triggering CodeAction when the cursor is selecting
+a Python identifier, including attribute access.
 
 ## Caveat
 
