@@ -1,11 +1,17 @@
 import logging
 from typing import List
 
-from pylsp import hookimpl
+from pylsp import hookimpl, uris
 from pylsp.lsp import MessageType
+from rope.refactor.rename import Rename
 
 from pylsp_rope import refactoring, typing, commands
-from pylsp_rope.project import get_project, get_resource, get_resources
+from pylsp_rope.project import (
+    get_project,
+    get_resource,
+    get_resources,
+    rope_changeset_to_workspace_edit,
+)
 
 
 logger = logging.getLogger(__name__)
@@ -15,7 +21,6 @@ logger = logging.getLogger(__name__)
 def pylsp_settings():
     logger.info("Initializing pylsp_rope")
 
-    # Disable default plugins that conflicts with our plugin
     return {
         "plugins": {
             # "autopep8_format": {"enabled": False},
@@ -34,7 +39,7 @@ def pylsp_settings():
             # "pylint_lint": {"enabled": False},
             # "references": {"enabled": False},
             # "rope_completion": {"enabled": False},
-            # "rope_rename": {"enabled": False},
+            "rope_rename": {"enabled": True},
             # "signature": {"enabled": False},
             # "symbols": {"enabled": False},
             # "yapf_format": {"enabled": False},
@@ -155,3 +160,37 @@ def pylsp_execute_command(config, workspace, command, arguments):
             f"pylsp-rope: {exc}",
             msg_type=MessageType.Error,
         )
+
+
+@hookimpl
+def pylsp_rename(
+    config,
+    workspace,
+    document,
+    position,
+    new_name,
+) -> typing.WorkspaceEdit:
+    # rope_config = config.settings(document_path=document.path).get("rope", {})
+    # project = workspace._rope_project_builder(rope_config)
+    project = get_project(workspace)
+    current_document, resource = get_resource(workspace, document.uri)
+
+    rename = Rename(
+        project=project,
+        resource=resource,
+        offset=document.offset_at_position(position),
+    )
+
+    logger.debug(
+        "Executing rename of %s to %s",
+        document.word_at_position(position),
+        new_name,
+    )
+
+    rope_changeset = rename.get_changes(new_name, in_hierarchy=True, docs=True)
+    logger.debug("Finished rename: %s", rope_changeset.changes)
+    workspace_edit = rope_changeset_to_workspace_edit(
+        workspace,
+        rope_changeset,
+    )
+    return workspace_edit
