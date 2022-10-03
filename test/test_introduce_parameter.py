@@ -1,4 +1,3 @@
-
 from pylsp_rope import commands, plugin, typing
 from pylsp_rope.text import Range
 from test.conftest import create_document

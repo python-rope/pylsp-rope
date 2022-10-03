@@ -32,7 +32,7 @@ def test_command_error_handling(caplog, config, workspace, document):
     ]
 
     with patch(
-        "pylsp_rope.plugin.CommandRefactorInline.__call__",
+        "pylsp_rope.refactoring.CommandRefactorInline.__call__",
         side_effect=Exception("some unexpected exception"),
     ):
         pylsp_execute_command(
