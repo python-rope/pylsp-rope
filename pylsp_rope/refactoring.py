@@ -358,6 +358,7 @@ class GenerateCode(Command):
     Given an undefined symbol under cursor, generate an empty
     variable/function/class/module/package
     """
+
     name = commands.COMMAND_GENERATE_CODE
     kind: CodeActionKind = "quickfix"
 
@@ -393,5 +394,6 @@ class GenerateCode(Command):
                 document_uri=document.uri,
                 position=position,
                 generate_kind=generate_kind,
-            ) for generate_kind in ["variable", "function", "class", "module", "package"]
+            )
+            for generate_kind in ["variable", "function", "class", "module", "package"]
         }
