@@ -384,3 +384,20 @@ class GenerateCode(Command):
         )
         rope_changeset = refactoring.get_changes()
         return rope_changeset
+
+    @classmethod
+    def get_code_actions(cls, workspace, document, position):
+        return {
+            "Generate variable": cls(
+                workspace,
+                document_uri=document.uri,
+                position=position,
+                generate_kind="variable",
+            ),
+            "Generate class": cls(
+                workspace,
+                document_uri=document.uri,
+                position=position,
+                generate_kind="class",
+            ),
+        }

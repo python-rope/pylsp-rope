@@ -116,19 +116,14 @@ def pylsp_code_actions(
                 document_uri=document.uri,
                 position=info.position,
             ),
-            "Generate variable": refactoring.GenerateCode(
-                workspace,
-                document_uri=document.uri,
-                position=info.position,
-                generate_kind="variable",
-            ),
-            "Generate class": refactoring.GenerateCode(
-                workspace,
-                document_uri=document.uri,
-                position=info.position,
-                generate_kind="class",
-            ),
         }
+    )
+    commands.update(
+        refactoring.GenerateCode.get_code_actions(
+            workspace,
+            document=document,
+            position=info.position,
+        ),
     )
 
     return [
