@@ -45,6 +45,7 @@ This plugin adds the following features to python-lsp-server:
 - convert local variable to field (codeAction)
 - organize imports (codeAction)
 - introduce parameter (codeAction)
+- generate variable/function/class from undefined variable (codeAction)
 - more to come...
 
 Refer to [Rope documentation](https://github.com/python-rope/rope/blob/master/docs/overview.rst)
@@ -61,8 +62,9 @@ Variants:
 - Extract method including similar statements
 - Extract global method including similar statements
 
-This refactoring works by triggering CodeAction when selecting a block of code.
-Optionally, similar statements can also be extracted.
+When CodeAction is triggered and the cursor is on any block of code, extract
+that expression into a method. Optionally, similar statements can also be
+extracted.
 
 ### Extract variable
 
@@ -73,37 +75,40 @@ Variants:
 - Extract variable including similar statements
 - Extract global variable including similar statements
 
-This refactoring works by triggering CodeAction when selecting a Python
-expression. Optionally, similar statements can also be extracted.
+When CodeAction is triggered and the cursor is on a expression, extract that
+expression into a variable. Optionally, similar statements can also be
+extracted.
 
 ### Inline
 
-This refactoring works by triggering CodeAction when the cursor is on a
-resolvable Python identifier.
+When CodeAction is triggered and the cursor is on a resolvable Python variable,
+replace all calls to that method with the method body.
 
 ### Use function
 
-This refactoring works by triggering CodeAction when the cursor is on the
-function name of a `def` statement.
+When CodeAction is triggered and the cursor is on the function name of a `def`
+statement, try to replace code whose AST matches the selected function with a
+call to the function.
 
 ### Method to method object
 
-This refactoring works by triggering CodeAction when the cursor is on the
-function name of a `def` statement.
+When CodeAction is triggered and the cursor is on the function name of a `def`
+statement, create a callable class to replace that method. You may want to
+inline the method afterwards to remove the indirection.
 
 ### Convert local variable to field
 
-This refactoring works by triggering CodeAction when the cursor is on a local
-variable.
+When CodeAction is triggered wand the cursor is on a local variable inside a
+method, convert that local variable to an attribute.
 
 ### Organize import
 
-This refactoring works by triggering CodeAction anywhere.
+Trigger CodeAction anywhere in a Python file to organize imports.
 
 ### Introduce parameter
 
-This refactoring works by triggering CodeAction when the cursor is selecting
-a Python identifier, including attribute access.
+When CodeAction is triggered and the cursor is selecting a Python variable or
+attribute, make that variable/attribute a parameter.
 
 ### Generate code
 
@@ -115,8 +120,9 @@ Variants:
 - [ ] Generate module
 - [ ] Generate package
 
-Given an undefined symbol under cursor, generate an empty
-variable/function/class/module/package for that name.
+When CodeAction is triggered and the cursor is on an undefined Python
+variable, generate an empty variable/function/class/module/package for that
+name.
 
 ## Caveat
 
