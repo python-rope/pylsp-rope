@@ -22,7 +22,8 @@ for how to configure their LSP client to run `pylsp` in development mode.
 ### Enabling tcp mode
 
 Optionally, run in tcp mode if you want to be able to use the standard
-input/output, for example when using IPython or pudb, run this from terminal:
+input/output for something else, for example when using IPython or pudb, run
+this from terminal:
 
 ``` bash
 pylsp -v --tcp --port 8772 --log-file /tmp/pylsp.log
