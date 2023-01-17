@@ -116,6 +116,11 @@ def pylsp_code_actions(
                 document_uri=document.uri,
                 position=info.position,
             ),
+            "Generate variable": refactoring.GenerateCode(
+                workspace,
+                document_uri=document.uri,
+                position=info.position,
+            ),
         }
     )
 

@@ -1,5 +1,7 @@
 import ast
 
+from rope.base import evaluate
+from rope.contrib import generate
 from rope.refactor import (
     extract,
     inline,
@@ -348,4 +350,34 @@ class CommandIntroduceParameter(Command):
         rope_changeset = refactoring.get_changes(
             new_parameter="new_parameter",
         )
+        return rope_changeset
+
+
+class GenerateCode(Command):
+    """
+    Given an undefined symbol under cursor, generate an empty
+    variable/function/class/module/package
+    """
+    name = commands.COMMAND_GENERATE_CODE
+    kind: CodeActionKind = "quickfix"
+
+    document_uri: DocumentUri
+    position: typing.Range
+
+    def validate(self, info):
+        generate.GenerateVariable(
+            project=self.project,
+            resource=info.resource,
+            offset=info.current_document.offset_at_position(self.position),
+        )
+
+    def get_changes(self):
+        current_document, resource = get_resource(self.workspace, self.document_uri)
+
+        refactoring = generate.GenerateVariable(
+            project=self.project,
+            resource=resource,
+            offset=current_document.offset_at_position(self.position),
+        )
+        rope_changeset = refactoring.get_changes()
         return rope_changeset

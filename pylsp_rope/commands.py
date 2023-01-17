@@ -6,3 +6,4 @@ COMMAND_REFACTOR_METHOD_TO_METHOD_OBJECT = "pylsp_rope.refactor.method_to_method
 COMMAND_REFACTOR_LOCAL_TO_FIELD = "pylsp_rope.refactor.local_to_field"
 COMMAND_SOURCE_ORGANIZE_IMPORT = "pylsp_rope.source.organize_import"
 COMMAND_INTRODUCE_PARAMETER = "pylsp_rope.refactor.introduce_parameter"
+COMMAND_GENERATE_CODE = "pylsp_rope.quickfix.generate"

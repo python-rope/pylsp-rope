@@ -66,6 +66,8 @@ Optionally, similar statements can also be extracted.
 
 ### Extract variable
 
+Variants: 
+
 - Extract variable
 - Extract global variable
 - Extract variable including similar statements
@@ -102,6 +104,19 @@ This refactoring works by triggering CodeAction anywhere.
 
 This refactoring works by triggering CodeAction when the cursor is selecting
 a Python identifier, including attribute access.
+
+### Generate code
+
+Variants:
+
+- [x] Generate variable
+- [ ] Generate function
+- [ ] Generate class
+- [ ] Generate module
+- [ ] Generate package
+
+Given an undefined symbol under cursor, generate an empty
+variable/function/class/module/package for that name.
 
 ## Caveat
 
