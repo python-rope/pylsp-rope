@@ -110,7 +110,7 @@ a Python identifier, including attribute access.
 Variants:
 
 - [x] Generate variable
-- [ ] Generate function
+- [x] Generate function
 - [x] Generate class
 - [ ] Generate module
 - [ ] Generate package

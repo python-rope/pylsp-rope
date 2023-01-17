@@ -388,16 +388,10 @@ class GenerateCode(Command):
     @classmethod
     def get_code_actions(cls, workspace, document, position):
         return {
-            "Generate variable": cls(
+            f"Generate {generate_kind}": cls(
                 workspace,
                 document_uri=document.uri,
                 position=position,
-                generate_kind="variable",
-            ),
-            "Generate class": cls(
-                workspace,
-                document_uri=document.uri,
-                position=position,
-                generate_kind="class",
-            ),
+                generate_kind=generate_kind,
+            ) for generate_kind in ["variable", "function", "class", "module", "package"]
         }
