@@ -111,7 +111,7 @@ Variants:
 
 - [x] Generate variable
 - [ ] Generate function
-- [ ] Generate class
+- [x] Generate class
 - [ ] Generate module
 - [ ] Generate package
 

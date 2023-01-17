@@ -363,9 +363,11 @@ class GenerateCode(Command):
 
     document_uri: DocumentUri
     position: typing.Range
+    generate_kind: str
 
     def validate(self, info):
-        generate.GenerateVariable(
+        generate.create_generate(
+            kind=self.generate_kind,
             project=self.project,
             resource=info.resource,
             offset=info.current_document.offset_at_position(self.position),
@@ -374,7 +376,8 @@ class GenerateCode(Command):
     def get_changes(self):
         current_document, resource = get_resource(self.workspace, self.document_uri)
 
-        refactoring = generate.GenerateVariable(
+        refactoring = generate.create_generate(
+            kind=self.generate_kind,
             project=self.project,
             resource=resource,
             offset=current_document.offset_at_position(self.position),
