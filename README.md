@@ -136,6 +136,15 @@ if you had any issues with the plugin.
 
 See [CONTRIBUTING.md](https://github.com/python-rope/pylsp-rope/blob/main/CONTRIBUTING.md).
 
+## Packaging status
+
+| Version |
+| --- |
+| ![PyPI](https://img.shields.io/pypi/v/pylsp-rope) |
+| ![AUR version](https://img.shields.io/aur/version/python-pylsp-rope) |
+| ![Debian package](https://img.shields.io/debian/v/python3-pylsp-rope/bookworm) (Debian Bookworm) |
+| ![Debian package](https://img.shields.io/debian/v/python3-pylsp-rope/sid) (Debian Sid) |
+
 ## Credits
 
 This package was created with
