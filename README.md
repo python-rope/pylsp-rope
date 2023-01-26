@@ -138,12 +138,9 @@ See [CONTRIBUTING.md](https://github.com/python-rope/pylsp-rope/blob/main/CONTRI
 
 ## Packaging status
 
-| Version |
-| --- |
-| ![PyPI](https://img.shields.io/pypi/v/pylsp-rope) |
-| ![AUR version](https://img.shields.io/aur/version/python-pylsp-rope) |
-| ![Debian package](https://img.shields.io/debian/v/python3-pylsp-rope/bookworm) (Debian Bookworm) |
-| ![Debian package](https://img.shields.io/debian/v/python3-pylsp-rope/sid) (Debian Sid) |
+[![Packaging status](https://repology.org/badge/vertical-allrepos/python:pylsp-rope.svg)](https://repology.org/project/python:pylsp-rope/versions)
+
+[![Packaging status](https://repology.org/badge/vertical-allrepos/python:lsp-rope.svg)](https://repology.org/project/python:lsp-rope/versions)
 
 ## Credits
 
