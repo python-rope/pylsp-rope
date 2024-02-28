@@ -1,5 +1,5 @@
 import logging
-from typing import List
+from typing import List, Optional
 
 from pylsp import hookimpl, uris
 from pylsp.lsp import MessageType
@@ -39,7 +39,10 @@ def pylsp_settings():
             # "pylint_lint": {"enabled": False},
             # "references": {"enabled": False},
             # "rope_completion": {"enabled": False},
-            "rope_rename": {"enabled": True},
+            "pylsp_rope": {
+                "enabled": True,
+                "rename": False,
+            },
             # "signature": {"enabled": False},
             # "symbols": {"enabled": False},
             # "yapf_format": {"enabled": False},
@@ -169,9 +172,11 @@ def pylsp_rename(
     document,
     position,
     new_name,
-) -> typing.WorkspaceEdit:
-    # rope_config = config.settings(document_path=document.path).get("rope", {})
-    # project = workspace._rope_project_builder(rope_config)
+) -> Optional[typing.WorkspaceEdit]:
+    cfg = config.plugin_settings("pylsp_rope", document_path=document.uri)
+    if not cfg.get("rename", False):
+        return None
+
     project = get_project(workspace)
     current_document, resource = get_resource(workspace, document.uri)
 
