@@ -57,7 +57,11 @@ def pylsp_commands(config, workspace) -> List[str]:
 
 @hookimpl
 def pylsp_code_actions(
-    config, workspace, document, range, context
+    config,
+    workspace,
+    document,
+    range,
+    context,
 ) -> List[typing.CodeAction]:
     logger.info("textDocument/codeAction: %s %s %s", document, range, context)
 
@@ -177,6 +181,7 @@ def pylsp_rename(
     if not cfg.get("rename", False):
         return None
 
+    logger.info("textDocument/rename: %s %s %s", document, position, new_name)
     project = get_project(workspace)
     current_document, resource = get_resource(workspace, document.uri)
 
