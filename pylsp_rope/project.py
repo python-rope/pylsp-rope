@@ -1,6 +1,6 @@
 import logging
 from functools import lru_cache
-from typing import List, Dict, Tuple
+from typing import List, Dict, Tuple, Optional
 
 from pylsp import uris, workspace
 from rope.base import libutils
@@ -8,7 +8,7 @@ from rope.base.fscommands import FileSystemCommands
 
 from pylsp_rope import rope
 from pylsp_rope.lsp_diff import lsp_diff
-from pylsp_rope.typing import WorkspaceEdit, DocumentUri, TextEdit, Line
+from pylsp_rope.typing import WorkspaceEditWithChanges, WorkspaceEditWithDocumentChanges, WorkspaceEdit, DocumentUri, TextEdit, Line
 
 
 logger = logging.getLogger(__name__)
@@ -38,19 +38,20 @@ def get_document(workspace, resource: rope.Resource) -> workspace.Document:
     return workspace.get_document(uris.from_fs_path(resource.real_path))
 
 
-def rope_changeset_to_workspace_edit(
-    workspace, rope_changeset: rope.ChangeSet
-) -> WorkspaceEdit:
-    def _get_contents(change: rope.Change) -> Tuple[List[Line], List[Line]]:
-        old = change.old_contents
-        new = change.new_contents
-        if old is None:
-            if change.resource.exists():
-                old = change.resource.read()
-            else:
-                old = ""
-        return old.splitlines(keepends=True), new.splitlines(keepends=True)
+def _get_contents(change: rope.Change) -> Tuple[List[Line], List[Line]]:
+    old = change.old_contents
+    new = change.new_contents
+    if old is None:
+        if change.resource.exists():
+            old = change.resource.read()
+        else:
+            old = ""
+    return old.splitlines(keepends=True), new.splitlines(keepends=True)
 
+
+def _rope_changeset_to_workspace_edit_with_changes(
+    workspace, rope_changeset: rope.ChangeSet
+) -> WorkspaceEditWithChanges:
     workspace_changeset: Dict[DocumentUri, List[TextEdit]] = {}
     for change in rope_changeset.changes:
         lines_old, lines_new = _get_contents(change)
@@ -62,6 +63,12 @@ def rope_changeset_to_workspace_edit(
     return {
         "changes": workspace_changeset,
     }
+
+
+def rope_changeset_to_workspace_edit(
+    workspace, rope_changeset: rope.ChangeSet
+) -> WorkspaceEdit:
+    return _rope_changeset_to_workspace_edit_with_changes(workspace, rope_changeset)
 
 
 def apply_rope_changeset(workspace, rope_changeset: rope.ChangeSet) -> None:
