@@ -1,5 +1,5 @@
 import sys
-from typing import List, Dict, Optional, NewType, Any
+from typing import List, Dict, Optional, NewType, Any, Union
 
 
 if sys.version_info >= (3, 8):
@@ -25,15 +25,38 @@ class Range(TypedDict):
     end: Position
 
 
+class TextDocumentIdentifier(TypedDict):
+    uri: DocumentUri
+
+
+class OptionalVersionedTextDocumentIdentifier(TextDocumentIdentifier):
+    version: Optional[int]
+
+
 class TextEdit(TypedDict):
     range: Range
     newText: str
 
 
-class WorkspaceEdit(TypedDict):
+class TextDocumentEdit(TypedDict):
+    textDocument: OptionalVersionedTextDocumentIdentifier
+
+    edits: list[TextEdit]  # FIXME: should be: list[TextEdit| AnnotatedTextEdit]
+
+
+class WorkspaceEditWithChanges(TypedDict):
     changes: Optional[Dict[DocumentUri, List[TextEdit]]]
-    # documentChanges: ...
+    # documentChanges: Optional[list[TextDocumentEdit]]  # FIXME: should be: (TextDocumentEdit | CreateFile | RenameFile | DeleteFile)[]
     # changeAnnotations: ...
+
+
+class WorkspaceEditWithDocumentChanges(TypedDict):
+    # changes: Optional[Dict[DocumentUri, List[TextEdit]]]
+    documentChanges: Optional[list[TextDocumentEdit]]  # FIXME: should be: (TextDocumentEdit | CreateFile | RenameFile | DeleteFile)[]
+    # changeAnnotations: ...
+
+
+WorkspaceEdit = Union[WorkspaceEditWithChanges, WorkspaceEditWithDocumentChanges]
 
 
 class ApplyWorkspaceEditParams(TypedDict):
