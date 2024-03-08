@@ -146,5 +146,5 @@ See [CONTRIBUTING.md](https://github.com/python-rope/pylsp-rope/blob/main/CONTRI
 
 This package was created with
 [Cookiecutter](https://github.com/audreyr/cookiecutter) from
-[lieryan/cookiecutter-pylsp-plugin](https://github.com/lieryan/cookiecutter-pylsp-plugin)
+[python-lsp/cookiecutter-pylsp-plugin](https://github.com/python-lsp/cookiecutter-pylsp-plugin)
 project template.
