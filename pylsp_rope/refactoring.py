@@ -1,5 +1,5 @@
 import ast
-from typing import Optional
+from typing import List, Optional
 
 from rope.contrib import generate
 from rope.refactor import (
@@ -232,7 +232,7 @@ class CommandRefactorUseFunction(Command):
     kind: CodeActionKind = "refactor"
 
     document_uri: DocumentUri
-    documents: Optional[list[DocumentUri]] = None
+    documents: Optional[List[DocumentUri]] = None
     position: typing.Range
 
     def validate(self, info):
