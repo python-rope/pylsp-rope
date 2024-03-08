@@ -1,3 +1,4 @@
+from __future__ import annotations
 import logging
 from functools import lru_cache
 from typing import List, Dict, Tuple, Optional, Literal, cast
@@ -24,15 +25,34 @@ logger = logging.getLogger(__name__)
 
 @lru_cache(maxsize=None)
 def get_project(workspace) -> rope.Project:
+    """Get a cached rope Project or create one if it doesn't exist yet"""
+    return new_project(workspace)
+
+
+def new_project(workspace) -> rope.Project:
+    """
+    Always create a new Project, some operations like rename seems to have
+    problems when using the cached Project
+    """
     fscommands = WorkspaceFileCommands(workspace)
     return rope.Project(workspace.root_path, fscommands=fscommands)
 
 
 def get_resource(
-    workspace, document_uri: DocumentUri
+    workspace,
+    document_uri: DocumentUri,
+    *,
+    project: rope.Project = None,
 ) -> Tuple[workspace.Document, rope.Resource]:
+    """
+    Return a Document and Resource related to an LSP Document.
+
+    `project` must be provided if not using instances of rope Project from
+    `pylsp_rope.project.get_project()`.
+    """
     document = workspace.get_document(document_uri)
-    resource = libutils.path_to_resource(get_project(workspace), document.path)
+    project = project or get_project(workspace)
+    resource = libutils.path_to_resource(project, document.path)
     return document, resource
 
 
