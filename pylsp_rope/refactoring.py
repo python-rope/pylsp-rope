@@ -1,6 +1,6 @@
 import ast
+from typing import Optional
 
-from rope.base import evaluate
 from rope.contrib import generate
 from rope.refactor import (
     extract,
@@ -232,6 +232,7 @@ class CommandRefactorUseFunction(Command):
     kind: CodeActionKind = "refactor"
 
     document_uri: DocumentUri
+    documents: Optional[list[DocumentUri]] = None
     position: typing.Range
 
     def validate(self, info):
@@ -249,8 +250,9 @@ class CommandRefactorUseFunction(Command):
             resource=resource,
             offset=current_document.offset_at_position(self.position),
         )
+        resources = get_resources(self.workspace, self.documents) if self.documents is not None else None
         rope_changeset = refactoring.get_changes(
-            resources=get_resources(self.workspace, getattr(self, "documents", None)),
+            resources=resources,
         )
         return rope_changeset
 
