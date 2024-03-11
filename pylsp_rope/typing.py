@@ -41,7 +41,7 @@ class TextEdit(TypedDict):
 class TextDocumentEdit(TypedDict):
     textDocument: OptionalVersionedTextDocumentIdentifier
 
-    edits: list[TextEdit]  # FIXME: should be: list[TextEdit| AnnotatedTextEdit]
+    edits: List[TextEdit]  # FIXME: should be: list[TextEdit| AnnotatedTextEdit]
 
 
 class WorkspaceEditWithChanges(TypedDict):
@@ -52,7 +52,7 @@ class WorkspaceEditWithChanges(TypedDict):
 
 class WorkspaceEditWithDocumentChanges(TypedDict):
     # changes: Optional[Dict[DocumentUri, List[TextEdit]]]
-    documentChanges: list[TextDocumentEdit]  # FIXME: should be: (TextDocumentEdit | CreateFile | RenameFile | DeleteFile)[]
+    documentChanges: List[TextDocumentEdit]  # FIXME: should be: (TextDocumentEdit | CreateFile | RenameFile | DeleteFile)[]
     # changeAnnotations: ...
 
 
