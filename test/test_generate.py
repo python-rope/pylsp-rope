@@ -22,7 +22,6 @@ def test_generate_variable(config, workspace, code_action_context):
         "title": "Generate variable",
         "kind": "quickfix",
         "command": {
-            "title": "Generate variable",
             "command": commands.COMMAND_GENERATE_CODE,
             "arguments": [
                 {
@@ -72,7 +71,6 @@ def test_generate_function(config, workspace, code_action_context):
         "title": "Generate function",
         "kind": "quickfix",
         "command": {
-            "title": "Generate function",
             "command": commands.COMMAND_GENERATE_CODE,
             "arguments": [
                 {
@@ -122,7 +120,6 @@ def test_generate_class(config, workspace, code_action_context):
         "title": "Generate class",
         "kind": "quickfix",
         "command": {
-            "title": "Generate class",
             "command": commands.COMMAND_GENERATE_CODE,
             "arguments": [
                 {

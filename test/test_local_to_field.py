@@ -26,7 +26,6 @@ def test_local_to_field(config, workspace, code_action_context):
         "title": "Convert local variable to field",
         "kind": "refactor.rewrite",
         "command": {
-            "title": "Convert local variable to field",
             "command": commands.COMMAND_REFACTOR_LOCAL_TO_FIELD,
             "arguments": [
                 {

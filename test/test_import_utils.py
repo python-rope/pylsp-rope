@@ -26,7 +26,6 @@ def test_organize_import(config, workspace, document, code_action_context):
         "title": "Organize import",
         "kind": "source.organizeImports",
         "command": {
-            "title": "Organize import",
             "command": commands.COMMAND_SOURCE_ORGANIZE_IMPORT,
             "arguments": [
                 {

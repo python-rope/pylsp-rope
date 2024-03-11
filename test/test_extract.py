@@ -27,7 +27,6 @@ def test_extract_variable(config, workspace, code_action_context):
         "title": "Extract variable",
         "kind": "refactor.extract",
         "command": {
-            "title": "Extract variable",
             "command": commands.COMMAND_REFACTOR_EXTRACT_VARIABLE,
             "arguments": [
                 {
@@ -80,7 +79,6 @@ def test_extract_variable_with_similar(config, workspace, code_action_context):
         "title": "Extract variable including similar statements",
         "kind": "refactor.extract",
         "command": {
-            "title": "Extract variable including similar statements",
             "command": commands.COMMAND_REFACTOR_EXTRACT_VARIABLE,
             "arguments": [
                 {
@@ -135,7 +133,6 @@ def test_extract_global_variable(config, workspace, code_action_context):
         "title": "Extract global variable",
         "kind": "refactor.extract",
         "command": {
-            "title": "Extract global variable",
             "command": commands.COMMAND_REFACTOR_EXTRACT_VARIABLE,
             "arguments": [
                 {
@@ -191,7 +188,6 @@ def test_extract_global_variable_with_similar(config, workspace, code_action_con
         "title": "Extract global variable including similar statements",
         "kind": "refactor.extract",
         "command": {
-            "title": "Extract global variable including similar statements",
             "command": commands.COMMAND_REFACTOR_EXTRACT_VARIABLE,
             "arguments": [
                 {
@@ -266,7 +262,6 @@ def test_extract_method(config, workspace, code_action_context):
         "title": "Extract method",
         "kind": "refactor.extract",
         "command": {
-            "title": "Extract method",
             "command": commands.COMMAND_REFACTOR_EXTRACT_METHOD,
             "arguments": [
                 {
@@ -317,7 +312,6 @@ def test_extract_method_with_similar(config, workspace, code_action_context):
         "title": "Extract method including similar statements",
         "kind": "refactor.extract",
         "command": {
-            "title": "Extract method including similar statements",
             "command": commands.COMMAND_REFACTOR_EXTRACT_METHOD,
             "arguments": [
                 {
@@ -373,7 +367,6 @@ def test_extract_global_method(config, workspace, code_action_context):
         "title": "Extract global method",
         "kind": "refactor.extract",
         "command": {
-            "title": "Extract global method",
             "command": commands.COMMAND_REFACTOR_EXTRACT_METHOD,
             "arguments": [
                 {
@@ -430,7 +423,6 @@ def test_extract_method_global_with_similar(config, workspace, code_action_conte
         "title": "Extract global method including similar statements",
         "kind": "refactor.extract",
         "command": {
-            "title": "Extract global method including similar statements",
             "command": commands.COMMAND_REFACTOR_EXTRACT_METHOD,
             "arguments": [
                 {

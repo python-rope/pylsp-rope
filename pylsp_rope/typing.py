@@ -61,7 +61,6 @@ CodeActionKind = Literal[
 
 
 class CodeAction(TypedDict):
-    title: str
     kind: Optional[CodeActionKind]
     # diagnostics: Optional[List[Diagnostic]]
     # isPreferred: Optional[bool]
