@@ -1,5 +1,9 @@
 import sys
-from typing import List, Dict, Optional, NewType, Any
+from typing import List, Dict, Optional, NewType, Any, Union
+try:
+    from typing import TypeGuard
+except ImportError:
+    from typing_extensions import TypeGuard
 
 
 if sys.version_info >= (3, 8):
@@ -25,15 +29,52 @@ class Range(TypedDict):
     end: Position
 
 
+class TextDocumentIdentifier(TypedDict):
+    uri: DocumentUri
+
+
+class OptionalVersionedTextDocumentIdentifier(TextDocumentIdentifier):
+    version: Optional[int]
+
+
 class TextEdit(TypedDict):
     range: Range
     newText: str
 
 
-class WorkspaceEdit(TypedDict):
-    changes: Optional[Dict[DocumentUri, List[TextEdit]]]
-    # documentChanges: ...
+class TextDocumentEdit(TypedDict):
+    textDocument: OptionalVersionedTextDocumentIdentifier
+
+    edits: List[TextEdit]  # FIXME: should be: list[TextEdit| AnnotatedTextEdit]
+
+
+class WorkspaceEditWithChanges(TypedDict):
+    changes: Dict[DocumentUri, List[TextEdit]]
+    # documentChanges: Optional[list[TextDocumentEdit]]  # FIXME: should be: (TextDocumentEdit | CreateFile | RenameFile | DeleteFile)[]
     # changeAnnotations: ...
+
+
+class WorkspaceEditWithDocumentChanges(TypedDict):
+    # changes: Optional[Dict[DocumentUri, List[TextEdit]]]
+    documentChanges: List[
+        TextDocumentEdit
+    ]  # FIXME: should be: (TextDocumentEdit | CreateFile | RenameFile | DeleteFile)[]
+    # changeAnnotations: ...
+
+
+WorkspaceEdit = Union[WorkspaceEditWithChanges, WorkspaceEditWithDocumentChanges]
+
+
+def is_workspace_edit_with_changes(
+    workspace_edit: WorkspaceEdit,
+) -> TypeGuard[WorkspaceEditWithChanges]:
+    return "changes" in workspace_edit
+
+
+def is_workspace_edit_with_document_changes(
+    workspace_edit: WorkspaceEdit,
+) -> TypeGuard[WorkspaceEditWithDocumentChanges]:
+    return "documentChanges" in workspace_edit
 
 
 class ApplyWorkspaceEditParams(TypedDict):
@@ -79,9 +120,3 @@ DocumentContent = NewType("DocumentContent", str)
 Line = NewType("Line", str)
 LineNumber = NewType("LineNumber", int)
 CharNumber = NewType("CharNumber", int)
-
-
-class SimpleWorkspaceEdit(TypedDict):
-    """This is identical to WorkspaceEdit, but `changes` field is not optional."""
-
-    changes: Dict[DocumentUri, List[TextEdit]]

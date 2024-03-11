@@ -1,6 +1,6 @@
 import logging
 from functools import lru_cache
-from typing import List, Dict, Tuple
+from typing import List, Dict, Tuple, Optional, Literal, cast
 
 from pylsp import uris, workspace
 from rope.base import libutils
@@ -8,7 +8,15 @@ from rope.base.fscommands import FileSystemCommands
 
 from pylsp_rope import rope
 from pylsp_rope.lsp_diff import lsp_diff
-from pylsp_rope.typing import WorkspaceEdit, DocumentUri, TextEdit, Line
+from pylsp_rope.typing import (
+    WorkspaceEditWithChanges,
+    WorkspaceEditWithDocumentChanges,
+    WorkspaceEdit,
+    DocumentUri,
+    TextEdit,
+    Line,
+    TextDocumentEdit,
+)
 
 
 logger = logging.getLogger(__name__)
@@ -38,36 +46,92 @@ def get_document(workspace, resource: rope.Resource) -> workspace.Document:
     return workspace.get_document(uris.from_fs_path(resource.real_path))
 
 
-def rope_changeset_to_workspace_edit(
-    workspace, rope_changeset: rope.ChangeSet
-) -> WorkspaceEdit:
-    def _get_contents(change: rope.Change) -> Tuple[List[Line], List[Line]]:
-        old = change.old_contents
-        new = change.new_contents
-        if old is None:
-            if change.resource.exists():
-                old = change.resource.read()
-            else:
-                old = ""
-        return old.splitlines(keepends=True), new.splitlines(keepends=True)
+def _get_contents(change: rope.Change) -> Tuple[List[Line], List[Line]]:
+    old = change.old_contents
+    new = change.new_contents
+    if old is None:
+        if change.resource.exists():
+            old = change.resource.read()
+        else:
+            old = ""
+    return old.splitlines(keepends=True), new.splitlines(keepends=True)
 
+
+def convert_workspace_edit_document_changes_to_changes(
+    workspace_edit: WorkspaceEditWithDocumentChanges,
+) -> WorkspaceEditWithChanges:
     workspace_changeset: Dict[DocumentUri, List[TextEdit]] = {}
-    for change in rope_changeset.changes:
-        lines_old, lines_new = _get_contents(change)
-
-        document = get_document(workspace, change.resource)
-        document_changes = workspace_changeset.setdefault(document.uri, [])
-        document_changes.extend(lsp_diff(lines_old, lines_new))
+    for change in workspace_edit["documentChanges"] or []:
+        document_changes = workspace_changeset.setdefault(
+            change["textDocument"]["uri"],
+            [],
+        )
+        document_changes.extend(change["edits"])
 
     return {
         "changes": workspace_changeset,
     }
 
 
-def apply_rope_changeset(workspace, rope_changeset: rope.ChangeSet) -> None:
+def _rope_changeset_to_workspace_edit(
+    workspace, rope_changeset: rope.ChangeSet
+) -> WorkspaceEditWithDocumentChanges:
+    workspace_changeset: List[TextDocumentEdit] = []
+    for change in rope_changeset.changes:
+        lines_old, lines_new = _get_contents(change)
+
+        document = get_document(workspace, change.resource)
+        workspace_changeset.append(
+            {
+                "textDocument": {
+                    "uri": document.uri,
+                    "version": document.version,
+                },
+                "edits": list(lsp_diff(lines_old, lines_new)),
+            }
+        )
+
+    return {
+        "documentChanges": workspace_changeset,
+    }
+
+
+WorkspaceEditFormat = Literal["changes", "documentChanges"]
+DEFAULT_WORKSPACE_EDIT_FORMAT: List[WorkspaceEditFormat] = ["changes"]
+
+
+def rope_changeset_to_workspace_edit(
+    workspace,
+    rope_changeset: rope.ChangeSet,
+    workspace_edit_format: List[WorkspaceEditFormat] = DEFAULT_WORKSPACE_EDIT_FORMAT,
+) -> WorkspaceEdit:
+    assert len(workspace_edit_format) > 0
+    documentChanges: WorkspaceEditWithDocumentChanges = (
+        _rope_changeset_to_workspace_edit(
+            workspace,
+            rope_changeset,
+        )
+    )
+    workspace_edit: dict = {}
+    if "changes" in workspace_edit_format:
+        changes: WorkspaceEditWithChanges = (
+            convert_workspace_edit_document_changes_to_changes(documentChanges)
+        )
+        workspace_edit.update(changes)
+    if "documentChanges" in workspace_edit_format:
+        workspace_edit.update(documentChanges)
+    return cast(WorkspaceEdit, workspace_edit)
+
+
+def apply_rope_changeset(
+    workspace,
+    rope_changeset: rope.ChangeSet,
+    workspace_edit_format: List[WorkspaceEditFormat] = DEFAULT_WORKSPACE_EDIT_FORMAT,
+) -> None:
     workspace_edit = rope_changeset_to_workspace_edit(
         workspace,
         rope_changeset,
+        workspace_edit_format=workspace_edit_format,
     )
 
     logger.info("applying workspace edit: %s", workspace_edit)

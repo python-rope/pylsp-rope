@@ -11,7 +11,7 @@ from pylsp_rope.typing import (
     CodeAction,
     DocumentContent,
     DocumentUri,
-    SimpleWorkspaceEdit,
+    WorkspaceEditWithChanges,
     TextEdit,
 )
 from test.conftest import read_fixture_file
@@ -49,7 +49,7 @@ def assert_single_document_edit(
     return document_edits
 
 
-def assert_is_apply_edit_request(edit_request: Any) -> SimpleWorkspaceEdit:
+def assert_is_apply_edit_request(edit_request: Any) -> WorkspaceEditWithChanges:
     assert edit_request == call(
         "workspace/applyEdit",
         {
@@ -59,7 +59,7 @@ def assert_is_apply_edit_request(edit_request: Any) -> SimpleWorkspaceEdit:
         },
     )
 
-    workspace_edit: SimpleWorkspaceEdit = edit_request[0][1]["edit"]
+    workspace_edit: WorkspaceEditWithChanges = edit_request[0][1]["edit"]
     for document_uri, document_edits in workspace_edit["changes"].items():
         assert is_document_uri(document_uri)
         for change in document_edits:
@@ -79,14 +79,14 @@ def is_document_uri(uri: DocumentUri) -> bool:
 
 
 def assert_modified_documents(
-    workspace_edit: SimpleWorkspaceEdit,
+    workspace_edit: WorkspaceEditWithChanges,
     document_uris: Collection[DocumentUri],
 ) -> None:
     assert workspace_edit["changes"].keys() == set(document_uris)
 
 
 def assert_unmodified_document(
-    workspace_edit: SimpleWorkspaceEdit,
+    workspace_edit: WorkspaceEditWithChanges,
     document_uri: DocumentUri,
 ) -> None:
     assert is_document_uri(document_uri)
