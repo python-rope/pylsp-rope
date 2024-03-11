@@ -71,11 +71,11 @@ git push origin main
 4. Then upload using Twine:
 
 ``` bash
-twine upload --sign dist/*
+twine upload dist/*
 ```
 
 Alternatively, you may want to upload to Test PyPI first before going live:
 
 ``` bash
-twine upload --sign --repository testpypi dist/*
+twine upload --repository testpypi dist/*
 ```
