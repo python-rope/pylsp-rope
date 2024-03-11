@@ -1,5 +1,6 @@
 import sys
 from typing import List, Dict, Optional, NewType, Any, Union
+from typing_extensions import TypeGuard
 
 
 if sys.version_info >= (3, 8):
@@ -57,6 +58,14 @@ class WorkspaceEditWithDocumentChanges(TypedDict):
 
 
 WorkspaceEdit = Union[WorkspaceEditWithChanges, WorkspaceEditWithDocumentChanges]
+
+
+def is_workspace_edit_with_changes(workspace_edit: WorkspaceEdit) -> TypeGuard[WorkspaceEditWithChanges]:
+    return "changes" in workspace_edit
+
+
+def is_workspace_edit_with_document_changes(workspace_edit: WorkspaceEdit) -> TypeGuard[WorkspaceEditWithDocumentChanges]:
+    return "documentChanges" in workspace_edit
 
 
 class ApplyWorkspaceEditParams(TypedDict):

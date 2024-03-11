@@ -5,6 +5,7 @@ from pylsp_rope.project import (
     get_resource,
     rope_changeset_to_workspace_edit,
 )
+from pylsp_rope.typing import is_workspace_edit_with_changes
 from test.conftest import create_document
 
 
@@ -16,6 +17,7 @@ def test_rope_changeset_to_workspace_changeset(workspace):
         rope_changeset,
     )
 
+    assert is_workspace_edit_with_changes(workspace_edit)
     assert workspace_edit["changes"] == {
         document.uri: [
             {
