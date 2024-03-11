@@ -47,10 +47,6 @@ Run `pytest` to run plugin tests.
 
 ## Publishing
 
-If this is your first time publishing to PyPI, follow the instruction at [Twine
-docs](https://packaging.python.org/guides/distributing-packages-using-setuptools/#create-an-account)
-to create an PyPI account and setup Twine.
-
 1. Update version number in `setup.cfg`.
 
 2. Build a package using setuptools:
