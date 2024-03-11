@@ -45,14 +45,14 @@ class TextDocumentEdit(TypedDict):
 
 
 class WorkspaceEditWithChanges(TypedDict):
-    changes: Optional[Dict[DocumentUri, List[TextEdit]]]
+    changes: Dict[DocumentUri, List[TextEdit]]
     # documentChanges: Optional[list[TextDocumentEdit]]  # FIXME: should be: (TextDocumentEdit | CreateFile | RenameFile | DeleteFile)[]
     # changeAnnotations: ...
 
 
 class WorkspaceEditWithDocumentChanges(TypedDict):
     # changes: Optional[Dict[DocumentUri, List[TextEdit]]]
-    documentChanges: Optional[list[TextDocumentEdit]]  # FIXME: should be: (TextDocumentEdit | CreateFile | RenameFile | DeleteFile)[]
+    documentChanges: list[TextDocumentEdit]  # FIXME: should be: (TextDocumentEdit | CreateFile | RenameFile | DeleteFile)[]
     # changeAnnotations: ...
 
 
@@ -102,9 +102,3 @@ DocumentContent = NewType("DocumentContent", str)
 Line = NewType("Line", str)
 LineNumber = NewType("LineNumber", int)
 CharNumber = NewType("CharNumber", int)
-
-
-class SimpleWorkspaceEdit(TypedDict):
-    """This is identical to WorkspaceEdit, but `changes` field is not optional."""
-
-    changes: Dict[DocumentUri, List[TextEdit]]
