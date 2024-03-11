@@ -1,6 +1,9 @@
 import sys
 from typing import List, Dict, Optional, NewType, Any, Union
-from typing_extensions import TypeGuard
+try:
+    from typing import TypeGuard
+except ImportError:
+    from typing_extensions import TypeGuard
 
 
 if sys.version_info >= (3, 8):
