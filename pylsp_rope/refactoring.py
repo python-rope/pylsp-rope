@@ -262,7 +262,11 @@ class CommandRefactorUseFunction(Command):
             resource=resource,
             offset=current_document.offset_at_position(self.position),
         )
-        resources = get_resources(self.workspace, self.documents) if self.documents is not None else None
+        resources = (
+            get_resources(self.workspace, self.documents)
+            if self.documents is not None
+            else None
+        )
         rope_changeset = refactoring.get_changes(
             resources=resources,
         )

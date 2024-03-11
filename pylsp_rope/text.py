@@ -23,8 +23,7 @@ def Position(
     line: Tuple[AutoLineNumber, Optional[_CharNumberOrMarker]],
     *,
     _default_character: _CharNumberOrMarker = CharNumber(0),
-) -> typing.Position:
-    ...
+) -> typing.Position: ...
 
 
 @overload
@@ -32,24 +31,21 @@ def Position(
     line: AutoLineNumber,
     *,
     _default_character: _CharNumberOrMarker = CharNumber(0),
-) -> typing.Position:
-    ...
+) -> typing.Position: ...
 
 
 @overload
 def Position(
     line: AutoLineNumber,
     character: AutoCharNumber,
-) -> typing.Position:
-    ...
+) -> typing.Position: ...
 
 
 @overload
 def Position(
     line: AutoLineNumber,
     character: Literal["^", "$"],
-) -> typing.Position:
-    ...
+) -> typing.Position: ...
 
 
 def Position(

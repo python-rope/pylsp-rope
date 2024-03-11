@@ -5,7 +5,10 @@ from pylsp_rope.project import (
     get_resource,
     rope_changeset_to_workspace_edit,
 )
-from pylsp_rope.typing import is_workspace_edit_with_changes, is_workspace_edit_with_document_changes
+from pylsp_rope.typing import (
+    is_workspace_edit_with_changes,
+    is_workspace_edit_with_document_changes,
+)
 from test.conftest import create_document
 
 
@@ -45,7 +48,7 @@ def test_rope_changeset_to_workspace_changeset_changes(workspace):
 
     assert is_workspace_edit_with_changes(workspace_edit)
     assert workspace_edit["changes"] == {
-        document.uri: EXPECTED_EDITS
+        document.uri: EXPECTED_EDITS,
     }
 
 
@@ -61,11 +64,11 @@ def test_rope_changeset_to_workspace_changeset_document_changes(workspace):
     assert is_workspace_edit_with_document_changes(workspace_edit)
     assert workspace_edit["documentChanges"] == [
         {
-            'textDocument': {
-                'uri': document.uri,
-                'version': None,
+            "textDocument": {
+                "uri": document.uri,
+                "version": None,
             },
-            'edits': EXPECTED_EDITS,
+            "edits": EXPECTED_EDITS,
         },
     ]
 

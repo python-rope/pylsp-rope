@@ -53,18 +53,24 @@ class WorkspaceEditWithChanges(TypedDict):
 
 class WorkspaceEditWithDocumentChanges(TypedDict):
     # changes: Optional[Dict[DocumentUri, List[TextEdit]]]
-    documentChanges: List[TextDocumentEdit]  # FIXME: should be: (TextDocumentEdit | CreateFile | RenameFile | DeleteFile)[]
+    documentChanges: List[
+        TextDocumentEdit
+    ]  # FIXME: should be: (TextDocumentEdit | CreateFile | RenameFile | DeleteFile)[]
     # changeAnnotations: ...
 
 
 WorkspaceEdit = Union[WorkspaceEditWithChanges, WorkspaceEditWithDocumentChanges]
 
 
-def is_workspace_edit_with_changes(workspace_edit: WorkspaceEdit) -> TypeGuard[WorkspaceEditWithChanges]:
+def is_workspace_edit_with_changes(
+    workspace_edit: WorkspaceEdit,
+) -> TypeGuard[WorkspaceEditWithChanges]:
     return "changes" in workspace_edit
 
 
-def is_workspace_edit_with_document_changes(workspace_edit: WorkspaceEdit) -> TypeGuard[WorkspaceEditWithDocumentChanges]:
+def is_workspace_edit_with_document_changes(
+    workspace_edit: WorkspaceEdit,
+) -> TypeGuard[WorkspaceEditWithDocumentChanges]:
     return "documentChanges" in workspace_edit
 
 

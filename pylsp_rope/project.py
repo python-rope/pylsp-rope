@@ -61,8 +61,11 @@ def convert_workspace_edit_document_changes_to_changes(
     workspace_edit: WorkspaceEditWithDocumentChanges,
 ) -> WorkspaceEditWithChanges:
     workspace_changeset: Dict[DocumentUri, List[TextEdit]] = {}
-    for change in (workspace_edit["documentChanges"] or []):
-        document_changes = workspace_changeset.setdefault(change["textDocument"]["uri"], [])
+    for change in workspace_edit["documentChanges"] or []:
+        document_changes = workspace_changeset.setdefault(
+            change["textDocument"]["uri"],
+            [],
+        )
         document_changes.extend(change["edits"])
 
     return {
