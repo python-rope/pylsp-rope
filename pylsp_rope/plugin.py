@@ -140,7 +140,11 @@ def pylsp_execute_command(config, workspace, command, arguments):
     commands = {cmd.name: cmd for cmd in refactoring.Command.__subclasses__()}
 
     try:
-        return commands[command](workspace, **arguments[0])()
+        return commands[command](workspace, **arguments[0])(
+            # FIXME: Hardcode executeCommand to use WorkspaceEditWithChanges
+            #        We need to upgrade this at some point.
+            workspace_edit_format=["changes"],
+        )
     except Exception as exc:
         logger.exception(
             "Exception when doing workspace/executeCommand: %s",
