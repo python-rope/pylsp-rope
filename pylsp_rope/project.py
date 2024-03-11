@@ -1,6 +1,6 @@
 import logging
 from functools import lru_cache
-from typing import List, Dict, Tuple, Optional
+from typing import List, Dict, Tuple, Optional, Literal, cast
 
 from pylsp import uris, workspace
 from rope.base import libutils
@@ -93,20 +93,42 @@ def _rope_changeset_to_workspace_edit(
     }
 
 
+WorkspaceEditFormat = Literal["changes", "documentChanges"]
+DEFAULT_WORKSPACE_EDIT_FORMAT: List[WorkspaceEditFormat] = ["changes"]
+
+
 def rope_changeset_to_workspace_edit(
-    workspace, rope_changeset: rope.ChangeSet
+    workspace,
+    rope_changeset: rope.ChangeSet,
+    workspace_edit_format: List[WorkspaceEditFormat] = DEFAULT_WORKSPACE_EDIT_FORMAT,
 ) -> WorkspaceEdit:
-    workspace_edit: WorkspaceEditWithDocumentChanges = _rope_changeset_to_workspace_edit(
-        workspace,
-        rope_changeset,
+    assert len(workspace_edit_format) > 0
+    documentChanges: WorkspaceEditWithDocumentChanges = (
+        _rope_changeset_to_workspace_edit(
+            workspace,
+            rope_changeset,
+        )
     )
-    return convert_workspace_edit_document_changes_to_changes(workspace_edit)
+    workspace_edit: dict = {}
+    if "changes" in workspace_edit_format:
+        changes: WorkspaceEditWithChanges = (
+            convert_workspace_edit_document_changes_to_changes(documentChanges)
+        )
+        workspace_edit.update(changes)
+    if "documentChanges" in workspace_edit_format:
+        workspace_edit.update(documentChanges)
+    return cast(WorkspaceEdit, workspace_edit)
 
 
-def apply_rope_changeset(workspace, rope_changeset: rope.ChangeSet) -> None:
+def apply_rope_changeset(
+    workspace,
+    rope_changeset: rope.ChangeSet,
+    workspace_edit_format: List[WorkspaceEditFormat] = DEFAULT_WORKSPACE_EDIT_FORMAT,
+) -> None:
     workspace_edit = rope_changeset_to_workspace_edit(
         workspace,
         rope_changeset,
+        workspace_edit_format=workspace_edit_format,
     )
 
     logger.info("applying workspace edit: %s", workspace_edit)

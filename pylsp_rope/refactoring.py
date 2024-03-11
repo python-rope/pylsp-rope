@@ -14,10 +14,12 @@ from rope.refactor import (
 
 from pylsp_rope import typing, commands
 from pylsp_rope.project import (
+    WorkspaceEditFormat,
     get_project,
     get_resource,
     get_resources,
     apply_rope_changeset,
+    DEFAULT_WORKSPACE_EDIT_FORMAT,
 )
 from pylsp_rope.typing import DocumentUri, CodeActionKind
 
@@ -32,10 +34,20 @@ class Command:
         self.arguments = arguments
         self.__dict__.update(**arguments)
 
-    def __call__(self):
+    def __call__(
+        self,
+        *,
+        workspace_edit_format: List[
+            WorkspaceEditFormat
+        ] = DEFAULT_WORKSPACE_EDIT_FORMAT,
+    ):
         rope_changeset = self.get_changes()
         if rope_changeset is not None:
-            apply_rope_changeset(self.workspace, rope_changeset)
+            apply_rope_changeset(
+                self.workspace,
+                rope_changeset,
+                workspace_edit_format,
+            )
 
     def get_changes(self):
         """
