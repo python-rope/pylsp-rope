@@ -1,7 +1,12 @@
 from pathlib import Path
 from unittest.mock import Mock
 
-import pkg_resources
+try:
+    from importlib.resources import files as resources_files
+except ImportError:
+    resources_files = None
+    import pkg_resources
+
 import pytest
 from pylsp import uris
 from pylsp.config.config import Config
@@ -59,7 +64,10 @@ def code_action_context():
 
 
 def read_fixture_file(name):
-    return pkg_resources.resource_string(__name__, "fixtures/" + name).decode()
+    if resources_files:
+        return (resources_files("test") / f"fixtures/{name}").read_text()
+    else:
+        return pkg_resources.resource_string(__name__, "fixtures/" + name).decode()
 
 
 def create_document(workspace, name):
