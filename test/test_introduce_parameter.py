@@ -26,6 +26,7 @@ def test_introduce_parameter(config, workspace, code_action_context):
         "title": "Introduce parameter",
         "kind": "refactor",
         "command": {
+            "title": "Introduce parameter",
             "command": commands.COMMAND_INTRODUCE_PARAMETER,
             "arguments": [
                 {

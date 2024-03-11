@@ -26,6 +26,7 @@ def test_inline(config, workspace, code_action_context):
         "title": "Inline method/variable/parameter",
         "kind": "refactor.inline",
         "command": {
+            "title": "Inline method/variable/parameter",
             "command": commands.COMMAND_REFACTOR_INLINE,
             "arguments": [
                 {
