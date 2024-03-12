@@ -64,3 +64,5 @@ git push origin main 0.1.3
 
 3. Github Actions should publish to PyPI shortly. Verify the publishing are
    successful at https://pypi.org/project/pylsp-rope/#history.
+
+4. Upload release assets to Github Release (fixme: find a way to automate this)
