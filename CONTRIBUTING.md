@@ -55,29 +55,12 @@ FIXME: update this to use the Github Publishing workflow
 
 1. Update version number in `setup.cfg`.
 
-2. Build a package using setuptools:
-
-``` bash
-python -m build
-twine check dist/*
-```
-
-3. Tag the release:
+2. Tag the release:
 
 ``` bash
 git tag --sign 0.1.3
-git push origin 0.1.3
-git push origin main
+git push origin main 0.1.3
 ```
 
-4. Then upload using Twine:
-
-``` bash
-twine upload dist/*
-```
-
-Alternatively, you may want to upload to Test PyPI first before going live:
-
-``` bash
-twine upload --repository testpypi dist/*
-```
+3. Github Actions should publish to PyPI shortly. Verify the publishing are
+   successful at https://pypi.org/project/pylsp-rope/#history.
