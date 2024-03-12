@@ -1,1 +1,1 @@
-recursive-include test/fixtures *.py
+recursive-include test *.py
