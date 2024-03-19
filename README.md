@@ -1,6 +1,7 @@
 # pylsp-rope
 
-[![Tests](https://github.com/python-rope/pylsp-rope/actions/workflows/run-test.yml/badge.svg)](https://github.com/python-rope/pylsp-rope/actions/workflows/run-test.yml)
+[![Tests](https://github.com/python-rope/pylsp-rope/actions/workflows/run-test.yml/badge.svg)](https://github.com/python-rope/pylsp-rope/actions/workflows/run-test.yml) 
+[![codecov](https://codecov.io/gh/python-rope/pylsp-rope/graph/badge.svg?token=LMO7PW0AEK)](https://codecov.io/gh/python-rope/pylsp-rope)
 
 Extended refactoring capabilities for Python LSP Server using
 [Rope](https://github.com/python-rope/rope).
