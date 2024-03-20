@@ -47,20 +47,11 @@ Run `pytest` to run plugin tests.
 
 ## Publishing
 
-If this is your first time publishing to PyPI, follow the instruction at [Twine
-docs](https://packaging.python.org/guides/distributing-packages-using-setuptools/#create-an-account)
-to create an PyPI account and setup Twine.
-
-FIXME: update this to use the Github Publishing workflow
+This repository is setup to publish to PyPI using Github Actions when creating a Github Release.
 
 1. Update version number in `setup.cfg`.
 
-2. Tag the release:
-
-``` bash
-git tag --sign 0.1.3
-git push origin main 0.1.3
-```
+2. [Create a new Release](https://github.com/python-rope/pylsp-rope/releases/new)
 
 3. Github Actions should publish to PyPI shortly. Verify the publishing are
    successful at https://pypi.org/project/pylsp-rope/#history.
