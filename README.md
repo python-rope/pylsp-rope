@@ -30,25 +30,14 @@ Neovim](https://github.com/python-rope/rope/wiki/Rope-in-Vim-or-Neovim). For
 other editors, refer to your IDE/text editor's documentation on how to setup a
 language server. 
 
-## Configuration
-
-You can enable rename support using pylsp-rope with workspace config key
-`pylsp.plugins.pylsp_rope.rename`. 
-
-Note that this differs from the config key `pylsp.plugins.rope_rename.enabled`
-that is used for the rope rename implementation using the python-lsp-rope's
-builtin `rope_rename` plugin. To avoid confusion, avoid enabling more than one
-python-lsp-server rename plugin. In other words, you should set both
-`pylsp.plugins.rope_rename.enabled = false` and `pylsp.plugins.jedi_rename.enabled = false` 
-when pylsp-rope rename is enabled.
-
 ## Features
 
 This plugin adds the following features to python-lsp-server:
 
 Rename: 
 
-- rename everything: classes, functions, modules, packages (disabled by default)
+- implemented: variables, classes, functions (disabled by default)
+- coming soon: modules, packages (disabled by default)
 
 Code Action:
 
@@ -144,9 +133,21 @@ When CodeAction is triggered and the cursor is on an undefined Python
 variable, generate an empty variable/function/class/module/package for that
 name.
 
+## Configuration
+
+You can enable rename support using pylsp-rope with workspace config key
+`pylsp.plugins.pylsp_rope.rename`. 
+
+Note that this differs from the config key `pylsp.plugins.rope_rename.enabled`
+that is used for the rope rename implementation using the python-lsp-rope's
+builtin `rope_rename` plugin. To avoid confusion, avoid enabling more than one
+python-lsp-server rename plugin. In other words, you should set both
+`pylsp.plugins.rope_rename.enabled = false` and `pylsp.plugins.jedi_rename.enabled = false` 
+when pylsp-rope rename is enabled.
+
 ## Caveat
 
-Support for working on unsaved document is currently experimental.
+Support for working on unsaved document is currently experimental, but it should work.
 
 This plugin is in early development, so expect some bugs. Please report in
 [Github issue tracker](https://github.com/python-lsp/python-lsp-server/issues)
