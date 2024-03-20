@@ -38,7 +38,9 @@ You can enable rename support using pylsp-rope with workspace config key
 Note that this differs from the config key `pylsp.plugins.rope_rename.enabled`
 that is used for the rope rename implementation using the python-lsp-rope's
 builtin `rope_rename` plugin. To avoid confusion, avoid enabling more than one
-python-lsp-server rename plugin.
+python-lsp-server rename plugin. In other words, you should set both
+`pylsp.plugins.rope_rename.enabled = false` and `pylsp.plugins.jedi_rename.enabled = false` 
+when pylsp-rope rename is enabled.
 
 ## Features
 
