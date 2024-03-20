@@ -32,27 +32,44 @@ language server.
 
 ## Configuration
 
-There is no configuration yet.
+You can enable rename support using pylsp-rope with workspace config key
+`pylsp.plugins.pylsp_rope.rename`. 
+
+Note that this differs from the config key `pylsp.plugins.rope_rename.enabled`
+that is used for the rope rename implementation using the python-lsp-rope's
+builtin `rope_rename` plugin. To avoid confusion, avoid enabling more than one
+python-lsp-server rename plugin.
 
 ## Features
 
 This plugin adds the following features to python-lsp-server:
 
-- extract method (codeAction)
-- extract variable (codeAction)
-- inline method/variable/parameter (codeAction)
-- use function (codeAction)
-- method to method object (codeAction)
-- convert local variable to field (codeAction)
-- organize imports (codeAction)
-- introduce parameter (codeAction)
-- generate variable/function/class from undefined variable (codeAction)
-- more to come...
+Rename: 
+
+- rename everything: classes, functions, modules, packages (disabled by default)
+
+Code Action:
+
+- extract method
+- extract variable 
+- inline method/variable/parameter 
+- use function 
+- method to method object 
+- convert local variable to field 
+- organize imports 
+- introduce parameter 
+- generate variable/function/class from undefined variable 
 
 Refer to [Rope documentation](https://github.com/python-rope/rope/blob/master/docs/overview.rst)
 for more details on how these refactoring works.
 
 ## Usage
+
+### Rename
+
+When Rename is triggered, rename the symbol under the cursor. If the symbol
+under the cursor points to a module/package, it will move that module/package
+files.
 
 ### Extract method
 
