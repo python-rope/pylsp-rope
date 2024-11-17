@@ -221,11 +221,14 @@ class CommandRefactorInline(Command):
     position: typing.Range
 
     def validate(self, info):
-        inline.create_inline(
+        refactoring = inline.create_inline(
             project=self.project,
             resource=info.resource,
             offset=info.current_document.offset_at_position(info.position),
         )
+        rope_changeset = refactoring.get_changes()
+        if not rope_changeset.changes:
+            raise Exception("Not offering changeless inline refactor")
 
     def get_changes(self):
         current_document, resource = get_resource(self.workspace, self.document_uri)

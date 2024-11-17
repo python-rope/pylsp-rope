@@ -77,3 +77,25 @@ def test_inline_not_offered_when_selecting_unsuitable_range(
         response,
         command=commands.COMMAND_REFACTOR_INLINE,
     )
+
+
+def test_inline_not_offered_when_selecting_function_parameter(
+    config, workspace, code_action_context
+):
+    document = create_document(workspace, "simple_extract_method.py")
+    line = 10
+    start_col = end_col = document.lines[line].index("a")
+    selection = Range((line, start_col), (line, end_col))
+
+    response = plugin.pylsp_code_actions(
+        config=config,
+        workspace=workspace,
+        document=document,
+        range=selection,
+        context=code_action_context,
+    )
+
+    assert_code_actions_do_not_offer(
+        response,
+        command=commands.COMMAND_REFACTOR_INLINE,
+    )
