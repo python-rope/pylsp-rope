@@ -13,6 +13,7 @@ from pylsp_rope.project import (
     get_resources,
     rope_changeset_to_workspace_edit,
     new_project,
+    is_virtual_document,
 )
 
 
@@ -67,6 +68,11 @@ def pylsp_code_actions(
     context,
 ) -> List[typing.CodeAction]:
     logger.info("textDocument/codeAction: %s %s %s", document, range, context)
+
+    # Skip virtual documents (e.g., notebook cells)
+    if is_virtual_document(document.uri):
+        logger.debug("Skipping code actions for virtual document: %s", document.uri)
+        return []
 
     class info:
         current_document, resource = get_resource(workspace, document.uri)
@@ -185,7 +191,9 @@ def pylsp_rename(
         return None
 
     logger.info("textDocument/rename: %s %s %s", document, position, new_name)
-    project = new_project(workspace)  # FIXME: we shouldn't have to always keep creating new projects here
+    project = new_project(
+        workspace
+    )  # FIXME: we shouldn't have to always keep creating new projects here
     document, resource = get_resource(workspace, document.uri, project=project)
 
     rename = Rename(
