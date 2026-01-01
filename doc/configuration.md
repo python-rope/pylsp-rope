@@ -130,7 +130,6 @@ For VS Code with the Python LSP plugin, add to your `settings.json`:
 
 ```json
 {
-  "pylsp.configurationSources": ["pycodestyle"],
   "pylsp.plugins.pylsp_rope.enabled": true,
   "pylsp.plugins.pylsp_rope.rename": true,
   "pylsp.plugins.jedi_rename.enabled": false

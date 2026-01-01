@@ -257,7 +257,6 @@ lsp-restart-workspace
 ```bash
 # Remove Rope cache
 rm -rf .rope_project
-rm -rf ~/.rope
 ```
 
 ### Large Project Issues
@@ -274,7 +273,6 @@ rm -rf ~/.rope
    ```json
    {
      "pylsp": {
-       "configurationSources": ["pycodestyle"],
        "plugins": {
          "pylsp_rope": {
            "enabled": true

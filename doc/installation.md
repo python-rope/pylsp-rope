@@ -78,7 +78,6 @@ Install the official Python extension and configure:
 
 ```json
 {
-  "pylsp.configurationSources": ["pycodestyle"],
   "pylsp.plugins.pylsp_rope.enabled": true
 }
 ```
