@@ -41,7 +41,6 @@ def pylsp_settings():
             # "pylint_lint": {"enabled": False},
             # "references": {"enabled": False},
             # "rope_completion": {"enabled": False},
-            # "rope_rename": {"enabled": False},
             "pylsp_rope": {
                 "enabled": True,
                 "rename": False,
