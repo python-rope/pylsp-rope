@@ -184,27 +184,39 @@ def pylsp_rename(
     if not cfg.get("rename", False):
         return None
 
-    logger.info("textDocument/rename: %s %s %s", document, position, new_name)
-    project = new_project(workspace)  # FIXME: we shouldn't have to always keep creating new projects here
-    document, resource = get_resource(workspace, document.uri, project=project)
+    try:
+        logger.info("textDocument/rename: %s %s %s", document, position, new_name)
+        project = new_project(workspace)  # FIXME: we shouldn't have to always keep creating new projects here
+        document, resource = get_resource(workspace, document.uri, project=project)
 
-    rename = Rename(
-        project=project,
-        resource=resource,
-        offset=document.offset_at_position(position),
-    )
+        rename = Rename(
+            project=project,
+            resource=resource,
+            offset=document.offset_at_position(position),
+        )
 
-    logger.debug(
-        "Executing rename of %s to %s",
-        document.word_at_position(position),
-        new_name,
-    )
+        logger.debug(
+            "Executing rename of %s to %s",
+            document.word_at_position(position),
+            new_name,
+        )
 
-    rope_changeset = rename.get_changes(new_name, in_hierarchy=True, docs=True)
+        rope_changeset = rename.get_changes(new_name, in_hierarchy=True, docs=True)
 
-    logger.debug("Finished rename: %s", rope_changeset.changes)
-    workspace_edit = rope_changeset_to_workspace_edit(
-        workspace,
-        rope_changeset,
-    )
-    return workspace_edit
+        logger.debug("Finished rename: %s", rope_changeset.changes)
+        workspace_edit = rope_changeset_to_workspace_edit(
+            workspace,
+            rope_changeset,
+        )
+        return workspace_edit
+    except Exception as exc:
+        logger.exception(
+            "Exception when doing workspace/executeCommand: %s",
+            str(exc),
+            exc_info=exc,
+        )
+        workspace.show_message(
+            f"pylsp-rope: {exc}",
+            msg_type=MessageType.Error,
+        )
+    return None
