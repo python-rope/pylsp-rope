@@ -23,6 +23,22 @@ from pylsp_rope.typing import (
 logger = logging.getLogger(__name__)
 
 
+def is_virtual_document(document_uri: DocumentUri) -> bool:
+    """
+    Check if a document URI represents a virtual document (e.g., notebook cell).
+
+    Virtual documents have URI schemes other than 'file' (including empty schemes)
+    and don't correspond to actual files on the filesystem.
+    """
+    try:
+        parsed_uri = uris.urlparse(document_uri)
+        scheme = parsed_uri[0] if len(parsed_uri) > 0 else ""
+        return scheme != "file"
+    except Exception:
+        # If we can't parse URI, treat it as virtual for safety
+        return True
+
+
 @lru_cache(maxsize=None)
 def get_project(workspace) -> rope.Project:
     """Get a cached rope Project or create one if it doesn't exist yet"""
@@ -43,20 +59,29 @@ def get_resource(
     document_uri: DocumentUri,
     *,
     project: rope.Project = None,
-) -> Tuple[workspace.Document, rope.Resource]:
+) -> Tuple[workspace.Document, Optional[rope.Resource]]:
     """
     Return a Document and Resource related to an LSP Document.
 
     `project` must be provided if not using instances of rope Project from
     `pylsp_rope.project.get_project()`.
+
+    Returns None as resource if the document is virtual (e.g., notebook cell).
     """
     document = workspace.get_document(document_uri)
+
+    # Handle virtual documents (e.g., notebook cells)
+    if is_virtual_document(document_uri):
+        return document, None
+
     project = project or get_project(workspace)
     resource = libutils.path_to_resource(project, document.path)
     return document, resource
 
 
-def get_resources(workspace, documents: List[DocumentUri]) -> List[rope.Resource]:
+def get_resources(
+    workspace, documents: List[DocumentUri]
+) -> List[Optional[rope.Resource]]:
     if documents is None:
         return None
     return [get_resource(workspace, document_uri)[1] for document_uri in documents]
